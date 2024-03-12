@@ -23,7 +23,7 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 7, 2023
+# Due Date: June 3, 2024
 
 ### Outline of a Quantitative Essay
 
