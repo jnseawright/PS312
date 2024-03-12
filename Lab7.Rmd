@@ -1,0 +1,39 @@
+---
+title: "Political Science 312 Homework 7"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: May 17, 2024
+
+### Main Causal Inference
+
+Put together an initial version of your main strategy for causal inference. If you are using control variables, run a multivariate regression using one control variable for each identified confounder (to the best of your ability). If you are using a different strategy, execute it. What causal effect estimate do you find? Is it similar to, or different from, the bivariate results from the last lab? Are the findings surprising? Why or why not?
+
+### How Big Is Your Causal Effect?
+
+Using your causal effect estimate, figure out how big a difference your main independent variable can make. If your main variable is dichotomous, then the only possible change on the variable is 1, so figure out how big an effect a 1-unit change has on the outcome (taking into account any interaction terms). If your main independent variable is categorical or continuous, figure out how far apart the 25th and 75th percentiles are on that variable, and figure out how big an effect would be produced by a change of that size. Out of the overall range of your dependent variable, how much can you cover with this effect?
+
+### Test Your Assumptions
+
+What can you do to test the assumptions behind your statistical model? Identify at least three assumptions, provide statistical tests, and explain the results.
+

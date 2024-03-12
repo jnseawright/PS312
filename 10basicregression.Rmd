@@ -1,0 +1,332 @@
+---
+title: "10: Basic Regression in R"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "April 30, 2024"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+options(warn=-1)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.3rem"
+)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(ggplot2)
+library(GGally)
+library(haven)
+library(tidyverse)
+```
+
+---
+
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(knitr)
+include_graphics("images/Uscincski.png")
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+uscinski2 <- read_dta("uscinski2.dta")
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+uscinski2$conspiratorial <- with(uscinski2, con1 + con2 + con3 +con4)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+summary(uscinski2$conspiratorial)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+usc_consp_plot <- uscinski2 %>% 
+  ggplot(aes(x=conspiratorial)) + 
+  geom_histogram(binwidth=1) 
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+usc_consp_plot 
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+usc_qanon_plot <- uscinski2 %>% 
+  ggplot(aes(x=qanonft)) + 
+  geom_histogram(binwidth=3) 
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+usc_qanon_plot 
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft.lm <- lm(qanonft~conspiratorial, data = uscinski2)
+
+summ(qft.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft2.lm <- lm(qanonft~conspiratorial+pid, data = uscinski2)
+summ(qft2.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft3.lm <- lm(qanonft~conspiratorial+pid+ideo+female+age+income+edu, data = uscinski2)
+summary(qft3.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+ggcoef(qft3.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft.lm.bad <- lm(qanonft~conspiratorial+pid+ideo+female+age+income+edu+trumpft+collusion, data = uscinski2)
+summary(qft.lm.bad)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+ggcoef(qft.lm.bad)
+```
+
+---
+
+In addition to assuming that we have the right control variables for causal inference, a good regression requires that we get some statistical assumptions right.
+
+---
+
+- Is the error term *independent* across cases, and of the causal variable?
+
+- Are the relationships of interest represented using the right *mathematical form*?
+
+- Do any of the data points have too much *influence* on the results?
+
+- Are the right-hand-side variables *sufficiently uncorrelated* with each other?
+
+- Does the error term have about the *same variance* across all the cases?
+
+- Is the error term about *normally distributed*?
+
+- Does the main causal variable have a *constant effect* across all cases?
+
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+library(ggfortify)
+autoplot(qft3.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+hist(uscinski2$qanonft)
+```
+
+---
+
+When a variable is highly *skewed*, i.e., it is concentrated on one side of the distribution or the other, it can't be normally distributed, and it makes several of the other assumptions harder to meet.
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+uscinski2$logqft <- log(uscinski2$qanonft + 1)
+hist(uscinski2$logqft)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft3.5.lm <- lm(logqft~conspiratorial+pid+ideo+female+age+income+edu, data = uscinski2)
+summary(qft3.5.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+autoplot(qft3.5.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+ggcoef(qft3.5.lm)
+```
+
+---
+
+Let's check if our variables are sufficiently uncorrelated with each other!
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+library(car)
+vif(qft3.lm)
+```
+
+---
+
+Let's check if our error term has approximately the same variance across all the cases!
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+ncvTest(qft3.5.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+library(lmtest)
+bptest(qft3.5.lm)
+```
+
+---
+
+Let's check if we've represented the relationships using the right mathematical form!
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+reset(qft3.5.lm, power = 2:3, type = "regressor")
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft3.75.lm <- lm(logqft~conspiratorial+pid+ideo+female+age+I(age^2)+income+I(income^2)+edu+I(edu^2), data = uscinski2)
+summary(qft3.75.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+reset(qft3.75.lm, power = 2:3, type = "regressor")
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft3.9.lm <- lm(logqft~conspiratorial+pid+ideo+I(ideo^2)+female+age+I(age^2)+income+I(income^2)+edu+I(edu^2)+I(edu^3), data = uscinski2)
+summary(qft3.9.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+reset(qft3.9.lm, power = 2:3, type = "regressor")
+
+vif(qft3.9.lm)
+```
+
+---
+
+Let's check if the error term is approximately normal!
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+library(tseries)
+jarque.bera.test(rstandard(qft3.5.lm))
+```
+
+---
+
+Let's check if relationship between the main explanatory variable and the outcome is approximately constant across groups of cases!
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+qft3.5.lm.int <- lm(logqft~conspiratorial+pid+ideo+female+age+income+edu+conspiratorial:edu, data = uscinski2)
+summary(qft3.5.lm.int)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+meplot <- function(model,var1,var2,int,vcov,ci=.95,
+                   xlab=var2,ylab=paste("Marginal Effect of",var1),
+                   main="Marginal Effect Plot",
+                   me_lty=1,me_lwd=1,me_col="black",
+                   ci_lty=1,ci_lwd=.5,ci_col="black",
+                   yint_lty=2,yint_lwd=1,yint_col="black"){
+  require(ggplot2)
+  alpha <- 1-ci
+  z <- qnorm(1-alpha/2)
+  beta.hat <- coef(model)
+  cov <- vcov
+  z0 <- seq(min(model.frame(model)[,var2],na.rm=T),max(model.frame(model)[,var2],na.rm=T),length.out=1000)
+  dy.dx <- beta.hat[var1] + beta.hat[int]*z0
+  se.dy.dx <- sqrt(cov[var1,var1] + z0^2*cov[nrow(cov),ncol(cov)] + 2*z0*cov[var1,ncol(cov)])
+  upr <- dy.dx + z*se.dy.dx
+  lwr <- dy.dx - z*se.dy.dx
+  ggplot(data=NULL,aes(x=z0, y=dy.dx)) +
+    labs(x=xlab,y=ylab,title=main) +
+    geom_line(aes(z0, dy.dx),size = me_lwd, 
+              linetype = me_lty, 
+              color = me_col) +
+    geom_line(aes(z0, lwr), size = ci_lwd, 
+              linetype = ci_lty, 
+              color = ci_col) +
+    geom_line(aes(z0, upr), size = ci_lwd, 
+              linetype = ci_lty, 
+              color = ci_col) +
+    geom_hline(yintercept=0,linetype=yint_lty,
+               size=yint_lwd,
+               color=yint_col)
+}
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+meplot(qft3.5.lm.int, var1="conspiratorial", var2="edu", int="conspiratorial:edu", vcov=vcov(qft3.5.lm.int))
+```

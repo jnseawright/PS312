@@ -1,0 +1,212 @@
+---
+title: "12: Regression Extensions"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "May 7, 2024"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+options(warn=-1)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.3rem"
+)
+```
+
+---
+### Dummy Variables
+
+Suppose we're interested in a cause that's either present or absent.
+
+---
+### Dummy Variables
+
+The natural way to represent something like this is with a nominal variable, which takes on values of 0 or 1.
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+peruemotions <- read.csv("https://raw.githubusercontent.com/jnseawright/PS406/main/data/peruemotions.csv")
+table(peruemotions$simpletreat)
+```
+
+---
+### Dummy Variables
+
+A ''dummy variable'' like this has the effect of shifting the intercept in our regression. It doesn't matter substantively which category we choose as 1; the intercept shift will be the same size.
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+library(jtools)
+example1.lm <- lm(outsidervote ~ simpletreat, data=peruemotions)
+summ(example1.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+peruemotions$oppositesimpletreat <- 1 - peruemotions$simpletreat
+example2.lm <- lm(outsidervote ~ oppositesimpletreat, data=peruemotions)
+summ(example2.lm)
+```
+
+---
+### Dummy Variables
+
+What if we have a variable with three or more nominal categories (e.g., emotions of ''angry,'' ''happy,'' ''bored,'' or ''scared,'' etc.)? 
+
+If there are $k$ categories, we represent these with $k-1$ dummy variables. For example, we have a variable that equals 1 for *angry*, another variable that equals 1 for *happy*, and another that equals 1 for *scared*. What about *bored*? That's represented by 0 on all three variables at once.
+
+This avoids a bad situation in which three of our variables added together could perfectly predict a fourth.
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+peruemotions$partyid[peruemotions$partyid==-99] <- NA
+peruemotions$partyid <- as.factor(peruemotions$partyid)
+table(peruemotions$partyid)
+```
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+example3.lm <- lm(outsidervote ~ partyid, data=peruemotions)
+summary(example3.lm)
+
+```
+---
+### Dummy Variables
+
+Does it matter which category is treated as the ''0'' here?
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+example4.lm <- lm(outsidervote ~ relevel(partyid,ref=5), data=peruemotions)
+summary(example4.lm)
+```
+
+---
+### Dummy Variables
+
+What if it's our outcome that takes on 0/1 values?
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+example1.lm <- lm(outsidervote ~ simpletreat, data=peruemotions)
+summ(example1.lm)
+```
+---
+### Linear Probability Models
+
+We can interpret the model as predicting the probability that the outcome equals 1. Then everything else mostly works okay, with some weirdness.
+
+---
+### GLMs
+
+Or we can avoid the weirdness by wrapping our regression in a nonlinear transformation, to force the model to always produce valid probabilities.
+
+---
+### Three Steps for Zero-One Outcomes
+
+-   Think of the regression as predicting the probability of a one,
+    rather than the mean.
+
+-   Use a nonlinear function to stretch the zero-one interval to the
+    whole number line.
+
+-   Find a way to estimate this nonlinear model.
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+example1.logit <- glm(outsidervote ~ simpletreat, data=peruemotions, family=binomial(link=logit))
+summary(example1.logit)
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+logitplot <- peruemotions %>% ggplot(aes(x=simpletreat, y=outsidervote)) + geom_point() +
+      stat_smooth(method="glm", color="green", se=FALSE, fullrange=TRUE,
+                method.args = list(family=binomial)) + xlim(-10,10)
+```
+
+---
+```{r, echo = TRUE, out.width="60%", fig.retina = 1}
+logitplot
+```
+
+---
+### Interpreting Coefficients in Zero-One Models
+
+-   In linear regression, $\beta$ tells you how much the mean response
+    changes for a one-unit change in the relevant independent variable.
+
+-   That's not usually true for a GLM.
+
+---
+### Interpreting Logit Coefficients
+
+-   As a very rough approximation, you can divide logit coefficients by 4 to get a sense of their magnitude.
+
+---
+### Interpreting Logit Coefficients
+
+-   For actual analysis, or for use in a paper, you should probably calculate the average marginal effect, i.e., the average effect of moving every case in the data by one unit on the explanatory variable.
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+library(margins)
+summary(margins(example1.logit))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+plot(margins(example1.logit))
+```

@@ -1,0 +1,44 @@
+---
+title: "Political Science 312 Homework 3"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 19, 2024
+
+### Existing Control Variables
+
+You probably aren't the first person to do quantitative social science on the question you're interested in! You may already know about some relevant research; but even if you don't, there probably is some. (Lots of people do this stuff.) And that's fine! Being the first person to ever ask a question is highly overrated. 
+
+Let's start by mapping the common control variables in regressions where your outcome is the variable to be explained. Go to Google Scholar and type terms that say ''regression'' and versions of your outcome. Click on studies that come up, and scroll through until you find regression tables. If the tables do indeed have your outcome as the dependent variable, keep them until you have at least 5.
+
+Then, copy down all the right-hand-side variables used across all the regressions as the rows of a table, with the different regressions as the columns. Mark a cell as 1 if the variable is included in the regression and 0 if it is not. 
+
+How many variables show consensus and are included in every regression? How many show disagreement? Can you make sense of why?
+
+### Other Strategies for Causal Inference
+
+Now let's determine how many other strategies for causal inference have been used with respect to your outcome. On Google Scholar, type terms like ''regression discontinuity design'' and your outcome, ''laboratory experiment'' and your outcome, etc. If you can locate five or more articles that use causal inferential strategies other than control variables, that's great --- but it may be that there just aren't very many, which can also be your answer. In either case, describe your findings.
+
+### What Have People Learned?
+
+Save all the articles you've downloaded for this homework in a safe folder somewhere; you will want these materials for your literature review toward the end of the quarter. For now, read through all the abstracts and summarize what has been learned across the existing literature in 2-3 paragraphs.

@@ -1,0 +1,263 @@
+---
+title: "1: Asking Data Science Questions in Political Science"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "March 28, 2024"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.6rem"
+)
+```
+
+---
+### Are Democrats or Republicans Better for the Economy?
+
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+library(knitr)
+include_graphics("images/preseconbwtitle.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconwb1.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="70%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconwb2.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconwb3.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconwb4.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconkanetitle.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/preseconkane1.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Dynes1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Dynes2.png")
+```
+
+---
+### How Racist Are Americans, Really?
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears3.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears4.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears5.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears6.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Sears7.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Rucker1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Rucker2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Rucker3.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/quilliantitle.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/resumetime.JPG")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Bertrand1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Bertrand2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Bertrand3.png")
+```
+
+---
+```{r, echo = FALSE, out.width="50%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Kline.png")
+```
+
+---
+### Is Political Self-Censorship a Real Thing in the U.S.?
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Lukianoff1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Lukianoff2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Gibson1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Gibson2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Gibson3.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Gibson4.png")
+```
+
+---
+```{r, echo = FALSE, out.width="90%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Gibson5.png")
+```
+
+---
+### What Makes a Viable Statistical Research Question?
+
+1.  Can be made specific
+
+2.  Isn't purely normative
+
+3.  Can be made measurable
+
+4.  More than just a few relevant cases exist
+
+---
+### What Makes a Good Statistical Research Question?
+
+1.  Might be surprising
+
+2.  Has broader implications
+
+3.  Fits with a clever research design and/or statistical analysis
+
+---
+### Course Mechanics
+
+-   There are weekly assignments for the first seven weeks of class,
+    each worth 10% of the term grade.
+
+-   A final assignment is worth 30% of the term grade.
+
+---
+### Topics for the Course
+
+---
+### R
+
+[http://cran.r-project.org/](http://cran.r-project.org/)

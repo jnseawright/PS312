@@ -1,0 +1,76 @@
+---
+title: "Political Science 312 Final Paper"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 7, 2023
+
+### Outline of a Quantitative Essay
+
+-   Introduce the research question and briefly explain why it is
+    important (about 1 page).
+
+-   Explain why existing research is incomplete (1-2 pages, including literature review).
+
+-   Describe your data and sources (about 1 page).
+
+-   Describe your statistical analysis and explain the assumptions
+    you're making (about 2 pages).
+
+-   Present your results (about 3 pages).
+
+-   Explain what we have learned, and point toward next steps to learn
+    more (about 2 pages).
+
+Report unanticipated events that occurred during your data collection.
+Explain how the actual analysis differs from the planned analysis.
+Explain your handling of missing data. Be clear about any limitations to
+your analysis.
+
+Use tables to provide exact values; use figures to convey global
+effects. Keep figures small in size; include graphic representations of
+confidence intervals whenever possible.
+
+Always tell the reader what to look for in tables and figures. Discuss
+the specific numbers that matter and their meaning. A reader who skips
+the tables and figures should still be told the statistical results.
+
+### Grading Criteria
+
+-   Careful editing and word choice (10\%).
+
+-   Clear identification of the main causal relationship of interest,
+    including independent and dependent variables (10\%).
+
+-   Discussion of other statistical work on the same or related
+    relationships, with description of key strengths weaknesses of that
+    work (15\%).
+
+-   Thoughtful analysis of potential confounders and other assumptions, sensible control
+    variables connected to each identified confounder (or an explanation of why this isn't possible), or a good     
+    explanation of some other strategy for causal inference (25\%).
+
+-   Clear, succinct, and accurate interpretation of statistical results (25\%).
+
+-   Concluding reflections on what has been learned, including
+    limitations/issues that you could not adequately address (15\%).

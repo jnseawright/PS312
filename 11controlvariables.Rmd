@@ -1,0 +1,187 @@
+---
+title: "11: Choosing Control Variables"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "May 2, 2024"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+options(warn=-1)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.3rem"
+)
+```
+
+---
+
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(knitr)
+include_graphics("images/Li1.png")
+```
+
+---
+
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Li2.png")
+```
+
+---
+
+```{r, echo = FALSE, out.width="40%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Li3.png")
+```
+
+---
+
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Li4.png")
+```
+
+---
+
+Clearly, we need to think hard about our knowledge of the overall causal structure in order to get things right.
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1}
+library(dagitty)
+jan6th.graph <- dagitty( "dag {
+     DesiresFame -> RightWingInfluencer -> EnterCapitol
+     GangMember -> EnterCapitol
+     Age -> RightWingInfluencer
+     SES -> RightWingInfluencer
+     Ideology -> RightWingInfluencer
+     Ideology -> RallyAttendance -> EnterCapitol
+     Age -> GangMember
+     SES -> GangMember
+     Ideology -> GangMember
+     GangMember -> EnterCapitol
+     RallyAttendance -> EnterCapitol
+     Age -> EnterCapitol
+     SES -> EnterCapitol
+}")
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1}
+plot(graphLayout(jan6th.graph))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print( impliedConditionalIndependencies( jan6th.graph ) )
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print(adjustmentSets(jan6th.graph, "RightWingInfluencer", "EnterCapitol", effect="direct" ))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print(adjustmentSets(jan6th.graph, "RightWingInfluencer", "EnterCapitol", effect="direct" ))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+instrumentalVariables(jan6th.graph, "RightWingInfluencer", "EnterCapitol")
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1}
+library(dagitty)
+jan6th.graph <- dagitty( "dag {
+     DesiresFame -> RightWingInfluencer -> EnterCapitol
+     GangMember -> EnterCapitol
+     Age -> RightWingInfluencer
+     SES -> RightWingInfluencer
+     Ideology -> RightWingInfluencer
+     Ideology -> RallyAttendance -> EnterCapitol
+     Age -> GangMember
+     SES -> GangMember
+     Ideology -> GangMember
+     GangMember -> EnterCapitol
+     RallyAttendance -> EnterCapitol
+     Age -> EnterCapitol
+     SES -> EnterCapitol
+     Ideology -> EnterCapitol
+}")
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1}
+plot(graphLayout(jan6th.graph))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print( impliedConditionalIndependencies( jan6th.graph ) )
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print(adjustmentSets(jan6th.graph, "RightWingInfluencer", "EnterCapitol", effect="direct" ))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+print(adjustmentSets(jan6th.graph, "RightWingInfluencer", "EnterCapitol", effect="direct" ))
+```
+
+---
+```{r, echo = TRUE, out.width="80%", fig.retina = 1}
+instrumentalVariables(jan6th.graph, "RightWingInfluencer", "EnterCapitol")
+```

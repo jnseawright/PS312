@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>15: Interactions and Mediation</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="J. Seawright" />
+    <meta name="date" content="2024-05-16" />
+    <script src="15mediation_files/header-attrs-2.25/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# 15: Interactions and Mediation
+]
+.subtitle[
+## Statistical Research Methods
+]
+.author[
+### <large>J. Seawright</large>
+]
+.institute[
+### <small>Northwestern Political Science</small>
+]
+.date[
+### May 16, 2024
+]
+
+---
+
+class: center, middle
+
+&lt;style type="text/css"&gt;
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+&lt;/style&gt;
+
+
+
+
+---
+### Interactions and Mediation
+
+-   Interactions
+
+-   Mediation
+
+-   First, moderation/background factors
+
+---
+![image](images/brambor1.JPG)
+
+---
+What if the effect of the internet on democracy depends on a country's colonial
+history?
+
+---
+![image](images/brambor2.JPG)
+
+---
+![image](images/brambor3.JPG)
+
+---
+![image](images/brambor4.JPG)
+
+---
+
+```r
+library(devtools)
+```
+
+```
+## Loading required package: usethis
+```
+
+```r
+library(rqog)
+qualityofgovernment &lt;- read_qog(which_data="basic", data_type = "time-series")
+```
+
+```
+## Local file not found. 
+## Downloading QoG qog_bas_ts_jan23.csv data 
+## from http://www.qogdata.pol.gu.se/data/qog_bas_ts_jan23.csv
+## in file: /tmp/RtmpjvCLZg/rqog/qog_bas_ts_jan23.csv
+```
+
+```
+## Reading cache file /tmp/RtmpjvCLZg/rqog/qog_bas_ts_jan23.csv
+```
+
+```r
+qualityofgovernment$loggdp &lt;- log(qualityofgovernment$wdi_gdpcappppcon2017)
+```
+
+---
+
+```r
+internet.startinglm &lt;- lm(p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial), data=qualityofgovernment)
+```
+
+---
+
+```r
+summary(internet.startinglm)
+```
+
+```
+## 
+## Call:
+## lm(formula = p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial), 
+##     data = qualityofgovernment)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -18.260  -3.300   1.625   3.953   9.643 
+## 
+## Coefficients:
+##                        Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)            1.423076   0.971522   1.465 0.143053    
+## wdi_internet           0.031930   0.004102   7.784 8.80e-15 ***
+## loggdp                 0.356897   0.105364   3.387 0.000712 ***
+## factor(ht_colonial)1  -1.040350   0.757295  -1.374 0.169585    
+## factor(ht_colonial)2   1.676544   0.296945   5.646 1.75e-08 ***
+## factor(ht_colonial)3  -7.792748   1.242251  -6.273 3.90e-10 ***
+## factor(ht_colonial)4   3.116879   1.061972   2.935 0.003354 ** 
+## factor(ht_colonial)5  -3.736430   0.237962 -15.702  &lt; 2e-16 ***
+## factor(ht_colonial)6  -4.678502   0.301921 -15.496  &lt; 2e-16 ***
+## factor(ht_colonial)7  -0.661901   0.513538  -1.289 0.197503    
+## factor(ht_colonial)8  -4.568642   0.675754  -6.761 1.56e-11 ***
+## factor(ht_colonial)10 -0.169373   1.085427  -0.156 0.876007    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.638 on 4217 degrees of freedom
+##   (11137 observations deleted due to missingness)
+## Multiple R-squared:  0.2197,	Adjusted R-squared:  0.2177 
+## F-statistic: 107.9 on 11 and 4217 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+![image](images/colonialvar.JPG)
+
+---
+
+```r
+internet.colonialint &lt;- lm(p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial) + wdi_internet:factor(ht_colonial), data=qualityofgovernment)
+```
+
+---
+
+```r
+summary(internet.colonialint)
+```
+
+```
+## 
+## Call:
+## lm(formula = p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial) + 
+##     wdi_internet:factor(ht_colonial), data = qualityofgovernment)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -19.430  -3.225   1.269   3.940  10.839 
+## 
+## Coefficients:
+##                                     Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                        -1.111431   0.991865  -1.121 0.262545    
+## wdi_internet                        0.048457   0.004638  10.448  &lt; 2e-16 ***
+## loggdp                              0.557034   0.105930   5.258 1.52e-07 ***
+## factor(ht_colonial)1               -1.139105   0.951655  -1.197 0.231385    
+## factor(ht_colonial)2                2.238329   0.383756   5.833 5.86e-09 ***
+## factor(ht_colonial)3               -6.736083   1.762834  -3.821 0.000135 ***
+## factor(ht_colonial)4                4.440477   1.354387   3.279 0.001052 ** 
+## factor(ht_colonial)5               -1.822561   0.297138  -6.134 9.37e-10 ***
+## factor(ht_colonial)6               -3.658838   0.345781 -10.581  &lt; 2e-16 ***
+## factor(ht_colonial)7               -0.437963   0.597176  -0.733 0.463361    
+## factor(ht_colonial)8               -2.939350   0.743305  -3.954 7.80e-05 ***
+## factor(ht_colonial)10               0.565258   1.328398   0.426 0.670481    
+## wdi_internet:factor(ht_colonial)1   0.048011   0.047689   1.007 0.314111    
+## wdi_internet:factor(ht_colonial)2  -0.009277   0.012558  -0.739 0.460095    
+## wdi_internet:factor(ht_colonial)3  -0.083535   0.206994  -0.404 0.686555    
+## wdi_internet:factor(ht_colonial)4  -0.056097   0.067086  -0.836 0.403097    
+## wdi_internet:factor(ht_colonial)5  -0.093574   0.008632 -10.840  &lt; 2e-16 ***
+## wdi_internet:factor(ht_colonial)6  -0.028295   0.015149  -1.868 0.061863 .  
+## wdi_internet:factor(ht_colonial)7   0.050204   0.027695   1.813 0.069948 .  
+## wdi_internet:factor(ht_colonial)8  -0.212837   0.124475  -1.710 0.087363 .  
+## wdi_internet:factor(ht_colonial)10  0.064391   0.351614   0.183 0.854705    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.558 on 4208 degrees of freedom
+##   (11137 observations deleted due to missingness)
+## Multiple R-squared:  0.2432,	Adjusted R-squared:  0.2396 
+## F-statistic: 67.61 on 20 and 4208 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+```r
+library(ggeffects)
+```
+
+```
+## 
+## Attaching package: 'ggeffects'
+```
+
+```
+## The following object is masked from 'package:jtools':
+## 
+##     johnson_neyman
+```
+
+```r
+colonial.interaction.interpret &lt;- ggpredict(internet.colonialint, terms = c("wdi_internet", "ht_colonial"))
+```
+
+---
+
+```r
+c25 &lt;- c(
+  "dodgerblue2", "#E31A1C", # red
+  "green4",
+  "#6A3D9A", # purple
+  "#FF7F00", # orange
+  "black", "gold1",
+  "skyblue2", "#FB9A99", # lt pink
+  "palegreen2",
+  "#CAB2D6", # lt purple
+  "#FDBF6F", # lt orange
+  "gray70", "khaki2",
+  "maroon", "orchid1", "deeppink1", "blue1", "steelblue4",
+  "darkturquoise", "green1", "yellow4", "yellow3",
+  "darkorange4", "brown"
+)
+```
+
+---
+
+```r
+plot(colonial.interaction.interpret, facet=TRUE, colors=c25)
+```
+
+&lt;img src="15mediation_files/figure-html/unnamed-chunk-10-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+```r
+table(qualityofgovernment$ht_colonial,(qualityofgovernment$wdi_internet&gt;30))
+```
+
+```
+##     
+##      FALSE TRUE
+##   0   1039 1034
+##   1     46   17
+##   2    409  180
+##   3     49    0
+##   4     76   13
+##   5   1330  400
+##   6    728   94
+##   7    153   29
+##   8    109    0
+##   9     28    0
+##   10    35    2
+```
+
+---
+
+```r
+qogtrim &lt;- qualityofgovernment %&gt;% filter(ht_colonial %in% c(0:2,4:7))
+```
+
+---
+
+```r
+internet.colonialint2 &lt;- lm(p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial) + wdi_internet:factor(ht_colonial), data=qogtrim)
+```
+
+---
+
+```r
+summary(internet.colonialint2)
+```
+
+```
+## 
+## Call:
+## lm(formula = p_polity2 ~ wdi_internet + loggdp + factor(ht_colonial) + 
+##     wdi_internet:factor(ht_colonial), data = qogtrim)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -19.418  -3.301   1.335   3.950  10.874 
+## 
+## Coefficients:
+##                                    Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                       -1.729318   1.005698  -1.720 0.085596 .  
+## wdi_internet                       0.047216   0.004676  10.098  &lt; 2e-16 ***
+## loggdp                             0.624415   0.107440   5.812 6.65e-09 ***
+## factor(ht_colonial)1              -1.129278   0.958144  -1.179 0.238622    
+## factor(ht_colonial)2               2.252610   0.386381   5.830 5.97e-09 ***
+## factor(ht_colonial)4               4.493349   1.363657   3.295 0.000992 ***
+## factor(ht_colonial)5              -1.768529   0.299344  -5.908 3.75e-09 ***
+## factor(ht_colonial)6              -3.567418   0.348584 -10.234  &lt; 2e-16 ***
+## factor(ht_colonial)7              -0.345089   0.601513  -0.574 0.566201    
+## wdi_internet:factor(ht_colonial)1  0.048041   0.048014   1.001 0.317095    
+## wdi_internet:factor(ht_colonial)2 -0.009022   0.012644  -0.714 0.475533    
+## wdi_internet:factor(ht_colonial)4 -0.055779   0.067544  -0.826 0.408953    
+## wdi_internet:factor(ht_colonial)5 -0.094525   0.008693 -10.873  &lt; 2e-16 ***
+## wdi_internet:factor(ht_colonial)6 -0.028897   0.015253  -1.895 0.058224 .  
+## wdi_internet:factor(ht_colonial)7  0.049323   0.027885   1.769 0.076997 .  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.596 on 4079 degrees of freedom
+##   (7540 observations deleted due to missingness)
+## Multiple R-squared:  0.2357,	Adjusted R-squared:  0.2331 
+## F-statistic: 89.85 on 14 and 4079 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+```r
+colonial.interaction.interpret2 &lt;- ggpredict(internet.colonialint2, terms = c("wdi_internet", "ht_colonial"))
+```
+
+---
+
+```r
+plot(colonial.interaction.interpret2, facet=TRUE, colors=c25)
+```
+
+&lt;img src="15mediation_files/figure-html/unnamed-chunk-16-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+What if the effect of the internet on democracy instead depends on a continuous variable, like education spending?
+
+---
+
+```r
+internet.edustartlm &lt;- lm(p_polity2 ~ wdi_internet + loggdp + wdi_expedu, data=qualityofgovernment)
+```
+
+---
+
+```r
+summary(internet.edustartlm)
+```
+
+```
+## 
+## Call:
+## lm(formula = p_polity2 ~ wdi_internet + loggdp + wdi_expedu, 
+##     data = qualityofgovernment)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -25.101  -2.210   2.395   3.833   8.162 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -8.611178   1.033464  -8.332  &lt; 2e-16 ***
+## wdi_internet  0.012663   0.004846   2.613  0.00902 ** 
+## loggdp        1.203917   0.121673   9.895  &lt; 2e-16 ***
+## wdi_expedu    0.410818   0.058674   7.002 3.15e-12 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.671 on 2790 degrees of freedom
+##   (12572 observations deleted due to missingness)
+## Multiple R-squared:  0.1177,	Adjusted R-squared:  0.1168 
+## F-statistic: 124.1 on 3 and 2790 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+```r
+internet.eduint &lt;- lm(p_polity2 ~ wdi_internet + loggdp + wdi_expedu + wdi_internet:wdi_expedu, data=qualityofgovernment)
+```
+
+---
+
+```r
+summary(internet.eduint)
+```
+
+```
+## 
+## Call:
+## lm(formula = p_polity2 ~ wdi_internet + loggdp + wdi_expedu + 
+##     wdi_internet:wdi_expedu, data = qualityofgovernment)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -23.144  -2.661   2.361   4.043   7.411 
+## 
+## Coefficients:
+##                          Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)             -7.955253   1.023728  -7.771 1.09e-14 ***
+## wdi_internet            -0.075909   0.011558  -6.568 6.07e-11 ***
+## loggdp                   1.280499   0.120521  10.625  &lt; 2e-16 ***
+## wdi_expedu               0.108658   0.068166   1.594    0.111    
+## wdi_internet:wdi_expedu  0.018060   0.002145   8.419  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 5.602 on 2789 degrees of freedom
+##   (12572 observations deleted due to missingness)
+## Multiple R-squared:  0.1396,	Adjusted R-squared:  0.1383 
+## F-statistic: 113.1 on 4 and 2789 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+```r
+meplot &lt;- function(model,var1,var2,int,vcov,ci=.95,
+                   xlab=var2,ylab=paste("Marginal Effect of",var1),
+                   main="Marginal Effect Plot",
+                   me_lty=1,me_lwd=1,me_col="black",
+                   ci_lty=1,ci_lwd=.5,ci_col="black",
+                   yint_lty=2,yint_lwd=1,yint_col="black"){
+  require(ggplot2)
+  alpha &lt;- 1-ci
+  z &lt;- qnorm(1-alpha/2)
+  beta.hat &lt;- coef(model)
+  cov &lt;- vcov
+  z0 &lt;- seq(min(model.frame(model)[,var2],na.rm=T),max(model.frame(model)[,var2],na.rm=T),length.out=1000)
+  dy.dx &lt;- beta.hat[var1] + beta.hat[int]*z0
+  se.dy.dx &lt;- sqrt(cov[var1,var1] + z0^2*cov[nrow(cov),ncol(cov)] + 2*z0*cov[var1,ncol(cov)])
+  upr &lt;- dy.dx + z*se.dy.dx
+  lwr &lt;- dy.dx - z*se.dy.dx
+  ggplot(data=NULL,aes(x=z0, y=dy.dx)) +
+    labs(x=xlab,y=ylab,title=main) +
+    geom_line(aes(z0, dy.dx),size = me_lwd, 
+              linetype = me_lty, 
+              color = me_col) +
+    geom_line(aes(z0, lwr), size = ci_lwd, 
+              linetype = ci_lty, 
+              color = ci_col) +
+    geom_line(aes(z0, upr), size = ci_lwd, 
+              linetype = ci_lty, 
+              color = ci_col) +
+    geom_hline(yintercept=0,linetype=yint_lty,
+               size=yint_lwd,
+               color=yint_col)
+}
+```
+
+---
+
+```r
+meplot(model=internet.eduint, var1="wdi_internet", var2="wdi_expedu",
+       int="wdi_internet:wdi_expedu", vcov=vcov(internet.eduint))
+```
+
+&lt;img src="15mediation_files/figure-html/unnamed-chunk-22-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+### Mediation
+
+-   Testing ideas about the causal path, i.e., variables that show *how*
+    the treatment affects the outcome.
+
+---
+![image](images/chinainternetmediation1.png)
+
+---
+![image](images/chinainternetmediation2.png)
+
+---
+![image](images/chinainternetmediation3.png)
+
+---
+![image](images/chinainternetmediation4.png)
+
+---
+
+```r
+library(dagitty)
+simpleinternet &lt;- dagitty( "dag {
+     Internet -&gt; Participation -&gt; Democracy
+}")
+```
+
+---
+
+```r
+plot(graphLayout(simpleinternet))
+```
+
+&lt;img src="15mediation_files/figure-html/unnamed-chunk-24-1.png" width="70%" /&gt;
+
+---
+
+```r
+qogmediation &lt;- na.omit(with(qualityofgovernment, data_frame(ideavt_legvt=ideavt_legvt, 
+                                                     wdi_internet=(wdi_internet/100),
+                                                     loggdp=loggdp, wdi_expedu=wdi_expedu,
+                                                     p_polity2=p_polity2)))
+internet.participlm &lt;- lm(ideavt_legvt ~ wdi_internet + loggdp + wdi_expedu, data=qogmediation)
+internetparticip.demlm &lt;- lm(p_polity2 ~ ideavt_legvt + wdi_internet + loggdp + wdi_expedu, data=qogmediation)
+```
+
+---
+
+```r
+library("mediation")
+```
+
+```
+## Loading required package: MASS
+```
+
+```
+## 
+## Attaching package: 'MASS'
+```
+
+```
+## The following object is masked from 'package:dplyr':
+## 
+##     select
+```
+
+```
+## Loading required package: Matrix
+```
+
+```
+## Loading required package: mvtnorm
+```
+
+```
+## 
+## Attaching package: 'mvtnorm'
+```
+
+```
+## The following object is masked from 'package:jtools':
+## 
+##     standardize
+```
+
+```
+## Loading required package: sandwich
+```
+
+```
+## mediation: Causal Mediation Analysis
+## Version: 4.5.0
+```
+
+```r
+internet.mediation &lt;- mediate(internet.participlm, internetparticip.demlm, treat = "wdi_internet", mediator = "ideavt_legvt", robustSE = TRUE, sims = 100)
+```
+
+---
+
+```r
+summary(internet.mediation)
+```
+
+```
+## 
+## Causal Mediation Analysis 
+## 
+## Quasi-Bayesian Confidence Intervals
+## 
+##                Estimate 95% CI Lower 95% CI Upper p-value  
+## ACME             0.2366       0.0218         0.53    0.02 *
+## ADE             -0.8260      -2.5316         0.86    0.42  
+## Total Effect    -0.5895      -2.3165         1.16    0.60  
+## Prop. Mediated  -0.1873      -4.3114         3.63    0.58  
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Sample Size Used: 629 
+## 
+## 
+## Simulations: 100
+```
+
+---
+
+```r
+plot(internet.mediation)
+```
+
+&lt;img src="15mediation_files/figure-html/unnamed-chunk-28-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

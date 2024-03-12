@@ -1,0 +1,53 @@
+---
+title: "Political Science 312 Homework 1"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 5, 2024
+
+# Problem 1: Choosing a Topic
+
+What is a research topic that interests you, personally, enough to serve as a focus for your project this quarter? Identify a general topic area, and write a paragraph or two explaining why you are interested in it and how you see it as connected to political science.
+
+# Problem 2: From Topic to Question
+
+Now, I'd like you to brainstorm three different *causal* questions that:
+
+- are part of your topic of interest, 
+
+- meet the criteria for a viable question that we discussed in class, and 
+
+- differ from each other as much as possible. 
+
+After writing down your three questions, explain which one you think is best and why.
+
+# Problem 3: Normative to Statistical
+
+Below are three political topics that might come up in everyday conversation. How could these be turned into quantitative social science research questions? Provide a suggestion for each, and explain briefly what makes it a workable research question.
+
+1. Why can't people show enough self-control to stop political corruption?
+
+2. Whose fault is suburban sprawl?
+
+3. How can we stop global warming?
+

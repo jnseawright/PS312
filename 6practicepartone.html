@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>6 and 7: Quantitative Social Science in Practice</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="J. Seawright" />
+    <script src="6practicepartone_files/header-attrs-2.25/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# 6 and 7: Quantitative Social Science in Practice
+]
+.subtitle[
+## Statistical Research Methods
+]
+.author[
+### <large>J. Seawright</large>
+]
+.institute[
+### <small>Northwestern Political Science</small>
+]
+.date[
+### April 16-18, 2024
+]
+
+---
+
+class: center, middle
+
+&lt;style type="text/css"&gt;
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+&lt;/style&gt;
+
+
+
+
+---
+
+A quantitative study in the social sciences is defined by its *style of data* combined with its *strategy for causal inference.*
+
+---
+### Styles of Data
+
+-   Survey
+
+-   Text
+
+-   Secondary statistics
+
+-   Sometimes measured behavior
+
+-   A few other options
+
+---
+### Strategies for Causal Inference
+
+-   Experiment
+
+-   Natural experiment
+
+-   Regression-discontinuity design
+
+-   Difference-in-differences design
+
+-   Control variables
+
+-   A few other options
+
+---
+### Survey Data
+
+Based on hundreds or (ideally) thousands of structured conversations with randomly (or as-if randomly) selected members of the population of interest.
+
+---
+### Survey Data
+
+While there is a voluminous literature about how to ask survey questions optimally, the available empirical evidence suggests that precise wording and ordering of survey questions usually matters less than getting the sample right.
+
+---
+&lt;img src="images/Walter1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Walter2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/issp1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/issp2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/issp3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/issp4.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+### Text Data
+
+Based on capturing large sets of comparable texts on a topic of interest, either from different actors or from the same actors over time, and then coding them to see how they vary, and in which ways they are similar.
+
+---
+### Text Data
+
+The coding can be done by hand, or by computer.
+
+---
+&lt;img src="images/Walter3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Lacombe1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Lacombe2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Lacombe3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Lacombe4.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Lacombe5.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+### Secondary statistics
+
+Secondary statistics are data published for some other reason, or records that exist independently that we are free to analyze.
+
+---
+### Secondary statistics
+
+Examples include census records, election results, stock market performance, sports scores, weather reports, crime reports, etc.
+
+---
+&lt;img src="images/Moreno-Medina1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Moreno-Medina2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Moreno-Medina3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+### Measured Behavior
+
+Sometimes we can create a situation where we can directly observe and code how people act.
+
+---
+&lt;img src="images/Campos-Vazquez1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Campos-Vazquez2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Campos-Vazquez3.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Campos-Vazquez4.png" width="80%" style="display: block; margin: auto;" /&gt;
+
+---
+### Experiments
+
+---
+
+```r
+library(dagitty)
+experiment.graph &lt;- dagitty( "dag {
+     W1 -&gt; Z1 -&gt; X -&gt; Y
+     Z1 &lt;- RandomIntervention -&gt; Z2
+     W2 -&gt; Z2 -&gt; Y
+     X &lt;-&gt; W1 &lt;-&gt; W2 &lt;-&gt; Y
+ }")
+```
+
+---
+
+```r
+plot(graphLayout(experiment.graph))
+```
+
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-23-1.png" width="80%" /&gt;
+
+---
+&lt;img src="images/Cheema1.png" width="100%" /&gt;
+
+---
+&lt;img src="images/Cheema2.png" width="100%" /&gt;
+
+---
+&lt;img src="images/Cheema3.png" width="100%" /&gt;
+
+---
+&lt;img src="images/Cheema4.png" width="100%" /&gt;
+
+---
+### Natural Experiments
+
+---
+
+```r
+library(dagitty)
+naturalexperiment.graph &lt;- dagitty( "dag {
+     W1 -&gt; Z1 -&gt; X -&gt; Y
+     Z1 &lt;- RandomEvent -&gt; Z2
+     W2 -&gt; Z2 -&gt; Y
+     X &lt;-&gt; W1 &lt;-&gt; W2 &lt;-&gt; Y
+ }")
+```
+
+---
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-29-1.png" width="80%" /&gt;
+
+---
+### Vietnam War Draft Lottery
+
+---
+&lt;img src="images/angrist.JPG" width="85%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/draftrandom.JPG" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+```r
+draft1970 &lt;- read_csv("draft1970.csv")
+```
+
+```
+## Rows: 366 Columns: 3
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (3): day, rank, month
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+---
+
+```r
+boxplot(rank~month, data=draft1970)
+```
+
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-33-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+```r
+draftlm &lt;- lm(rank ~ day, data=draft1970)
+```
+---
+
+```r
+summ(draftlm)
+```
+
+&lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Observations &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 366 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Dependent variable &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; rank &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Type &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; OLS linear regression &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt; &lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; F(1,364) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.54 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; R² &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Adj. R² &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt; &lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Est. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; S.E. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; t val. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 224.91 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10.81 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20.80 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; day &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -4.42 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Standard errors: OLS&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+---
+
+```r
+draft1971 &lt;- read_csv("draft1971.csv")
+```
+
+```
+## Rows: 365 Columns: 3
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl (3): day, rank, month
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+---
+
+```r
+boxplot(rank~month, data=draft1971)
+```
+
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-37-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+```r
+draft71lm &lt;- lm(rank ~ day, data=draft1971)
+```
+---
+
+```r
+summ(draft71lm)
+```
+
+&lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Observations &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 365 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Dependent variable &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; rank &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Type &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; OLS linear regression &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt; &lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; F(1,363) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.07 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; R² &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; Adj. R² &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt; &lt;table class="table table-striped table-hover table-condensed table-responsive" style="width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; Est. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; S.E. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; t val. &lt;/th&gt;
+   &lt;th style="text-align:right;"&gt; p &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 180.39 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11.08 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;"&gt; day &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.79 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Standard errors: OLS&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+
+---
+### Regression Discontinuity Design
+
+---
+
+```r
+library(dagitty)
+rdd.graph &lt;- dagitty( "dag {
+     Z -&gt; AssignmentRule -&gt; X -&gt; Y
+ }")
+```
+
+---
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-41-1.png" width="80%" /&gt;
+
+---
+&lt;img src="images/Broockman.JPG" width="65%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/BroockmanRDDVisual.JPG" width="65%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/BroockmanSuccess.JPG" width="65%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/BroockmanFailure.JPG" width="65%" style="display: block; margin: auto;" /&gt;
+
+---
+### Difference-in-Differences
+
+---
+
+```r
+library(dagitty)
+diffindiff.graph &lt;- dagitty( "dag {
+     W1 -&gt; Z1 -&gt; ChangeinX -&gt; ChangeinY
+     Z1 &lt;- Z3 -&gt; Z2
+     W2 -&gt; Z2 -&gt; Y
+     X &lt;-&gt; W1 &lt;-&gt; W2 &lt;-&gt; Y
+     X -&gt; Y
+ }")
+```
+
+---
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-47-1.png" width="80%" /&gt;
+
+---
+&lt;img src="images/miamiboatlift.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/mariel1.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/mariel2.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/marielcomparison.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/marielcomparison2.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/marielconclusions.JPG" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+### Control Variables
+
+---
+
+```r
+library(dagitty)
+controls.graph &lt;- dagitty( "dag {
+     W1 -&gt; Z1 -&gt; X -&gt; Y
+     Z1 &lt;- Z3 -&gt; Z2
+     W2 -&gt; Z2 -&gt; Y
+     X &lt;-&gt; W1 &lt;-&gt; W2 &lt;-&gt; Y
+ }")
+```
+
+---
+&lt;img src="6practicepartone_files/figure-html/unnamed-chunk-55-1.png" width="80%" /&gt;
+
+---
+&lt;img src="images/Boehmke1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Boehmke2.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+### Open Science Practices
+
+---
+&lt;img src="images/Christensen1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+### Posting Data and Code
+
+-   Facilitates replication
+
+-   Reduces opportunities for fraud
+
+-   Increases opportunities for secondary analysis
+
+-   Enhances the growth of knowledge
+
+---
+### Posting Study Instruments
+
+-   Has most of the same advantages, but can be less immediately rewarding.
+
+---
+### Preregistration
+
+-   Publishing hypotheses and intended statistical analysis before the data are collected (or sometimes before they are opened/analyzed)
+
+-   Intended to reduce fraud and certain kinds of statistical manipulation
+
+-   Increases transparency
+
+---
+&lt;img src="images/Schafer1.png" width="90%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/Schafer2.png" width="90%" style="display: block; margin: auto;" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

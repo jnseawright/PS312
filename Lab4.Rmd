@@ -1,0 +1,56 @@
+---
+title: "Political Science 312 Homework 4"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 26, 2024
+
+### Summarize Your IV and DV
+
+At this point, you should have a data source that measures your main cause (IV) and your outcome (DV). Summarize the distributions of both variables, in ways that make sense given whether they are categorical or continuous. Are there any interesting details?
+
+### Jointly Plot Your IV and DV
+
+Plot your two main variables together in a way that shows as much information about their relationship as possible. Describe what you can see and what that means for your thinking about your research question.
+
+### Difference in Means
+
+If your main independent variable is categorical or a dummy variable, set up and carry out a relevant difference in means test for your main hypothesis. 
+
+If you have a categorical treatment variable with more than two categories, choose two to compare, and explain why these two are especially interesting. 
+
+If your dependent variable is categorical but has only two categories, the test works just fine, although the interpretation is a bit less natural. The best way to proceed here is to set one category to a numerical score of zero and the other to a score of one. Then the mean of will turn out to be equal to the percentage of cases in the category represented by the score of one.
+
+If you have a dependent variable that is categorical but with multiple categories, it probably makes sense to pick two that you can compare.
+
+Finally, for the dependent variable but not the treatment variable, there is a kind of middle situation to consider where the variable is categorical but ordered. If there are multiple categories (say, five or more) and you think they are probably pretty close to being equally spread out, then it is probably pretty reasonable to treat the variable as if it were continuous.
+
+Choose one of these strategies. Calculate the difference in means. What do the results mean?
+
+### Correlation
+
+If your independent variable and dependent variable are both continuous (or otherwise quantitative), calculate the correlation between them. What does it mean? Is it significantly different from zero?
+
+### Initial Findings
+
+Based on the initial data exploration in this lab, what are your initial findings about your main research question?

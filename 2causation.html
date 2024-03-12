@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>2: What is Causation, Anyway?</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="J. Seawright" />
+    <meta name="date" content="2024-04-02" />
+    <script src="2causation_files/header-attrs-2.25/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# 2: What is Causation, Anyway?
+]
+.subtitle[
+## Statistical Research Methods
+]
+.author[
+### <large>J. Seawright</large>
+]
+.institute[
+### <small>Northwestern Political Science</small>
+]
+.date[
+### April 2, 2024
+]
+
+---
+
+class: center, middle
+
+&lt;style type="text/css"&gt;
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+&lt;/style&gt;
+
+
+
+
+---
+### Office Hours
+
+-   Jason Seawright: Tuesday, 3-5pm.
+
+---
+### Online Survey
+
+---
+### Potential Outcomes
+
+-   Let's build a model of one person participating in the experiment.
+
+---
+### Potential Outcomes
+
+-   Suppose we name that person `\(i\)`.
+
+-   The person we're interested in says not extreme when in the control
+    group, and extreme when in the treatment group.
+
+---
+### Potential Outcomes
+
+-   `\(y_{i,c} = 0\)`
+
+-   `\(y_{i,t} = 1\)`
+
+---
+### The Potential Outcomes Framework
+
+-   We are interested in the effects of a dichotomous treatment (i.e.,
+    independent variable): whether person got the treatment (t) or the
+    control (c).
+
+-   This variable can be written as `\(W_{i} = (t,c)\)`.
+
+---
+### The Potential Outcomes Framework
+
+-   For a given case, `\(i\)`, we either observe `\(W_{i} = t\)` or `\(W_{i} = c\)`.
+    If `\(W_{i} = t\)`, let us denote the value of the dependent variable as
+    `\(y_{i,t}\)`. If `\(W_{i} = c\)`, let us denote the value of the dependent
+    variable as `\(y_{i,c}\)`
+
+---
+### The Potential Outcomes Framework
+
+-   The causal effect of `\(W\)` on `\(y\)` is:
+
+    -   `\(y_{i,t} - y_{i,c}\)`
+
+---
+### The Average Treatment Effect
+
+-   Sometimes, we are interested in developing an estimate of the effect
+    of `\(W\)` on `\(y\)` in some population `\(\Pi\)`, from which we have a random
+    sample (or even the whole population) split randomly into treatment
+    and control cases.
+
+-   Here, interest focuses on the "average treatment effect":
+
+    -   `\(E(y_{i,t}) - E(y_{i,c})\)`
+
+---
+### Experiments and Causal Inference
+
+-   When our treatment is randomly assigned, the set of cases where
+    `\(W_{i} = t\)` produces a random sample from the population of `\(y_{t}\)`.
+    Likewise, the set of cases where `\(W_{i} = c\)` produces a random
+    sample from the population of `\(y_{c}\)`. Thus:
+
+    -   `\(E_{t}(y_{i,t}) = E(y_{i,t})\)`
+
+    -   `\(E_{c}(y_{i,c}) = E(y_{i,c})\)`
+
+    -   `\(E(y_{i,t}) - E(y_{i,c}) = E_{t}(y_{i,t}) - E_{c}(y_{i,c})\)`
+
+---
+### The Four Questions
+
+1.  Is there a relationship between `\(X\)` and `\(Y\)`?
+
+2.  Could `\(Y\)` cause `\(X\)`?
+
+3.  Is there a pathway linking `\(X\)` and `\(Y\)`?
+
+4.  Are there *confounding variables*?
+
+---
+### Controlling for Confounders
+
+**Controlling for a confounder** is choosing a set of cases that all
+have the same score on the confounding variable and looking at the
+relationship between the IV and the DV in only those cases.
+
+---
+### Problems with Controlling for Confounders
+
+-   You can only control for variables that you actually think of
+    controlling for.
+
+-   If you control for too many variables, you may not have very many
+    cases left in each category.
+
+-   Post-treatment controls create bias.
+
+
+---
+![image](images/goodcontrol.jpg)
+
+---
+![image](images/irrelevantcontrol1.jpg)
+
+---
+![image](images/harmfulcontrol1.jpg)
+
+---
+![image](images/harmfulcontrol2.jpg)
+
+---
+![image](images/harmfulcontrol3.jpg)
+
+---
+### Is Salt Bad for You?
+
+---
+![Salt and Blood Pressure, Intersalt
+Data](images/FreedmanPetitti.png)
+
+---
+
+```r
+library(devtools)
+```
+
+```
+## Loading required package: usethis
+```
+
+```r
+#install_github("ropengov/rqog")
+library(rqog)
+```
+
+---
+
+```r
+qualityofgovernment &lt;- read_qog(which_data="standard", data_type = "time-series")
+```
+
+```
+## Local file not found. 
+## Downloading QoG qog_std_ts_jan23.csv data 
+## from http://www.qogdata.pol.gu.se/data/qog_std_ts_jan23.csv
+## in file: /tmp/RtmpnDoAMc/rqog/qog_std_ts_jan23.csv
+```
+
+```
+## Reading cache file /tmp/RtmpnDoAMc/rqog/qog_std_ts_jan23.csv
+```
+
+```r
+qogdems2000 &lt;- qualityofgovernment %&gt;% 
+  filter(year==2000 &amp; vdem_libdem &gt; 0.7)
+
+qog2000demsin2020 &lt;- qualityofgovernment %&gt;% 
+  filter(year==2020 &amp; cname %in% qogdems2000$cname)
+```
+
+---
+
+```r
+pres_dem_violin &lt;- qog2000demsin2020 %&gt;% ggplot(aes(x=as.factor(br_pres), y=vdem_libdem)) + 
+  geom_violin()
+
+pres_dem_violin
+```
+
+&lt;img src="2causation_files/figure-html/unnamed-chunk-4-1.png" width="60%" /&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

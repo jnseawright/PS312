@@ -1,0 +1,475 @@
+---
+title: "4: R"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "April 9, 2024"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+options(warn=-1)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.3rem"
+)
+```
+
+---
+### The Goals of R
+
+-   R is a data science tool
+
+-   Data science is about turning large amounts of structured but hard
+    to understand data into smaller, easier to understand pieces of
+    information
+
+-   People these days may also use Python or STATA for the same goals
+
+---
+### The Grammar of R
+
+-   Verb(Nouns, Adjectives)
+
+-   The verb is a function, such as sum or median
+
+-   The nouns are usually variables
+
+-   The adjectives might be variables or instructions given as commands
+    in quotation marks
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+first_numbers <- c(1,2,3)
+second_numbers <- c(0,2,4)
+
+mean(first_numbers)
+sum(first_numbers,second_numbers)
+```
+
+---
+### The Grammar of R
+
+-    <- 
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+result_to_store <- sum(first_numbers,second_numbers)
+
+result_to_store
+```
+
+---
+### The Grammar of R
+
+-   Forward slash, not backslash
+
+<!-- -->
+
+    setwd(``C:/PS312'')
+
+---
+### Missing Data
+
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+example_with_missing <- c(1,2,3,4,5,NA)
+
+mean(example_with_missing)
+mean(example_with_missing, na.rm=TRUE)
+```
+---
+### Vectors, Matrices, and Data Frames
+
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+example_vector <- c(1,2,3,4,5)
+
+example_vector
+
+example_mat <- matrix(data=rep(5,25), nrow=5, ncol=5)
+
+example_mat
+
+example_df <- data.frame(temperature=c(50,60,50,70,60), rainfall=c(0,0,5,0,10), thunderstorm=c(0,0,0,0,1))
+```
+
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+example_df
+```
+
+---
+### Does Proportional Representation Reduce Inequality?
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(knitr)
+include_graphics("images/Iversen1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/Iversen2.png")
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+country <- c("Australia","Austria","Belgium","Canada","Denmark","Finland","France","Germany","Ireland","Italy", "Japan", "Netherlands", "New Zealand", "Norway", "Sweden", "UK", "US")
+gini.red <- c(23.97, NA, 35.56, 21.26, 37.89, 35.17, 25.36, 18.7, NA, 12.13, NA, 30.59, NA, 27.52, 37.89, 22.67, 17.6)
+wage.ineq <- c(1.7, NA, 1.64, 1.82, 1.58, 1.68, 1.94, 1.7, NA, 1.63, NA, 1.64, NA, 1.5, 1.58, 1.78, 2.07)
+pr <- c(0,1,1,0,1,1,0,1,0,1,0,1,0,1,1,0,0)
+is2006apsr <- data.frame(country, gini.red, wage.ineq, pr)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+head(is2006apsr)
+```
+
+---
+### Summaries and Simple Graphs
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+#install.packages("stargazer")
+
+library(stargazer)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+stargazer(is2006apsr, type="text", title="Summary Statistics", median=TRUE, covariate.labels=c("GINI Reduction", "Wage Inequality","PR System"))
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(ggplot2)
+
+ineq_pr_violin <- is2006apsr %>% ggplot(
+                  aes(x=as.factor(pr), y=gini.red, fill=as.factor(pr))) + 
+                  geom_violin()
+```
+
+---
+```{r, echo = TRUE, out.width="60%", fig.retina = 1, fig.align='center'}
+ineq_pr_violin
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(hrbrthemes)
+
+gini.red_hist <- is2006apsr %>%
+  ggplot( aes(x=gini.red)) +
+    geom_histogram( binwidth=3, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+    ggtitle("Government Redistribution") +
+    theme_ipsum() +
+    theme(
+      plot.title = element_text(size=15)
+    )
+```
+
+---
+```{r, echo = TRUE, out.width="60%", fig.retina = 1, fig.align='center'}
+gini.red_hist
+```
+---
+```{r, echo = TRUE, out.width="60%", fig.retina = 1, fig.align='center'}
+barplot(table(is2006apsr$pr))
+```
+
+---
+### What else could we do to get familiar with these data?
+
+---
+### When Trouble Happens
+
+-   Check spelling
+
+-   Check for upper vs. lower case
+
+-   Check your parentheses
+
+-   Google your error message
+
+-   Check the book, <https://www.statmethods.net/>, stackoverflow, or
+    <https://www.reddit.com/r/Rlanguage/> for advice on the specific
+    thing you're working on
+
+---
+### When Trouble Happens
+
+-   Try three different things to fix your problem --- and if that
+    doesn't work, stop and get help from me and/or a TA.
+
+---
+### Loading Data
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/rloaddata1.png")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/rloaddata2.png")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/rloaddata3.png")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/rloaddata4.png")
+```
+
+---
+```{r, echo = FALSE, out.width="100%", fig.retina = 1, fig.align='center'}
+include_graphics("images/rloaddata5.png")
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(readr)
+peruemotions <- read_csv("peruemotions.csv")
+head(peruemotions)
+```
+
+---
+### Properties of Data Frames
+
+-   dim()
+
+-   names()
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+dim(peruemotions)
+names(peruemotions)
+```
+
+---
+### Types of Variables
+
+-   numeric
+
+-   text
+
+-   factor
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+class(peruemotions$age)
+
+peruemotions$age
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+class(peruemotions$treatment)
+
+peruemotions$treatment
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+peruemotions$treatment <- as.factor(peruemotions$treatment)
+class(peruemotions$treatment)
+peruemotions$treatment
+```
+
+---
+### Indexing
+
+-   For a variable:
+
+        sunlight$hours[534]
+
+-   For a data frame:
+
+        sunlight[12,534]
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+peruemotions$age[50]
+
+peruemotions[6,45]
+```
+
+---
+### Does Internet Use Affect Democracy?
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(devtools)
+#install_github("ropengov/rqog")
+library(rqog)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+qualityofgovernment <- read_qog(which_data="basic", data_type = "time-series")
+dim(qualityofgovernment)
+```
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+names(qualityofgovernment)[1:30]
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+summary(qualityofgovernment$wdi_internet)
+
+summary(qualityofgovernment$p_polity2)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+internet_democracy_plot <- qualityofgovernment %>% ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter()
+```
+
+---
+```{r, echo = FALSE, out.width="60%", fig.retina = 1, fig.align='center'}
+internet_democracy_plot
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+table(qualityofgovernment$year,qualityofgovernment$wdi_internet==0)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+internet_democracy_plot <- qualityofgovernment %>% filter(year>1991) %>%
+    ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter()
+```
+
+---
+```{r, echo = FALSE, out.width="60%", fig.retina = 1, fig.align='center'}
+  internet_democracy_plot
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+internet_democracy_plot_lm <- qualityofgovernment %>% filter(year>1991) %>%
+    ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+```{r, echo = FALSE, out.width="60%", fig.retina = 1, fig.align='center'}
+ internet_democracy_plot_lm 
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+table(qualityofgovernment$cname[is.na(qualityofgovernment$wdi_internet[qualityofgovernment$year>1991])])
+```
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+table(qualityofgovernment$cname[is.na(qualityofgovernment$p_polity2[qualityofgovernment$year>1991])])
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+summary(qualityofgovernment$wdi_gdpcappppcon2017)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+internet_wealth_plot <- qualityofgovernment %>% filter(year>1991) %>%
+    ggplot(aes(x=wdi_gdpcappppcon2017, y=wdi_internet)) + 
+    geom_point() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+```{r, echo = FALSE, out.width="60%", fig.retina = 1, fig.align='center'}
+
+  internet_wealth_plot
+
+```
+
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+dem_wealth_plot <- qualityofgovernment %>% filter(year>1991) %>%
+    ggplot(aes(x=wdi_gdpcappppcon2017, y=p_polity2)) + 
+    geom_jitter() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+```{r, echo = FALSE, out.width="60%", fig.retina = 1, fig.align='center'}
+
+  dem_wealth_plot
+
+```
+
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+library(jtools)
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+summ(lm(p_polity2 ~ wdi_internet + wdi_gdpcappppcon2017, data=qualityofgovernment))
+```
+
+---
+```{r, echo = TRUE, out.width="100%", fig.retina = 1, fig.align='center'}
+summ(lm(p_polity2 ~ wdi_internet + I(log(wdi_gdpcappppcon2017)), data=qualityofgovernment))
+```

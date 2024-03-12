@@ -1,0 +1,54 @@
+---
+title: "Political Science 312 Homework 2"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 12, 2024
+
+### Finding Data
+
+In your last lab, you should have identified a research question that was interesting to you, and you should have formulated it as a causal question about the relationship between an independent and a dependent variable. In this lab, you should begin by identifying data sources that include at least measures of your independent and dependent variables. Please find at least two data sources, each of which includes a measure of *both* variables that you care about. Provide a link to the data, as well as a brief description of each.
+
+Note that your data sources should include the raw data set --- a spreadsheet or table including full values for each case, not just summary statistics or statistical analyses. You need to be able to do your own statistical work from scratch!
+
+### Sampling and Selection Bias
+
+How are cases selected for each of the two data sources? Are there potential problems of selection bias for either of them? 
+
+### Other Variables
+
+Do the two data sources both include a wide range of other variables, beyond the independent and dependent variable? Is one broader and more varied than the other? (If so, that is an advantage!)
+
+### Sample Size
+
+Your study will work out best if you have a reasonably large sample size. We prefer thousands of data points, but hundreds will do in a pinch. Sometimes we can get by with just dozens, but we won't love it.
+
+What is the sample size for each of your two data sources?
+
+### Missing Values
+
+Everything we do will be degraded by missing values in our data. Check the rate of missingness on the independent and dependent variables for each of the two data sources. How high are they?
+
+### Evaluate the Data Sources
+
+Taking stock of everything we have considered so far, evaluate the two data sources and determine which is best across the various criteria explored in this assignment. 

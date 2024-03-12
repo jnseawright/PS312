@@ -1,0 +1,38 @@
+---
+title: "Political Science 312 Homework 6"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: May 10, 2024
+
+### Bivariate Regression
+
+Run a regression predicting your outcome using only your main cause. Show the results and discuss what they mean.
+
+### Possible Confounders
+
+Using your DAG from the last assignment as well as your inventory from other people's research in Lab 3, describe  possible confounders in this relationship, i.e., variables that cause both the DV and the IV. 
+
+### Pathway Variables
+
+Think of at least one variable that could be part of the causal pathway connecting your IV to your DV, and explain your reasoning. Could any of your possible confounders from the previous question also be pathway variables? Why or why not? Does this pose any possible problems to watch out for later on?
