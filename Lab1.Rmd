@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: April 5, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381394)
+
 # Problem 1: Choosing a Topic
 
 What is a research topic that interests you, personally, enough to serve as a focus for your project this quarter? Identify a general topic area, and write a paragraph or two explaining why you are interested in it and how you see it as connected to political science.

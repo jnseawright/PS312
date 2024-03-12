@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 3, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381447)
+
 ### Make a DAG
 
 Put together a graph, using daggity like the example below, to show the causal structure you think is going on behind your research question. Make sure to include your main explanatory variable, your outcome variable, any variables on the causal pathway between them, and any other variables that you think causally affect either or both of them.

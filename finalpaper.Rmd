@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: June 3, 2024
 
+[Submit your final paper here.](https://canvas.northwestern.edu/courses/209958/assignments/1381393)
+
 ### Outline of a Quantitative Essay
 
 -   Introduce the research question and briefly explain why it is

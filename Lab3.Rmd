@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: April 19, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381444)
+
 ### Existing Control Variables
 
 You probably aren't the first person to do quantitative social science on the question you're interested in! You may already know about some relevant research; but even if you don't, there probably is some. (Lots of people do this stuff.) And that's fine! Being the first person to ever ask a question is highly overrated. 

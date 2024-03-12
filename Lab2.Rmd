@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: April 12, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381421)
+
 ### Finding Data
 
 In your last lab, you should have identified a research question that was interesting to you, and you should have formulated it as a causal question about the relationship between an independent and a dependent variable. In this lab, you should begin by identifying data sources that include at least measures of your independent and dependent variables. Please find at least two data sources, each of which includes a measure of *both* variables that you care about. Provide a link to the data, as well as a brief description of each.

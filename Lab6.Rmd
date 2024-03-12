@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 10, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381465)
+
 ### Bivariate Regression
 
 Run a regression predicting your outcome using only your main cause. Show the results and discuss what they mean.

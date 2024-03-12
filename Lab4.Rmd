@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: April 26, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381445)
+
 ### Summarize Your IV and DV
 
 At this point, you should have a data source that measures your main cause (IV) and your outcome (DV). Summarize the distributions of both variables, in ways that make sense given whether they are categorical or continuous. Are there any interesting details?

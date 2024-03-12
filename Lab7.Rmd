@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 17, 2024
 
+[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381467)
+
 ### Main Causal Inference
 
 Put together an initial version of your main strategy for causal inference. If you are using control variables, run a multivariate regression using one control variable for each identified confounder (to the best of your ability). If you are using a different strategy, execute it. What causal effect estimate do you find? Is it similar to, or different from, the bivariate results from the last lab? Are the findings surprising? Why or why not?
