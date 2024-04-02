@@ -60,10 +60,12 @@ style_mono_accent(
 ---
 ### Office Hours
 
--   Jason Seawright: Tuesday, 3-5pm.
+-   Jason Seawright: Tuesdays and Thursdays, 4-5pm.
 
 ---
 ### Online Survey
+
+Please take a moment to complete [this survey](https://weinberg.co1.qualtrics.com/jfe/form/SV_0VRUVWtG8jMJTts). Results will only be used for this class and will be deleted this evening.
 
 ---
 ### Potential Outcomes
