@@ -31,7 +31,7 @@ library(dplyr)
 library(readr)
 library(nlme)
 library(jtools)
-library(hrbrthemes)
+library(ggthemes)
 library(mice)
 
 BibOptions(check.entries = FALSE,
@@ -84,7 +84,7 @@ standardized_ideas <- data.frame(week = 1:nrow(unusualideas), scale(unusualideas
 cricketcity.plot <- standardized_ideas %>% ggplot(aes(x=fifteenminutecity, y=cricketflour)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte()
 ```
 ---
 ```{r, echo = TRUE, out.width="60%", fig.retina = 1}
@@ -96,7 +96,7 @@ cricketcity.plot
 wefcity.plot <- standardized_ideas %>% ggplot(aes(x=fifteenminutecity, y=worldeconomicforum)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 ```{r, echo = TRUE, out.width="60%", fig.retina = 1}
@@ -108,7 +108,7 @@ wefcity.plot
 cricketwef.plot <- standardized_ideas %>% ggplot(aes(x=worldeconomicforum, y=cricketflour)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 ```{r, echo = TRUE, out.width="60%", fig.retina = 1}
@@ -120,7 +120,7 @@ cricketwef.plot
 schwabwef.plot <- standardized_ideas %>% ggplot(aes(x=worldeconomicforum, y=klausschwab)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 ```{r, echo = TRUE, out.width="60%", fig.retina = 1}

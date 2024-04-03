@@ -120,7 +120,7 @@ standardized_ideas &lt;- data.frame(week = 1:nrow(unusualideas), scale(unusualid
 cricketcity.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=fifteenminutecity, y=cricketflour)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte()
 ```
 ---
 
@@ -140,7 +140,7 @@ cricketcity.plot
 wefcity.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=fifteenminutecity, y=worldeconomicforum)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 
@@ -160,7 +160,7 @@ wefcity.plot
 cricketwef.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=worldeconomicforum, y=cricketflour)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 
@@ -180,7 +180,7 @@ cricketwef.plot
 schwabwef.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=worldeconomicforum, y=klausschwab)) +
   geom_jitter() +
   geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
-  theme_ipsum()
+  theme_tufte() 
 ```
 ---
 
