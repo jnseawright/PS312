@@ -129,8 +129,13 @@ summ(qft.lm)
 
 ---
 ```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+summary(qft.lm)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
 qft2.lm <- lm(qanonft~conspiratorial+pid, data = uscinski2)
-summ(qft2.lm)
+summary(qft2.lm)
 ```
 
 ---
@@ -168,6 +173,8 @@ In addition to assuming that we have the right control variables for causal infe
 - Do any of the data points have too much *influence* on the results?
 
 - Are the right-hand-side variables *sufficiently uncorrelated* with each other?
+
+---
 
 - Does the error term have about the *same variance* across all the cases?
 
