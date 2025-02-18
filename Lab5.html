@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-03-12" />
+<meta name="date" content="2025-02-18" />
 
 <title>Political Science 312 Homework 5</title>
 
@@ -220,106 +220,6 @@ ul.task-list{list-style: none;}
 
 
 
-<style type="text/css">
-code {
-white-space: pre;
-}
-.sourceCode {
-overflow: visible;
-}
-</style>
-<style type="text/css" data-origin="pandoc">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-{ counter-reset: source-line 0; }
-pre.numberSource code > span
-{ position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-{ content: counter(source-line);
-position: relative; left: -1em; text-align: right; vertical-align: baseline;
-border: none; display: inline-block;
--webkit-touch-callout: none; -webkit-user-select: none;
--khtml-user-select: none; -moz-user-select: none;
--ms-user-select: none; user-select: none;
-padding: 0 4px; width: 4em;
-color: #aaaaaa;
-}
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
-div.sourceCode
-{ background-color: #f8f8f8; }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ef2929; } 
-code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.at { color: #204a87; } 
-code span.bn { color: #0000cf; } 
-code span.cf { color: #204a87; font-weight: bold; } 
-code span.ch { color: #4e9a06; } 
-code span.cn { color: #8f5902; } 
-code span.co { color: #8f5902; font-style: italic; } 
-code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.dt { color: #204a87; } 
-code span.dv { color: #0000cf; } 
-code span.er { color: #a40000; font-weight: bold; } 
-code span.ex { } 
-code span.fl { color: #0000cf; } 
-code span.fu { color: #204a87; font-weight: bold; } 
-code span.im { } 
-code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
-code span.kw { color: #204a87; font-weight: bold; } 
-code span.op { color: #ce5c00; font-weight: bold; } 
-code span.ot { color: #8f5902; } 
-code span.pp { color: #8f5902; font-style: italic; } 
-code span.sc { color: #ce5c00; font-weight: bold; } 
-code span.ss { color: #4e9a06; } 
-code span.st { color: #4e9a06; } 
-code span.va { color: #000000; } 
-code span.vs { color: #4e9a06; } 
-code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
-</style>
-<script>
-// apply pandoc div.sourceCode style to pre.sourceCode instead
-(function() {
-  var sheets = document.styleSheets;
-  for (var i = 0; i < sheets.length; i++) {
-    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
-    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
-    var j = 0;
-    while (j < rules.length) {
-      var rule = rules[j];
-      // check if there is a div.sourceCode rule
-      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
-        j++;
-        continue;
-      }
-      var style = rule.style.cssText;
-      // check if color or background-color is set
-      if (rule.style.color === '' && rule.style.backgroundColor === '') {
-        j++;
-        continue;
-      }
-      // replace div.sourceCode by a pre.sourceCode rule
-      sheets[i].deleteRule(j);
-      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
-    }
-  }
-})();
-</script>
 
 
 
@@ -421,38 +321,40 @@ display: none;
 
 
 <h1 class="title toc-ignore">Political Science 312 Homework 5</h1>
-<h4 class="date">2024-03-12</h4>
+<h4 class="date">2025-02-18</h4>
 
 </div>
 
 
-<div id="due-date-may-3-2024" class="section level1">
-<h1>Due Date: May 3, 2024</h1>
-<p><a href="https://canvas.northwestern.edu/courses/209958/assignments/1381447">Submit
-your assignment here.</a></p>
-<div id="make-a-dag" class="section level3">
-<h3>Make a DAG</h3>
-<p>Put together a graph, using daggity like the example below, to show
-the causal structure you think is going on behind your research
-question. Make sure to include your main explanatory variable, your
-outcome variable, any variables on the causal pathway between them, and
-any other variables that you think causally affect either or both of
-them.</p>
-<p>Explain your reasoning behind the variables you include and the links
-you specify, but also the the variables and links you leave out.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dagitty)</span>
-<span id="cb1-2"><a href="#cb1-2"></a>dag_cand3 <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">&#39;dag {</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="st">                          Difficulty_Conceiving -&gt; PostnatalCare</span></span>
-<span id="cb1-4"><a href="#cb1-4"></a><span class="st">                          Genetics -&gt; Birth_Defects</span></span>
-<span id="cb1-5"><a href="#cb1-5"></a><span class="st">                          Genetics -&gt; Difficulty_Conceiving</span></span>
-<span id="cb1-6"><a href="#cb1-6"></a><span class="st">                          PostnatalCare -&gt; Birth_Defects</span></span>
-<span id="cb1-7"><a href="#cb1-7"></a><span class="st">                          PostnatalCare -&gt; Vitamins</span></span>
-<span id="cb1-8"><a href="#cb1-8"></a><span class="st">                          SES -&gt; PostnatalCare</span></span>
-<span id="cb1-9"><a href="#cb1-9"></a><span class="st">                          SES -&gt; Vitamins</span></span>
-<span id="cb1-10"><a href="#cb1-10"></a><span class="st">                          Vitamins -&gt; Birth_Defects</span></span>
-<span id="cb1-11"><a href="#cb1-11"></a><span class="st">                          }&#39;</span>)</span>
-<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">plot</span>(dag_cand3)</span></code></pre></div>
-<p><img src="data:image/png;base64,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" width="100%" style="display: block; margin: auto;" /></p>
+<div id="due-date-may-9-2025" class="section level1">
+<h1>Due Date: May 9, 2025</h1>
+<div id="main-causal-inference" class="section level3">
+<h3>Main Causal Inference</h3>
+<p>Put together an initial version of your main strategy for causal
+inference. If you are using control variables, run a multivariate
+regression using one control variable for each identified confounder (to
+the best of your ability). If you are using a different strategy,
+execute it. What causal effect estimate do you find? Is it similar to,
+or different from, the bivariate results? Are the findings surprising?
+Why or why not?</p>
+</div>
+<div id="how-big-is-your-causal-effect" class="section level3">
+<h3>How Big Is Your Causal Effect?</h3>
+<p>Using your causal effect estimate, figure out how big a difference
+your main independent variable can make. If your main variable is
+dichotomous, then the only possible change on the variable is 1, so
+figure out how big an effect a 1-unit change has on the outcome (taking
+into account any interaction terms). If your main independent variable
+is continuous, figure out how far apart the 25th and 75th percentiles
+are on that variable, and figure out how big an effect would be produced
+by a change of that size. Out of the overall range of your dependent
+variable, how much can you cover with this effect?</p>
+</div>
+<div id="test-your-assumptions" class="section level3">
+<h3>Test Your Assumptions</h3>
+<p>What can you do to test the assumptions behind your statistical
+model? Identify at least three assumptions, provide statistical tests,
+and explain the results.</p>
 </div>
 </div>
 

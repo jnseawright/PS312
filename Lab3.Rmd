@@ -23,24 +23,20 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 19, 2024
+# Due Date: April 25, 2025
 
-[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381444)
+### Summarize Your IV and DV
 
-### Existing Control Variables
+At this point, you should have a data source that measures your main cause (IV) and your outcome (DV). Summarize the distributions of both variables, in ways that make sense given whether they are categorical or continuous. Are there any interesting details?
 
-You probably aren't the first person to do quantitative social science on the question you're interested in! You may already know about some relevant research; but even if you don't, there probably is some. (Lots of people do this stuff.) And that's fine! Being the first person to ever ask a question is highly overrated. 
+### Jointly Plot Your IV and DV
 
-Let's start by mapping the common control variables in regressions where your outcome is the variable to be explained. Go to Google Scholar and type terms that say ''regression'' and versions of your outcome. Click on studies that come up, and scroll through until you find regression tables. If the tables do indeed have your outcome as the dependent variable, keep them until you have at least 5.
+Plot your two main variables together in a way that shows as much information about their relationship as possible. Describe what you can see and what that means for your thinking about your research question.
 
-Then, copy down all the right-hand-side variables used across all the regressions as the rows of a table, with the different regressions as the columns. Mark a cell as 1 if the variable is included in the regression and 0 if it is not. 
+### Bivariate Relationship
 
-How many variables show consensus and are included in every regression? How many show disagreement? Can you make sense of why?
+Carry out a statistical analysis of the bivariate relationship between your IV and your DV, using an appropriate significance test or regression. Explain the results and clarify their substantive meaning with respect to your research question.
 
-### Other Strategies for Causal Inference
+### Initial Findings
 
-Now let's determine how many other strategies for causal inference have been used with respect to your outcome. On Google Scholar, type terms like ''regression discontinuity design'' and your outcome, ''laboratory experiment'' and your outcome, etc. If you can locate five or more articles that use causal inferential strategies other than control variables, that's great --- but it may be that there just aren't very many, which can also be your answer. In either case, describe your findings.
-
-### What Have People Learned?
-
-Save all the articles you've downloaded for this homework in a safe folder somewhere; you will want these materials for your literature review toward the end of the quarter. For now, read through all the abstracts and summarize what has been learned across the existing literature in 2-3 paragraphs.
+Based on the initial data exploration in this lab, what are your initial findings about your main research question?

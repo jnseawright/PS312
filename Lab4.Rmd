@@ -23,36 +23,47 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 26, 2024
+# Due Date: May 2, 2024
 
-[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381445)
+### Control Variables from Existing Studies
 
-### Summarize Your IV and DV
+Remember in Lab 1 that you found a set of existing studies on your research question or related topics. Start by going through those studies and building a table of all the control variables used in statistical models in those studies. Make each control variable a row and each study a column, and mark a cell with an X or check if the variable is included in that study.
 
-At this point, you should have a data source that measures your main cause (IV) and your outcome (DV). Summarize the distributions of both variables, in ways that make sense given whether they are categorical or continuous. Are there any interesting details?
+How many variables show consensus and are included in every study? How many show disagreement? Can you make sense of why? 
 
-### Jointly Plot Your IV and DV
+Do you agree that the variables that every, or almost every, study uses are good control variables? Why or why not?
 
-Plot your two main variables together in a way that shows as much information about their relationship as possible. Describe what you can see and what that means for your thinking about your research question.
+Do you think some of the more controversial variables might be good control variables? Why or why not?
 
-### Difference in Means
+### Justify a Control Variable Strategy
 
-If your main independent variable is categorical or a dummy variable, set up and carry out a relevant difference in means test for your main hypothesis. 
+If you are going to use a control variables approach to causal inference, you will need to be able to explain which control variables are needed and which are not. An economical way to make such an argument is a DAG (directed acyclic graph) diagram. Make such a diagram, showing the causal relationships you think are present among the important control variables in your research question of interest. 
 
-If you have a categorical treatment variable with more than two categories, choose two to compare, and explain why these two are especially interesting. 
+In R, the best way create such a diagram is with daggity like the example below.
 
-If your dependent variable is categorical but has only two categories, the test works just fine, although the interpretation is a bit less natural. The best way to proceed here is to set one category to a numerical score of zero and the other to a score of one. Then the mean of will turn out to be equal to the percentage of cases in the category represented by the score of one.
+Explain your reasoning behind the variables you include and the links you specify, but also the the variables and links you leave out.
 
-If you have a dependent variable that is categorical but with multiple categories, it probably makes sense to pick two that you can compare.
+```{r, echo = TRUE, out.width="100%", fig.retina = 1}
+library(dagitty)
+dag_cand3 <- dagitty('dag {
+                          Difficulty_Conceiving -> PostnatalCare
+                          Genetics -> Birth_Defects
+                          Genetics -> Difficulty_Conceiving
+                          PostnatalCare -> Birth_Defects
+                          PostnatalCare -> Vitamins
+                          SES -> PostnatalCare
+                          SES -> Vitamins
+                          Vitamins -> Birth_Defects
+                          }')
+plot(dag_cand3)
+```
 
-Finally, for the dependent variable but not the treatment variable, there is a kind of middle situation to consider where the variable is categorical but ordered. If there are multiple categories (say, five or more) and you think they are probably pretty close to being equally spread out, then it is probably pretty reasonable to treat the variable as if it were continuous.
+### Possible Confounders
 
-Choose one of these strategies. Calculate the difference in means. What do the results mean?
+Using your DAG as well as your inventory from other people's research, list the possible confounders in this relationship, i.e., variables that cause both the DV and the IV. 
 
-### Correlation
+### Pathway Variables
 
-If your independent variable and dependent variable are both continuous (or otherwise quantitative), calculate the correlation between them. What does it mean? Is it significantly different from zero?
+Think of at least one variable that could be part of the causal pathway connecting your IV to your DV, and explain your reasoning. Could any of your possible confounders from the previous question also be pathway variables? Why or why not? Does this pose any possible problems to watch out for later on?
 
-### Initial Findings
 
-Based on the initial data exploration in this lab, what are your initial findings about your main research question?

@@ -10,7 +10,7 @@
 
 
 
-<meta name="date" content="2024-03-12" />
+<meta name="date" content="2025-02-18" />
 
 <title>Political Science 312 Homework 4</title>
 
@@ -220,6 +220,107 @@ ul.task-list{list-style: none;}
 
 
 
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } 
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.at { color: #204a87; } 
+code span.bn { color: #0000cf; } 
+code span.cf { color: #204a87; font-weight: bold; } 
+code span.ch { color: #4e9a06; } 
+code span.cn { color: #8f5902; } 
+code span.co { color: #8f5902; font-style: italic; } 
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.dt { color: #204a87; } 
+code span.dv { color: #0000cf; } 
+code span.er { color: #a40000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #0000cf; } 
+code span.fu { color: #204a87; font-weight: bold; } 
+code span.im { } 
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } 
+code span.kw { color: #204a87; font-weight: bold; } 
+code span.op { color: #ce5c00; font-weight: bold; } 
+code span.ot { color: #8f5902; } 
+code span.pp { color: #8f5902; font-style: italic; } 
+code span.sc { color: #ce5c00; font-weight: bold; } 
+code span.ss { color: #4e9a06; } 
+code span.st { color: #4e9a06; } 
+code span.va { color: #000000; } 
+code span.vs { color: #4e9a06; } 
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -321,66 +422,67 @@ display: none;
 
 
 <h1 class="title toc-ignore">Political Science 312 Homework 4</h1>
-<h4 class="date">2024-03-12</h4>
+<h4 class="date">2025-02-18</h4>
 
 </div>
 
 
-<div id="due-date-april-26-2024" class="section level1">
-<h1>Due Date: April 26, 2024</h1>
-<p><a href="https://canvas.northwestern.edu/courses/209958/assignments/1381445">Submit
-your assignment here.</a></p>
-<div id="summarize-your-iv-and-dv" class="section level3">
-<h3>Summarize Your IV and DV</h3>
-<p>At this point, you should have a data source that measures your main
-cause (IV) and your outcome (DV). Summarize the distributions of both
-variables, in ways that make sense given whether they are categorical or
-continuous. Are there any interesting details?</p>
+<div id="due-date-may-2-2024" class="section level1">
+<h1>Due Date: May 2, 2024</h1>
+<div id="control-variables-from-existing-studies" class="section level3">
+<h3>Control Variables from Existing Studies</h3>
+<p>Remember in Lab 1 that you found a set of existing studies on your
+research question or related topics. Start by going through those
+studies and building a table of all the control variables used in
+statistical models in those studies. Make each control variable a row
+and each study a column, and mark a cell with an X or check if the
+variable is included in that study.</p>
+<p>How many variables show consensus and are included in every study?
+How many show disagreement? Can you make sense of why?</p>
+<p>Do you agree that the variables that every, or almost every, study
+uses are good control variables? Why or why not?</p>
+<p>Do you think some of the more controversial variables might be good
+control variables? Why or why not?</p>
 </div>
-<div id="jointly-plot-your-iv-and-dv" class="section level3">
-<h3>Jointly Plot Your IV and DV</h3>
-<p>Plot your two main variables together in a way that shows as much
-information about their relationship as possible. Describe what you can
-see and what that means for your thinking about your research
-question.</p>
+<div id="justify-a-control-variable-strategy" class="section level3">
+<h3>Justify a Control Variable Strategy</h3>
+<p>If you are going to use a control variables approach to causal
+inference, you will need to be able to explain which control variables
+are needed and which are not. An economical way to make such an argument
+is a DAG (directed acyclic graph) diagram. Make such a diagram, showing
+the causal relationships you think are present among the important
+control variables in your research question of interest.</p>
+<p>In R, the best way create such a diagram is with daggity like the
+example below.</p>
+<p>Explain your reasoning behind the variables you include and the links
+you specify, but also the the variables and links you leave out.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r numberLines"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(dagitty)</span>
+<span id="cb1-2"><a href="#cb1-2"></a>dag_cand3 <span class="ot">&lt;-</span> <span class="fu">dagitty</span>(<span class="st">&#39;dag {</span></span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="st">                          Difficulty_Conceiving -&gt; PostnatalCare</span></span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="st">                          Genetics -&gt; Birth_Defects</span></span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="st">                          Genetics -&gt; Difficulty_Conceiving</span></span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="st">                          PostnatalCare -&gt; Birth_Defects</span></span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="st">                          PostnatalCare -&gt; Vitamins</span></span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="st">                          SES -&gt; PostnatalCare</span></span>
+<span id="cb1-9"><a href="#cb1-9"></a><span class="st">                          SES -&gt; Vitamins</span></span>
+<span id="cb1-10"><a href="#cb1-10"></a><span class="st">                          Vitamins -&gt; Birth_Defects</span></span>
+<span id="cb1-11"><a href="#cb1-11"></a><span class="st">                          }&#39;</span>)</span>
+<span id="cb1-12"><a href="#cb1-12"></a><span class="fu">plot</span>(dag_cand3)</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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" width="100%" style="display: block; margin: auto;" /></p>
 </div>
-<div id="difference-in-means" class="section level3">
-<h3>Difference in Means</h3>
-<p>If your main independent variable is categorical or a dummy variable,
-set up and carry out a relevant difference in means test for your main
-hypothesis.</p>
-<p>If you have a categorical treatment variable with more than two
-categories, choose two to compare, and explain why these two are
-especially interesting.</p>
-<p>If your dependent variable is categorical but has only two
-categories, the test works just fine, although the interpretation is a
-bit less natural. The best way to proceed here is to set one category to
-a numerical score of zero and the other to a score of one. Then the mean
-of will turn out to be equal to the percentage of cases in the category
-represented by the score of one.</p>
-<p>If you have a dependent variable that is categorical but with
-multiple categories, it probably makes sense to pick two that you can
-compare.</p>
-<p>Finally, for the dependent variable but not the treatment variable,
-there is a kind of middle situation to consider where the variable is
-categorical but ordered. If there are multiple categories (say, five or
-more) and you think they are probably pretty close to being equally
-spread out, then it is probably pretty reasonable to treat the variable
-as if it were continuous.</p>
-<p>Choose one of these strategies. Calculate the difference in means.
-What do the results mean?</p>
+<div id="possible-confounders" class="section level3">
+<h3>Possible Confounders</h3>
+<p>Using your DAG as well as your inventory from other people’s
+research, list the possible confounders in this relationship, i.e.,
+variables that cause both the DV and the IV.</p>
 </div>
-<div id="correlation" class="section level3">
-<h3>Correlation</h3>
-<p>If your independent variable and dependent variable are both
-continuous (or otherwise quantitative), calculate the correlation
-between them. What does it mean? Is it significantly different from
-zero?</p>
-</div>
-<div id="initial-findings" class="section level3">
-<h3>Initial Findings</h3>
-<p>Based on the initial data exploration in this lab, what are your
-initial findings about your main research question?</p>
+<div id="pathway-variables" class="section level3">
+<h3>Pathway Variables</h3>
+<p>Think of at least one variable that could be part of the causal
+pathway connecting your IV to your DV, and explain your reasoning. Could
+any of your possible confounders from the previous question also be
+pathway variables? Why or why not? Does this pose any possible problems
+to watch out for later on?</p>
 </div>
 </div>
 

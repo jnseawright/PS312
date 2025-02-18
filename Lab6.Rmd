@@ -23,18 +23,9 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: May 10, 2024
+# Due Date: May 16, 2025
 
-[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381465)
+### Interactions and Nonlinearity
 
-### Bivariate Regression
+Does your regression have any interactions and/or nonlinearity? Try a model with at least one of these features, test its significance relative to the linear model from the last lab, and interpret your results.
 
-Run a regression predicting your outcome using only your main cause. Show the results and discuss what they mean.
-
-### Possible Confounders
-
-Using your DAG from the last assignment as well as your inventory from other people's research in Lab 3, describe  possible confounders in this relationship, i.e., variables that cause both the DV and the IV. 
-
-### Pathway Variables
-
-Think of at least one variable that could be part of the causal pathway connecting your IV to your DV, and explain your reasoning. Could any of your possible confounders from the previous question also be pathway variables? Why or why not? Does this pose any possible problems to watch out for later on?

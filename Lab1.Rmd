@@ -23,9 +23,7 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 5, 2024
-
-[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381394)
+# Due Date: April 11, 2025
 
 # Problem 1: Choosing a Topic
 
@@ -43,13 +41,17 @@ Now, I'd like you to brainstorm three different *causal* questions that:
 
 After writing down your three questions, explain which one you think is best and why.
 
-# Problem 3: Normative to Statistical
+# Problem 3: Existing Literature
+
+On Google Scholar or some related resource, I'd like you to search for existing quantitative social science studies on your question or related topics. What have people already learned, and what is not yet clear? It's okay if there is already some work on your question; this just means other people find it interesting! There will still be room for you to make a contribution.
+
+# Problem 4: Normative to Statistical
 
 Below are three political topics that might come up in everyday conversation. How could these be turned into quantitative social science research questions? Provide a suggestion for each, and explain briefly what makes it a workable research question.
 
 1. Why can't people show enough self-control to stop political corruption?
 
-2. Whose fault is suburban sprawl?
+2. Whose fault is shoplifting?
 
-3. How can we stop global warming?
+3. How can we stop inflation?
 

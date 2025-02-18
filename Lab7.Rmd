@@ -23,19 +23,12 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: May 17, 2024
+# Due Date: May 23, 2025
 
-[Submit your assignment here.](https://canvas.northwestern.edu/courses/209958/assignments/1381467)
+### More Advanced Designs
 
-### Main Causal Inference
+How could more advanced research designs be used to address the question you're exploring in your project? Could an experiment, a differences-in-differences, a synthetic controls, or some other research design be used to answer your question? How would this answer compare to the one you get from regression with control variables? Think through the relative strengths and weaknesses of each approach you think makes sense for your project.
 
-Put together an initial version of your main strategy for causal inference. If you are using control variables, run a multivariate regression using one control variable for each identified confounder (to the best of your ability). If you are using a different strategy, execute it. What causal effect estimate do you find? Is it similar to, or different from, the bivariate results from the last lab? Are the findings surprising? Why or why not?
+### Other Limitations
 
-### How Big Is Your Causal Effect?
-
-Using your causal effect estimate, figure out how big a difference your main independent variable can make. If your main variable is dichotomous, then the only possible change on the variable is 1, so figure out how big an effect a 1-unit change has on the outcome (taking into account any interaction terms). If your main independent variable is categorical or continuous, figure out how far apart the 25th and 75th percentiles are on that variable, and figure out how big an effect would be produced by a change of that size. Out of the overall range of your dependent variable, how much can you cover with this effect?
-
-### Test Your Assumptions
-
-What can you do to test the assumptions behind your statistical model? Identify at least three assumptions, provide statistical tests, and explain the results.
-
+As you come to the end of the quarter, what are the other limitations you can see in the project as you've carried it out? Are there problems with your data, missing variables you would have liked to use, patterns of missingness in the data that you've discovered, or other problems that have come to your attention over the course of working on the project? (Recall that transparency is a social science virtue; disclosing limitations will never hurt your grade in this class.) 
