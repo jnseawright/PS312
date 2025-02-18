@@ -6,6 +6,9 @@
 
 ### 2025 Class Materials
 
+* [Tuesday, April 1st: Asking Data Science Questions in Political Science](https://jnseawright.github.io/PS312/1datasciencequestions.html#1)
+* [Tuesday, April 1st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5uOxFTWDWGpl0V0)
+
 ### Lab Assignments
 
 * [Lab 1: Due April 11](https://jnseawright.github.io/PS312/Lab1.html)
