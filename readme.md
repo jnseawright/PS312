@@ -2,9 +2,25 @@
 
 <img src="images/linearitydiagnostic.jpg" width="400">
 
-[Syllabus](https://jnseawright.github.io/PS312/syllabus312spring2024.pdf)
+[Syllabus](https://jnseawright.github.io/PS312/syllabus312spring2025.pdf)
 
-### Slides and Code from Class
+### 2025 Class Materials
+
+* [Tuesday, April 1st: Asking Data Science Questions in Political Science](https://jnseawright.github.io/PS312/1datasciencequestions.html#1)
+* [Tuesday, April 1st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5uOxFTWDWGpl0V0)
+
+### Lab Assignments
+
+* [Lab 1: Due April 11](https://jnseawright.github.io/PS312/Lab1.html)
+* [Lab 2: Due April 18](https://jnseawright.github.io/PS312/Lab2.html) 
+* [Lab 3: Due April 25](https://jnseawright.github.io/PS312/Lab3.html)
+* [Lab 4: Due May 2](https://jnseawright.github.io/PS312/Lab4.html)
+* [Lab 5: Due May 9](https://jnseawright.github.io/PS312/Lab5.html) 
+* [Lab 6: Due May 16](https://jnseawright.github.io/PS312/Lab6.html)
+* [Lab 7: Due May 23](https://jnseawright.github.io/PS312/Lab7.html)
+* [Final Paper: Due June 10](https://jnseawright.github.io/PS312/finalpaper.html)
+
+### Slides and Code from the 2024 Class
 
 * [Thursday, March 28th: Finding Good Questions in Statistical Social Science](https://jnseawright.github.io/PS312/1goodquestions.html#1)
 * [Tuesday, April 2nd: What Is Causation, Anyway?](https://jnseawright.github.io/PS312/2causation.html#1) 
@@ -20,15 +36,3 @@
 * [Thursday, May 9th: Crafting Good Regressions in Our Work](https://jnseawright.github.io/PS312/13craftingourregressions.html#1) 
 * [Tuesday, May 14th: Regression and Non-Linearity](https://jnseawright.github.io/PS312/14nonlinearity.html#1) 
 * [Thursday, May 16th: Interactions and Mediation](https://jnseawright.github.io/PS312/15mediation.html#1) 
-
-### Lab Assignments
-
-* [Lab 1: Due April 5](https://jnseawright.github.io/PS312/Lab1.html)
-* [Lab 2: Due April 12](https://jnseawright.github.io/PS312/Lab2.html) 
-* [Lab 3: Due April 19](https://jnseawright.github.io/PS312/Lab3.html)
-* [Lab 4: Due April 26](https://jnseawright.github.io/PS312/Lab4.html)
-* [Lab 5: Due May 3](https://jnseawright.github.io/PS312/Lab5.html) 
-* [Lab 6: Due May 10](https://jnseawright.github.io/PS312/Lab6.html)
-* [Lab 7: Due May 17](https://jnseawright.github.io/PS312/Lab7.html)
-* [Final Paper: Due June 3](https://jnseawright.github.io/PS312/finalpaper.html)
-
