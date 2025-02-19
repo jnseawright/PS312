@@ -1,0 +1,1707 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>2: R</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="J. Seawright" />
+    <meta name="date" content="2025-04-02" />
+    <script src="2Rfun_files/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# 2: R
+]
+.subtitle[
+## Statistical Research Methods
+]
+.author[
+### <large>J. Seawright</large>
+]
+.institute[
+### <small>Northwestern Political Science</small>
+]
+.date[
+### April 2, 2025
+]
+
+---
+
+class: center, middle
+
+&lt;style type="text/css"&gt;
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+&lt;/style&gt;
+
+&lt;style type="text/css"&gt;
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+&lt;/style&gt;
+
+
+
+
+---
+### The Goals of R
+
+-   R is a data science tool
+
+-   Data science is about turning large amounts of structured but hard
+    to understand data into smaller, easier to understand pieces of
+    information
+
+-   People these days may also use Python or STATA for the same goals
+
+---
+### The Grammar of R
+
+-   Verb(Nouns, Adjectives)
+
+-   The verb is a function, such as sum or median
+
+-   The nouns are usually variables
+
+-   The adjectives might be variables or instructions given as commands
+    in quotation marks
+
+
+---
+### When Trouble Happens
+
+-   Check spelling
+
+-   Check for upper vs. lower case
+
+-   Check your parentheses
+
+-   Google your error message
+
+-   Check the book, &lt;https://www.statmethods.net/&gt;, stackoverflow, or
+    &lt;https://www.reddit.com/r/Rlanguage/&gt; for advice on the specific
+    thing you're working on
+
+---
+### When Trouble Happens
+
+-   Try three different things to fix your problem --- and if that
+    doesn't work, stop and get help from me and/or a TA.
+
+---
+### Loading Data
+
+---
+&lt;img src="images/rloaddata1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/rloaddata2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/rloaddata3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/rloaddata4.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/rloaddata5.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+library(readr)
+peruemotions &lt;- read_csv("peruemotions.csv")
+```
+
+```
+## New names:
+## Rows: 450 Columns: 76
+## ── Column specification
+## ──────────────────────────────────────────────────────── Delimiter: "," chr
+## (1): treatment dbl (75): ...1, index, Cuzco, angertreat, anxietytreat,
+## calmtreat, outvote1,...
+## ℹ Use `spec()` to retrieve the full column specification for this data. ℹ
+## Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## • `` -&gt; `...1`
+```
+
+``` r
+head(peruemotions)
+```
+
+```
+## # A tibble: 6 × 76
+##    ...1 index Cuzco angertreat anxietytreat calmtreat outvote1 outvote2   age
+##   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;      &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt; &lt;dbl&gt;
+## 1     1     6     0          1           NA        NA        1       NA    36
+## 2     2    90     0          1           NA        NA        1       NA    36
+## 3     3   115     1          1           NA        NA        1       NA    42
+## 4     4   331     1          1           NA        NA        1       NA    42
+## 5     5   419     0          1           NA        NA        1       NA    31
+## 6     6   234     0          1           NA        NA        1       NA    58
+## # ℹ 67 more variables: triste &lt;dbl&gt;, feliz &lt;dbl&gt;, enojado &lt;dbl&gt;,
+## #   asqueado &lt;dbl&gt;, preocupado &lt;dbl&gt;, con.miedo &lt;dbl&gt;, con.placer &lt;dbl&gt;,
+## #   orgulloso &lt;dbl&gt;, desesperado &lt;dbl&gt;, risk &lt;dbl&gt;, socioeconentusiasmo &lt;dbl&gt;,
+## #   socioeconenojo &lt;dbl&gt;, socioeconpreocupacion &lt;dbl&gt;,
+## #   socioecontranquilidad &lt;dbl&gt;, socioeconmiedo &lt;dbl&gt;, socioeconns &lt;dbl&gt;,
+## #   corruptentusiasmo &lt;dbl&gt;, corruptenojo &lt;dbl&gt;, corruptpreocupacion &lt;dbl&gt;,
+## #   corrupttranquilidad &lt;dbl&gt;, corruptmiedo &lt;dbl&gt;, corruptns &lt;dbl&gt;, …
+```
+
+---
+### Properties of Data Frames
+
+-   dim()
+
+-   names()
+
+---
+
+``` r
+dim(peruemotions)
+```
+
+```
+## [1] 450  76
+```
+
+``` r
+names(peruemotions)
+```
+
+```
+##  [1] "...1"                   "index"                  "Cuzco"                 
+##  [4] "angertreat"             "anxietytreat"           "calmtreat"             
+##  [7] "outvote1"               "outvote2"               "age"                   
+## [10] "triste"                 "feliz"                  "enojado"               
+## [13] "asqueado"               "preocupado"             "con.miedo"             
+## [16] "con.placer"             "orgulloso"              "desesperado"           
+## [19] "risk"                   "socioeconentusiasmo"    "socioeconenojo"        
+## [22] "socioeconpreocupacion"  "socioecontranquilidad"  "socioeconmiedo"        
+## [25] "socioeconns"            "corruptentusiasmo"      "corruptenojo"          
+## [28] "corruptpreocupacion"    "corrupttranquilidad"    "corruptmiedo"          
+## [31] "corruptns"              "pocketeconentusiasmo"   "pocketeconenojo"       
+## [34] "pocketeconpreocupacion" "pocketecontranquilidad" "pocketeconmiedo"       
+## [37] "pocketeconns"           "crimeentusiasmo"        "crimeenojo"            
+## [40] "crimepreocupacion"      "crimetranquilidad"      "crimemiedo"            
+## [43] "crimens"                "repentusiasmo"          "repenojo"              
+## [46] "reppreocupacion"        "reptranquilidad"        "repmiedo"              
+## [49] "repns"                  "corruptfreq"            "corruptresp"           
+## [52] "crimefreq"              "crimeresp"              "unempfreq"             
+## [55] "unempresp"              "povertyfreq"            "povertyresp"           
+## [58] "edqual"                 "edresp"                 "govtcapac"             
+## [61] "govtcapacresp"          "participrepresent"      "leftright"             
+## [64] "diazleftright"          "hurtadoleftright"       "partyid"               
+## [67] "intefficacy"            "extefficacy"            "tvnews"                
+## [70] "newspaper"              "radionews"              "edlevel"               
+## [73] "classid"                "treatment"              "outsidervote"          
+## [76] "simpletreat"
+```
+
+---
+### Types of Variables
+
+-   numeric
+
+-   text
+
+-   factor
+
+---
+
+``` r
+class(peruemotions$age)
+```
+
+```
+## [1] "numeric"
+```
+
+``` r
+peruemotions$age
+```
+
+```
+##   [1] 36 36 42 42 31 58 29 25 27 27 27 34 34 24 22 24 33 22 22 26 26 24 60 60 55
+##  [26] 30 30 47 27 23 23 25 24 27 48 54 27 26 27 48 41 39 43 23 23 70 26 26 29 27
+##  [51] 24 28 28 28 28 23 23 29 26 40 42 40 56 42 39 23 23 23 39 22 22 25 25 25 25
+##  [76] 24 23 23 25 25 23 23 61 23 81 24 23 25 23 24 27 45 25 31 24 23 22 25 24 24
+## [101] NA 25 25 23 25 33 33 22 28 NA 22 30 24 NA 31 34 22 24 25 24 24 57 31 43 31
+## [126] 22 30 23 59 23 52 23 NA 23 45 23 25 54 43 22 42 42 26 40 NA 40 32 39 25 32
+## [151] 29 23 25 23 25 22 22 28 28 22 25 44 28 52 45 27 28 26 46 26 22 52 30 46 26
+## [176] 60 24 23 24 25 33 33 40 53 54 22 23 31 31 23 47 47 31 50 23 27 32 27 24 24
+## [201] 23 52 23 46 52 22 42 24 51 32 42 42 23 29 23 23 46 NA NA 40 NA 23 23 23 23
+## [226] 27 40 25 25 23 23 54 30 23 22 30 33 34 34 37 24 28 NA 25 25 26 23 23 25 47
+## [251] 57 40 57 40 22 22 22 24 24 39 24 32 32 54 28 24 57 NA 24 24 45 24 24 24 26
+## [276] 22 26 26 22 42 24 32 NA 32 25 23 23 23 45 36 65 25 24 34 23 28 44 42 22 23
+## [301] 40 23 33 23 24 22 22 22 22 23 22 23 23 23 24 49 23 25 27 23 25 29 22 24 38
+## [326] 30 23 23 23 23 22 25 24 24 30 30 45 44 22 23 23 44 45 23 23 23 27 25 25 62
+## [351] 60 25 38 25 26 43 43 29 31 30 25 25 25 54 31 48 24 67 23 23 24 25 NA 23 25
+## [376] 23 51 25 23 23 23 30 51 24 26 25 25 21 21 26 22 31 26 22 37 23 24 34 26 29
+## [401] 22 23 38 24 25 23 23 79 23 49 23 40 52 22 42 25 28 28 56 36 51 23 23 25 23
+## [426] 22 48 48 41 24 24 54 23 25 32 32 26 40 40 65 30 34 34 22 24 24 24 28 28 28
+```
+
+---
+
+``` r
+class(peruemotions$treatment)
+```
+
+```
+## [1] "character"
+```
+
+``` r
+peruemotions$treatment
+```
+
+```
+##   [1] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##   [8] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [15] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [22] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [29] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [36] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [43] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [50] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [57] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [64] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [71] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [78] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [85] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [92] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+##  [99] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [106] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [113] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [120] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [127] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [134] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [141] "anger"   "anger"   "anger"   "anger"   "anger"   "anger"   "anger"  
+## [148] "anger"   "anger"   "anger"   "anger"   "anxiety" "anxiety" "anxiety"
+## [155] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [162] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [169] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [176] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [183] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [190] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [197] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [204] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [211] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [218] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [225] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [232] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [239] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [246] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [253] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [260] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [267] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [274] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [281] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [288] "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety" "anxiety"
+## [295] "anxiety" "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [302] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [309] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [316] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [323] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [330] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [337] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [344] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [351] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [358] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [365] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [372] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [379] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [386] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [393] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [400] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [407] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [414] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [421] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [428] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [435] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [442] "calm"    "calm"    "calm"    "calm"    "calm"    "calm"    "calm"   
+## [449] "calm"    "calm"
+```
+
+---
+
+``` r
+peruemotions$treatment &lt;- as.factor(peruemotions$treatment)
+class(peruemotions$treatment)
+```
+
+```
+## [1] "factor"
+```
+
+``` r
+peruemotions$treatment
+```
+
+```
+##   [1] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [10] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [19] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [28] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [37] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [46] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [55] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [64] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [73] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [82] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+##  [91] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [100] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [109] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [118] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [127] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [136] anger   anger   anger   anger   anger   anger   anger   anger   anger  
+## [145] anger   anger   anger   anger   anger   anger   anger   anxiety anxiety
+## [154] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [163] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [172] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [181] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [190] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [199] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [208] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [217] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [226] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [235] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [244] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [253] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [262] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [271] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [280] anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety anxiety
+## [289] anxiety anxiety anxiety anxiety anxiety anxiety anxiety calm    calm   
+## [298] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [307] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [316] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [325] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [334] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [343] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [352] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [361] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [370] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [379] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [388] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [397] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [406] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [415] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [424] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [433] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## [442] calm    calm    calm    calm    calm    calm    calm    calm    calm   
+## Levels: anger anxiety calm
+```
+
+---
+### Indexing
+
+-   For a variable:
+
+        sunlight$hours[534]
+
+-   For a data frame:
+
+        sunlight[12,534]
+
+---
+
+``` r
+peruemotions$age[50]
+```
+
+```
+## [1] 27
+```
+
+``` r
+peruemotions[6,45]
+```
+
+```
+## # A tibble: 1 × 1
+##   repenojo
+##      &lt;dbl&gt;
+## 1        1
+```
+
+---
+### Does Internet Use Affect Democracy?
+
+---
+
+``` r
+library(devtools)
+```
+
+```
+## Loading required package: usethis
+```
+
+``` r
+if (!require(rqog)){
+  install_github("ropengov/rqog")}
+```
+
+```
+## Loading required package: rqog
+```
+
+``` r
+library(rqog)
+```
+
+---
+
+``` r
+qualityofgovernment &lt;- read_qog(which_data="basic", data_type = "time-series")
+```
+
+```
+## Local file not found. 
+## Downloading QoG qog_bas_ts_jan23.csv data 
+## from http://www.qogdata.pol.gu.se/data/qog_bas_ts_jan23.csv
+## in file: C:\Users\jws780\AppData\Local\Temp\Rtmp4y9O9s/rqog/qog_bas_ts_jan23.csv
+```
+
+```
+## Reading cache file C:\Users\jws780\AppData\Local\Temp\Rtmp4y9O9s/rqog/qog_bas_ts_jan23.csv
+```
+
+``` r
+dim(qualityofgovernment)
+```
+
+```
+## [1] 15366   254
+```
+---
+
+``` r
+names(qualityofgovernment)[1:30]
+```
+
+```
+##  [1] "ccode"         "cname"         "year"          "ccode_qog"    
+##  [5] "cname_qog"     "ccodealp"      "ccodecow"      "version"      
+##  [9] "cname_year"    "ccodealp_year" "ajr_settmort"  "atop_ally"    
+## [13] "atop_number"   "bci_bci"       "bicc_gmi"      "biu_offrel"   
+## [17] "bl_asyf"       "bl_asym"       "bl_asymf"      "bmr_dem"      
+## [21] "bmr_demdur"    "cai_cai2"      "cbi_cbiu"      "cbi_cbiw"     
+## [25] "cbie_index"    "ccp_cc"        "ccp_childwrk"  "ccp_equal"    
+## [29] "ccp_freerel"   "ccp_slave"
+```
+
+---
+
+``` r
+summary(qualityofgovernment$wdi_internet)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##   0.000   0.182   6.759  23.083  40.876 100.000    9595
+```
+
+``` r
+summary(qualityofgovernment$p_polity2)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+## -10.000  -7.000   1.000   0.825   8.000  10.000    5641
+```
+
+---
+
+``` r
+internet_democracy_plot &lt;- qualityofgovernment %&gt;% ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter()
+```
+
+---
+&lt;img src="2Rfun_files/figure-html/unnamed-chunk-19-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+table(qualityofgovernment$year,qualityofgovernment$wdi_internet==0)
+```
+
+```
+##       
+##        FALSE TRUE
+##   1946     0    0
+##   1947     0    0
+##   1948     0    0
+##   1949     0    0
+##   1950     0    0
+##   1951     0    0
+##   1952     0    0
+##   1953     0    0
+##   1954     0    0
+##   1955     0    0
+##   1956     0    0
+##   1957     0    0
+##   1958     0    0
+##   1959     0    0
+##   1960     0    3
+##   1961     0    0
+##   1962     0    0
+##   1963     0    0
+##   1964     0    0
+##   1965     0    4
+##   1966     0    0
+##   1967     0    0
+##   1968     0    0
+##   1969     0    0
+##   1970     0    6
+##   1971     0    0
+##   1972     0    0
+##   1973     0    0
+##   1974     0    0
+##   1975     0    7
+##   1976     0    7
+##   1977     0    7
+##   1978     0    7
+##   1979     0    7
+##   1980     0    7
+##   1981     0    7
+##   1982     0    7
+##   1983     0    7
+##   1984     0    7
+##   1985     0    7
+##   1986     0    7
+##   1987     0    7
+##   1988     0    7
+##   1989     0    8
+##   1990    19  147
+##   1991    30  137
+##   1992    42  142
+##   1993    54  134
+##   1994    74  114
+##   1995   118   71
+##   1996   155    5
+##   1997   168    2
+##   1998   175    1
+##   1999   181    1
+##   2000   182    1
+##   2001   185    1
+##   2002   186    2
+##   2003   181    2
+##   2004   182    2
+##   2005   183    1
+##   2006   184    1
+##   2007   189    1
+##   2008   187    1
+##   2009   186    1
+##   2010   185    1
+##   2011   188    1
+##   2012   186    1
+##   2013   187    1
+##   2014   188    0
+##   2015   187    0
+##   2016   188    0
+##   2017   189    0
+##   2018   158    0
+##   2019   153    0
+##   2020   149    0
+##   2021    62    0
+##   2022     0    0
+```
+
+---
+
+``` r
+internet_democracy_plot &lt;- qualityofgovernment %&gt;% filter(year&gt;1991) %&gt;%
+    ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter()
+```
+
+---
+&lt;img src="2Rfun_files/figure-html/unnamed-chunk-22-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+internet_democracy_plot_lm &lt;- qualityofgovernment %&gt;% filter(year&gt;1991) %&gt;%
+    ggplot(aes(x=wdi_internet, y=p_polity2)) + 
+    geom_jitter() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="2Rfun_files/figure-html/unnamed-chunk-24-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+table(qualityofgovernment$cname[is.na(qualityofgovernment$wdi_internet[qualityofgovernment$year&gt;1991])])
+```
+
+```
+## 
+##                                                Afghanistan 
+##                                                          8 
+##                                                    Albania 
+##                                                          9 
+##                                                    Algeria 
+##                                                         11 
+##                                                    Andorra 
+##                                                          6 
+##                                                     Angola 
+##                                                          5 
+##                                        Antigua and Barbuda 
+##                                                          6 
+##                                                  Argentina 
+##                                                          3 
+##                                                    Armenia 
+##                                                         11 
+##                                                  Australia 
+##                                                          9 
+##                                                    Austria 
+##                                                          7 
+##                                                 Azerbaijan 
+##                                                          8 
+##                                              Bahamas (the) 
+##                                                          9 
+##                                                    Bahrain 
+##                                                         11 
+##                                                 Bangladesh 
+##                                                          7 
+##                                                   Barbados 
+##                                                         13 
+##                                                    Belarus 
+##                                                          5 
+##                                                    Belgium 
+##                                                         26 
+##                                                     Belize 
+##                                                          5 
+##                                                      Benin 
+##                                                         22 
+##                                                     Bhutan 
+##                                                         12 
+##                           Bolivia (Plurinational State of) 
+##                                                          2 
+##                                     Bosnia and Herzegovina 
+##                                                         34 
+##                                                   Botswana 
+##                                                          3 
+##                                                     Brazil 
+##                                                          9 
+##                                          Brunei Darussalam 
+##                                                          5 
+##                                                   Bulgaria 
+##                                                          4 
+##                                               Burkina Faso 
+##                                                          8 
+##                                                    Burundi 
+##                                                          4 
+##                                                 Cabo Verde 
+##                                                          3 
+##                                                   Cambodia 
+##                                                          5 
+##                                                   Cameroon 
+##                                                          8 
+##                                                     Canada 
+##                                                          4 
+##                             Central African Republic (the) 
+##                                                         10 
+##                                                       Chad 
+##                                                          7 
+##                                                      Chile 
+##                                                          7 
+##                                                      China 
+##                                                         12 
+##                                                   Colombia 
+##                                                          3 
+##                                              Comoros (the) 
+##                                                         11 
+##                     Congo (the Democratic Republic of the) 
+##                                                          7 
+##                                                Congo (the) 
+##                                                         17 
+##                                                 Costa Rica 
+##                                                          4 
+##                                              Côte d'Ivoire 
+##                                                          6 
+##                                                    Croatia 
+##                                                          6 
+##                                                       Cuba 
+##                                                          4 
+##                                                     Cyprus 
+##                                                         14 
+##                                                    Czechia 
+##                                                          4 
+##                                             Czechoslovakia 
+##                                                         24 
+##                                                    Denmark 
+##                                                          9 
+##                                                   Djibouti 
+##                                                          5 
+##                                                   Dominica 
+##                                                          7 
+##                                   Dominican Republic (the) 
+##                                                          9 
+##                                                    Ecuador 
+##                                                          8 
+##                                                      Egypt 
+##                                                          3 
+##                                                El Salvador 
+##                                                         35 
+##                                          Equatorial Guinea 
+##                                                          7 
+##                                                    Eritrea 
+##                                                          3 
+##                                                    Estonia 
+##                                                         16 
+##                                                   Eswatini 
+##                                                          5 
+##                                                   Ethiopia 
+##                                                          4 
+##                                                       Fiji 
+##                                                          3 
+##                                                    Finland 
+##                                                          9 
+##                                                     France 
+##                                                         15 
+##                                                      Gabon 
+##                                                         20 
+##                                               Gambia (the) 
+##                                                          2 
+##                                                    Georgia 
+##                                                          5 
+##                                 German Democratic Republic 
+##                                                          2 
+##                                                    Germany 
+##                                                          9 
+##                                                      Ghana 
+##                                                         35 
+##                                                     Greece 
+##                                                          7 
+##                                                    Grenada 
+##                                                          6 
+##                                                  Guatemala 
+##                                                         12 
+##                                                     Guinea 
+##                                                          3 
+##                                              Guinea-Bissau 
+##                                                         17 
+##                                                     Guyana 
+##                                                         18 
+##                                                      Haiti 
+##                                                          5 
+##                                                   Honduras 
+##                                                         35 
+##                                                    Hungary 
+##                                                          4 
+##                                                    Iceland 
+##                                                          6 
+##                                                      India 
+##                                                          8 
+##                                                  Indonesia 
+##                                                         41 
+##                                 Iran (Islamic Republic of) 
+##                                                         38 
+##                                                       Iraq 
+##                                                          5 
+##                                                    Ireland 
+##                                                          8 
+##                                                     Israel 
+##                                                         11 
+##                                                      Italy 
+##                                                          6 
+##                                                    Jamaica 
+##                                                          7 
+##                                                      Japan 
+##                                                          7 
+##                                                     Jordan 
+##                                                         12 
+##                                                 Kazakhstan 
+##                                                          3 
+##                                                      Kenya 
+##                                                          7 
+##                                                   Kiribati 
+##                                                          7 
+##                Korea (the Democratic People's Republic of) 
+##                                                          8 
+##                                    Korea (the Republic of) 
+##                                                          9 
+##                                                     Kuwait 
+##                                                          6 
+##                                                 Kyrgyzstan 
+##                                                         12 
+##                     Lao People's Democratic Republic (the) 
+##                                                         32 
+##                                                     Latvia 
+##                                                          3 
+##                                                    Lebanon 
+##                                                         10 
+##                                                    Lesotho 
+##                                                          7 
+##                                                    Liberia 
+##                                                         33 
+##                                                      Libya 
+##                                                          5 
+##                                              Liechtenstein 
+##                                                          7 
+##                                                  Lithuania 
+##                                                         10 
+##                                                 Luxembourg 
+##                                                         11 
+##                                                 Madagascar 
+##                                                          6 
+##                                                     Malawi 
+##                                                          3 
+##                                                   Malaysia 
+##                                                          6 
+##                                                   Maldives 
+##                                                          4 
+##                                                       Mali 
+##                                                          5 
+##                                                      Malta 
+##                                                          5 
+##                                           Marshall Islands 
+##                                                          4 
+##                                                 Mauritania 
+##                                                          8 
+##                                                  Mauritius 
+##                                                          4 
+##                                                     Mexico 
+##                                                          3 
+##                           Micronesia (Federated States of) 
+##                                                          8 
+##                                  Moldova (the Republic of) 
+##                                                          8 
+##                                                     Monaco 
+##                                                         11 
+##                                                   Mongolia 
+##                                                          3 
+##                                                 Montenegro 
+##                                                          6 
+##                                                    Morocco 
+##                                                         12 
+##                                                 Mozambique 
+##                                                          8 
+##                                                    Myanmar 
+##                                                          3 
+##                                                    Namibia 
+##                                                         11 
+##                                                      Nauru 
+##                                                         17 
+##                                                      Nepal 
+##                                                          7 
+##                                          Netherlands (the) 
+##                                                          4 
+##                                                New Zealand 
+##                                                          4 
+##                                                  Nicaragua 
+##                                                         15 
+##                                                Niger (the) 
+##                                                         20 
+##                                                    Nigeria 
+##                                                          5 
+##                                            North Macedonia 
+##                                                          5 
+##                                                     Norway 
+##                                                         26 
+##                                                       Oman 
+##                                                          3 
+##                                                   Pakistan 
+##                                                         10 
+##                                                      Palau 
+##                                                          8 
+##                                                     Panama 
+##                                                         34 
+##                                           Papua New Guinea 
+##                                                          7 
+##                                                   Paraguay 
+##                                                          4 
+##                                                       Peru 
+##                                                          3 
+##                                          Philippines (the) 
+##                                                         16 
+##                                                     Poland 
+##                                                          3 
+##                                                   Portugal 
+##                                                          9 
+##                                                      Qatar 
+##                                                         11 
+##                                                    Romania 
+##                                                          6 
+##                                   Russian Federation (the) 
+##                                                          3 
+##                                                     Rwanda 
+##                                                          9 
+##                                      Saint Kitts and Nevis 
+##                                                         30 
+##                                                Saint Lucia 
+##                                                         12 
+##                           Saint Vincent and the Grenadines 
+##                                                          2 
+##                                                      Samoa 
+##                                                          3 
+##                                                 San Marino 
+##                                                         11 
+##                                      Sao Tome and Principe 
+##                                                          7 
+##                                               Saudi Arabia 
+##                                                          8 
+##                                                    Senegal 
+##                                                         13 
+##                                                     Serbia 
+##                                                         10 
+##                                      Serbia and Montenegro 
+##                                                          4 
+##                                                 Seychelles 
+##                                                         33 
+##                                               Sierra Leone 
+##                                                          6 
+##                                                  Singapore 
+##                                                          4 
+##                                                   Slovakia 
+##                                                          8 
+##                                                   Slovenia 
+##                                                         36 
+##                                            Solomon Islands 
+##                                                         16 
+##                                                    Somalia 
+##                                                         40 
+##                                               South Africa 
+##                                                          6 
+##                                                South Sudan 
+##                                                          4 
+##                                                      Spain 
+##                                                          7 
+##                                                  Sri Lanka 
+##                                                          4 
+##                                                      Sudan 
+##                                                          7 
+##                                                Sudan (the) 
+##                                                          2 
+##                                                   Suriname 
+##                                                          5 
+##                                                     Sweden 
+##                                                          7 
+##                                                Switzerland 
+##                                                         10 
+##                                 Syrian Arab Republic (the) 
+##                                                          9 
+##                                 Taiwan (Province of China) 
+##                                                          8 
+##                                                 Tajikistan 
+##                                                         10 
+##                           Tanzania, the United Republic of 
+##                                                          3 
+##                                                   Thailand 
+##                                                          5 
+##                                                      Tibet 
+##                                                          3 
+##                                                Timor-Leste 
+##                                                         12 
+##                                                       Togo 
+##                                                         13 
+##                                                      Tonga 
+##                                                         22 
+##                                        Trinidad and Tobago 
+##                                                         20 
+##                                                    Tunisia 
+##                                                          3 
+##                                                     Turkey 
+##                                                         33 
+##                                               Turkmenistan 
+##                                                          4 
+##                                                     Tuvalu 
+##                                                          8 
+##                                                     Uganda 
+##                                                         10 
+##                                                    Ukraine 
+##                                                         11 
+##                                 United Arab Emirates (the) 
+##                                                          7 
+## United Kingdom of Great Britain and Northern Ireland (the) 
+##                                                          6 
+##                             United States of America (the) 
+##                                                          5 
+##                                                    Uruguay 
+##                                                          4 
+##                                                       USSR 
+##                                                          4 
+##                                                 Uzbekistan 
+##                                                          3 
+##                                                    Vanuatu 
+##                                                          6 
+##                         Venezuela (Bolivarian Republic of) 
+##                                                         11 
+##                                                   Viet Nam 
+##                                                          7 
+##                                             Vietnam, North 
+##                                                          4 
+##                                             Vietnam, South 
+##                                                          5 
+##                                                      Yemen 
+##                                                          9 
+##                                           Yemen Democratic 
+##                                                          3 
+##                                                 Yugoslavia 
+##                                                          1 
+##                                                     Zambia 
+##                                                         13 
+##                                                   Zimbabwe 
+##                                                         12
+```
+---
+
+``` r
+table(qualityofgovernment$cname[is.na(qualityofgovernment$p_polity2[qualityofgovernment$year&gt;1991])])
+```
+
+```
+## 
+##                                                Afghanistan 
+##                                                         21 
+##                                                    Albania 
+##                                                         38 
+##                                                    Algeria 
+##                                                         36 
+##                                                    Andorra 
+##                                                         10 
+##                                                     Angola 
+##                                                         37 
+##                                        Antigua and Barbuda 
+##                                                         36 
+##                                                  Argentina 
+##                                                         32 
+##                                                    Armenia 
+##                                                          8 
+##                                                  Australia 
+##                                                         39 
+##                                                    Austria 
+##                                                         36 
+##                                                 Azerbaijan 
+##                                                         11 
+##                                              Bahamas (the) 
+##                                                         12 
+##                                                    Bahrain 
+##                                                          8 
+##                                                 Bangladesh 
+##                                                         12 
+##                                                   Barbados 
+##                                                         12 
+##                                                    Belarus 
+##                                                         50 
+##                                                    Belgium 
+##                                                          8 
+##                                                     Belize 
+##                                                          8 
+##                                                      Benin 
+##                                                         32 
+##                                                     Bhutan 
+##                                                         12 
+##                           Bolivia (Plurinational State of) 
+##                                                          8 
+##                                     Bosnia and Herzegovina 
+##                                                         39 
+##                                                   Botswana 
+##                                                          8 
+##                                                     Brazil 
+##                                                         39 
+##                                          Brunei Darussalam 
+##                                                          8 
+##                                                   Bulgaria 
+##                                                         12 
+##                                               Burkina Faso 
+##                                                          8 
+##                                                    Burundi 
+##                                                         14 
+##                                                 Cabo Verde 
+##                                                          8 
+##                                                   Cambodia 
+##                                                         22 
+##                                                   Cameroon 
+##                                                          8 
+##                                                     Canada 
+##                                                         39 
+##                             Central African Republic (the) 
+##                                                         18 
+##                                                       Chad 
+##                                                         10 
+##                                                      Chile 
+##                                                         10 
+##                                                      China 
+##                                                          9 
+##                                                   Colombia 
+##                                                         21 
+##                                              Comoros (the) 
+##                                                         12 
+##                     Congo (the Democratic Republic of the) 
+##                                                         12 
+##                                                Congo (the) 
+##                                                         35 
+##                                                 Costa Rica 
+##                                                         33 
+##                                              Côte d'Ivoire 
+##                                                         20 
+##                                                    Croatia 
+##                                                         41 
+##                                                       Cuba 
+##                                                          8 
+##                                                     Cyprus 
+##                                                         39 
+##                                                    Czechia 
+##                                                         12 
+##                                             Czechoslovakia 
+##                                                         22 
+##                                                    Denmark 
+##                                                         23 
+##                                                   Djibouti 
+##                                                         34 
+##                                                   Dominica 
+##                                                         27 
+##                                   Dominican Republic (the) 
+##                                                         12 
+##                                                    Ecuador 
+##                                                         57 
+##                                                      Egypt 
+##                                                         10 
+##                                                El Salvador 
+##                                                         44 
+##                                          Equatorial Guinea 
+##                                                          8 
+##                                                    Eritrea 
+##                                                          8 
+##                                                    Estonia 
+##                                                         22 
+##                                                   Eswatini 
+##                                                         36 
+##                                                   Ethiopia 
+##                                                         12 
+##                                                       Fiji 
+##                                                          8 
+##                                                    Finland 
+##                                                         69 
+##                                                     France 
+##                                                         60 
+##                                                      Gabon 
+##                                                         53 
+##                                               Gambia (the) 
+##                                                         11 
+##                                                    Georgia 
+##                                                          9 
+##                                 German Democratic Republic 
+##                                                          4 
+##                                                    Germany 
+##                                                         11 
+##                                                      Ghana 
+##                                                         30 
+##                                                     Greece 
+##                                                         12 
+##                                                    Grenada 
+##                                                          8 
+##                                                  Guatemala 
+##                                                         39 
+##                                                     Guinea 
+##                                                          8 
+##                                              Guinea-Bissau 
+##                                                         77 
+##                                                     Guyana 
+##                                                         39 
+##                                                      Haiti 
+##                                                          9 
+##                                                   Honduras 
+##                                                         39 
+##                                                    Hungary 
+##                                                          8 
+##                                                    Iceland 
+##                                                         10 
+##                                                      India 
+##                                                         30 
+##                                                  Indonesia 
+##                                                         30 
+##                                 Iran (Islamic Republic of) 
+##                                                         47 
+##                                                       Iraq 
+##                                                         18 
+##                                                    Ireland 
+##                                                         50 
+##                                                     Israel 
+##                                                         19 
+##                                                      Italy 
+##                                                         27 
+##                                                    Jamaica 
+##                                                         35 
+##                                                      Japan 
+##                                                         12 
+##                                                     Jordan 
+##                                                         41 
+##                                                 Kazakhstan 
+##                                                         32 
+##                                                      Kenya 
+##                                                         34 
+##                                                   Kiribati 
+##                                                          8 
+##                Korea (the Democratic People's Republic of) 
+##                                                         12 
+##                                    Korea (the Republic of) 
+##                                                          8 
+##                                                     Kuwait 
+##                                                         11 
+##                                                 Kyrgyzstan 
+##                                                          9 
+##                     Lao People's Democratic Republic (the) 
+##                                                         10 
+##                                                     Latvia 
+##                                                         11 
+##                                                    Lebanon 
+##                                                         10 
+##                                                    Lesotho 
+##                                                          9 
+##                                                    Liberia 
+##                                                         35 
+##                                                      Libya 
+##                                                         23 
+##                                              Liechtenstein 
+##                                                         24 
+##                                                  Lithuania 
+##                                                         12 
+##                                                 Luxembourg 
+##                                                          9 
+##                                                 Madagascar 
+##                                                         12 
+##                                                     Malawi 
+##                                                          8 
+##                                                   Malaysia 
+##                                                         12 
+##                                                   Maldives 
+##                                                         15 
+##                                                       Mali 
+##                                                         50 
+##                                                      Malta 
+##                                                         21 
+##                                           Marshall Islands 
+##                                                          8 
+##                                                 Mauritania 
+##                                                          8 
+##                                                  Mauritius 
+##                                                         39 
+##                                                     Mexico 
+##                                                          8 
+##                           Micronesia (Federated States of) 
+##                                                         39 
+##                                  Moldova (the Republic of) 
+##                                                         11 
+##                                                     Monaco 
+##                                                         19 
+##                                                   Mongolia 
+##                                                          8 
+##                                                 Montenegro 
+##                                                          9 
+##                                                    Morocco 
+##                                                         10 
+##                                                 Mozambique 
+##                                                         10 
+##                                                    Myanmar 
+##                                                          8 
+##                                                    Namibia 
+##                                                         11 
+##                                                      Nauru 
+##                                                         35 
+##                                                      Nepal 
+##                                                         12 
+##                                          Netherlands (the) 
+##                                                         34 
+##                                                New Zealand 
+##                                                          8 
+##                                                  Nicaragua 
+##                                                         39 
+##                                                Niger (the) 
+##                                                         22 
+##                                                    Nigeria 
+##                                                         12 
+##                                            North Macedonia 
+##                                                         11 
+##                                                     Norway 
+##                                                         35 
+##                                                       Oman 
+##                                                         22 
+##                                                   Pakistan 
+##                                                         56 
+##                                                      Palau 
+##                                                         18 
+##                                                     Panama 
+##                                                         39 
+##                                           Papua New Guinea 
+##                                                          8 
+##                                                   Paraguay 
+##                                                         12 
+##                                                       Peru 
+##                                                          8 
+##                                          Philippines (the) 
+##                                                         22 
+##                                                     Poland 
+##                                                          8 
+##                                                   Portugal 
+##                                                         74 
+##                                                      Qatar 
+##                                                         42 
+##                                                    Romania 
+##                                                         13 
+##                                   Russian Federation (the) 
+##                                                          9 
+##                                                     Rwanda 
+##                                                         12 
+##                                      Saint Kitts and Nevis 
+##                                                         31 
+##                                                Saint Lucia 
+##                                                          8 
+##                           Saint Vincent and the Grenadines 
+##                                                          8 
+##                                                      Samoa 
+##                                                          8 
+##                                                 San Marino 
+##                                                         12 
+##                                      Sao Tome and Principe 
+##                                                         35 
+##                                               Saudi Arabia 
+##                                                         12 
+##                                                    Senegal 
+##                                                         25 
+##                                                     Serbia 
+##                                                         23 
+##                                      Serbia and Montenegro 
+##                                                          4 
+##                                                 Seychelles 
+##                                                         35 
+##                                               Sierra Leone 
+##                                                         12 
+##                                                  Singapore 
+##                                                          6 
+##                                                   Slovakia 
+##                                                         11 
+##                                                   Slovenia 
+##                                                         23 
+##                                            Solomon Islands 
+##                                                         13 
+##                                                    Somalia 
+##                                                         50 
+##                                               South Africa 
+##                                                         36 
+##                                                South Sudan 
+##                                                         26 
+##                                                      Spain 
+##                                                         21 
+##                                                  Sri Lanka 
+##                                                          9 
+##                                                      Sudan 
+##                                                         35 
+##                                                Sudan (the) 
+##                                                          4 
+##                                                   Suriname 
+##                                                          8 
+##                                                     Sweden 
+##                                                         36 
+##                                                Switzerland 
+##                                                         39 
+##                                 Syrian Arab Republic (the) 
+##                                                          8 
+##                                 Taiwan (Province of China) 
+##                                                         11 
+##                                                 Tajikistan 
+##                                                         12 
+##                           Tanzania, the United Republic of 
+##                                                         50 
+##                                                   Thailand 
+##                                                          8 
+##                                                      Tibet 
+##                                                         21 
+##                                                Timor-Leste 
+##                                                         23 
+##                                                       Togo 
+##                                                         12 
+##                                                      Tonga 
+##                                                          8 
+##                                        Trinidad and Tobago 
+##                                                         12 
+##                                                    Tunisia 
+##                                                         12 
+##                                                     Turkey 
+##                                                         35 
+##                                               Turkmenistan 
+##                                                         13 
+##                                                     Tuvalu 
+##                                                         34 
+##                                                     Uganda 
+##                                                         12 
+##                                                    Ukraine 
+##                                                          9 
+##                                 United Arab Emirates (the) 
+##                                                          8 
+## United Kingdom of Great Britain and Northern Ireland (the) 
+##                                                         23 
+##                             United States of America (the) 
+##                                                         11 
+##                                                    Uruguay 
+##                                                         39 
+##                                                       USSR 
+##                                                          9 
+##                                                 Uzbekistan 
+##                                                          8 
+##                                                    Vanuatu 
+##                                                         40 
+##                         Venezuela (Bolivarian Republic of) 
+##                                                         19 
+##                                                   Viet Nam 
+##                                                         32 
+##                                             Vietnam, North 
+##                                                          4 
+##                                             Vietnam, South 
+##                                                          4 
+##                                                      Yemen 
+##                                                         12 
+##                                           Yemen Democratic 
+##                                                          4 
+##                                                 Yugoslavia 
+##                                                          4 
+##                                                     Zambia 
+##                                                         12 
+##                                                   Zimbabwe 
+##                                                         38
+```
+
+---
+
+``` r
+summary(qualityofgovernment$wdi_gdpcappppcon2017)
+```
+
+```
+##     Min.  1st Qu.   Median     Mean  3rd Qu.     Max.     NA's 
+##    436.4   3430.4   9830.8  16997.1  24002.5 120647.8     9780
+```
+
+---
+
+``` r
+internet_wealth_plot &lt;- qualityofgovernment %&gt;% filter(year&gt;1991) %&gt;%
+    ggplot(aes(x=wdi_gdpcappppcon2017, y=wdi_internet)) + 
+    geom_point() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="2Rfun_files/figure-html/unnamed-chunk-29-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+``` r
+dem_wealth_plot &lt;- qualityofgovernment %&gt;% filter(year&gt;1991) %&gt;%
+    ggplot(aes(x=wdi_gdpcappppcon2017, y=p_polity2)) + 
+    geom_jitter() +
+    geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE)
+```
+
+---
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="2Rfun_files/figure-html/unnamed-chunk-31-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+``` r
+library(jtools)
+```
+
+---
+
+``` r
+summ(lm(p_polity2 ~ wdi_internet + wdi_gdpcappppcon2017, data=qualityofgovernment))
+```
+
+```
+## MODEL INFO:
+## Observations: 4229 (11137 missing obs. deleted)
+## Dependent Variable: p_polity2
+## Type: OLS linear regression 
+## 
+## MODEL FIT:
+## F(2,4226) = 183.13, p = 0.00
+## R² = 0.08
+## Adj. R² = 0.08 
+## 
+## Standard errors:OLS
+## --------------------------------------------------------
+##                              Est.   S.E.   t val.      p
+## -------------------------- ------ ------ -------- ------
+## (Intercept)                  2.28   0.13    17.92   0.00
+## wdi_internet                 0.06   0.00    14.49   0.00
+## wdi_gdpcappppcon2017         0.00   0.00     0.78   0.44
+## --------------------------------------------------------
+```
+
+---
+
+``` r
+summ(lm(p_polity2 ~ wdi_internet + I(log(wdi_gdpcappppcon2017)), data=qualityofgovernment))
+```
+
+```
+## MODEL INFO:
+## Observations: 4229 (11137 missing obs. deleted)
+## Dependent Variable: p_polity2
+## Type: OLS linear regression 
+## 
+## MODEL FIT:
+## F(2,4226) = 257.57, p = 0.00
+## R² = 0.11
+## Adj. R² = 0.11 
+## 
+## Standard errors:OLS
+## -----------------------------------------------------------------
+##                                       Est.   S.E.   t val.      p
+## ---------------------------------- ------- ------ -------- ------
+## (Intercept)                          -7.33   0.83    -8.82   0.00
+## wdi_internet                          0.03   0.00     7.62   0.00
+## I(log(wdi_gdpcappppcon2017))          1.14   0.10    11.73   0.00
+## -----------------------------------------------------------------
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
