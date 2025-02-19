@@ -8,6 +8,8 @@
 
 * [Tuesday, April 1st: Asking Data Science Questions in Political Science](https://jnseawright.github.io/PS312/1datasciencequestions.html#1)
 * [Tuesday, April 1st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5uOxFTWDWGpl0V0)
+* [Wednesday, April 2nd: R](https://jnseawright.github.io/PS312/2Rfun.html#1)
+* [Wednesday, April 2nd Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_efi0mHG8ElB7lUq)
 
 ### Lab Assignments
 
