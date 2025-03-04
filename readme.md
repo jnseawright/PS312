@@ -14,6 +14,12 @@
 * [Monday, April 7th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_cuodCnWEeSHdEjQ)
 * [Wednesday, April 9th: Finding or Creating Data](https://jnseawright.github.io/PS312/4findingdata.html#1)
 * [Wednesday, April 9th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_ezlmda6huRyBJqu)
+* [Monday, April 14th: Good Description](https://jnseawright.github.io/PS312/5gooddescription.html#1)
+* [Monday, April 14th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_0czrH8rZ0tjLTRI)
+* [Wednesday, April 16th: Significance Tests in R](https://jnseawright.github.io/PS312/6significancetests.html#1)
+* [Wednesday, April 16th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_009yuQHaqmcudUy)
+* [Monday, April 21st: Regression Everywhere](https://jnseawright.github.io/PS312/7regressioneverywhere.html#1)
+* [Monday, April 21st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_6g0rfQoUewzlMMe)
 
 ### Lab Assignments
 
