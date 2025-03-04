@@ -1,0 +1,111 @@
+---
+title: "3: What is Causation, Anyway?"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "April 7, 2025"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.6rem"
+)
+```
+
+---
+### The Four Questions
+
+1.  Is there a relationship between $X$ and $Y$?
+
+2.  Could $Y$ cause $X$?
+
+3.  Is there a pathway linking $X$ and $Y$?
+
+4.  Are there *confounding variables*?
+
+---
+### Controlling for Confounders
+
+**Controlling for a confounder** is choosing a set of cases that all
+have the same score on the confounding variable and looking at the
+relationship between the IV and the DV in only those cases.
+
+---
+### Problems with Controlling for Confounders
+
+-   You can only control for variables that you actually think of
+    controlling for.
+
+-   If you control for too many variables, you may not have very many
+    cases left in each category.
+
+-   Post-treatment controls create bias.
+
+
+---
+![image](goodcontrol.jpg)
+
+---
+![image](irrelevantcontrol1.jpg)
+
+---
+![image](harmfulcontrol1.jpg)
+
+---
+![image](harmfulcontrol2.jpg)
+
+---
+![image](harmfulcontrol3.jpg)
+
+---
+### Is Salt Bad for You?
+
+---
+![Salt and Blood Pressure, Intersalt
+Data](FreedmanPetitti.png)
+
