@@ -20,6 +20,18 @@
 * [Wednesday, April 16th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_009yuQHaqmcudUy)
 * [Monday, April 21st: Regression Everywhere](https://jnseawright.github.io/PS312/7regressioneverywhere.html#1)
 * [Monday, April 21st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_6g0rfQoUewzlMMe)
+* [Wednesday, April 23rd: Regression in R](https://jnseawright.github.io/PS312/8regressioninR.html#1)
+* [Wednesday, April 23rd Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_bqg7uhXszE2J0x0)
+* [Monday, April 28th: Choosing Control Variables](https://jnseawright.github.io/PS312/9choosingcontrolvariables.html#1)
+* [Monday, April 28th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_2gdUkJkoJNSUvGe)
+* [Wednesday, April 30th: Regression Extensions](https://jnseawright.github.io/PS312/10regressionextensions.html#1)
+* [Wednesday, April 30th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_1GgDHCUQmqx4ix0)
+* [Monday, May 5th: Regression and Non-Linearity](https://jnseawright.github.io/PS312/11nonlinearity.html#1)
+* [Monday, May 5th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_eqCQENXYFuIu4JM)
+* [Wednesday, May 7th: More Advanced Social-Science Designs](https://jnseawright.github.io/PS312/12moreadvanced.html#1)
+* [Wednesday, May 7th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5iNzHMbANuT1x4i)
+* [Monday, May 12th: Difference-in-Differences Designs](https://jnseawright.github.io/PS312/13diffindiff#1)
+* [Monday, May 12th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_2nTx4eoN8j9zmHs)
 
 ### Lab Assignments
 
