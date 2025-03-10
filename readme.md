@@ -32,6 +32,12 @@
 * [Wednesday, May 7th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5iNzHMbANuT1x4i)
 * [Monday, May 12th: Difference-in-Differences Designs](https://jnseawright.github.io/PS312/13diffindiff#1)
 * [Monday, May 12th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_2nTx4eoN8j9zmHs)
+* [Wednesday, May 14th: Synthetic Controls](https://jnseawright.github.io/PS312/14synthetic.html#1)
+* [Wednesday, May 14th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_5bzXGzsObpqVVBA)
+* [Monday, May 119th: Social Science Transparency Practices](https://jnseawright.github.io/PS312/15transparencypractices.html#1)
+* [Monday, May 19th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_6YkyANEbrXuhgNw)
+* [Wednesday, May 21st: Writing Quantitative Social Science](https://jnseawright.github.io/PS312/16writingquant.html#1)
+* [Wednesday, May 21st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_8IVrjz9d0vmi1VQ)
 
 ### Lab Assignments
 
