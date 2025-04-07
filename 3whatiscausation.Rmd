@@ -88,24 +88,24 @@ relationship between the IV and the DV in only those cases.
 
 
 ---
-![image](goodcontrol.jpg)
+![image](images/goodcontrol.jpg)
 
 ---
-![image](irrelevantcontrol1.jpg)
+![image](images/irrelevantcontrol1.jpg)
 
 ---
-![image](harmfulcontrol1.jpg)
+![image](images/harmfulcontrol1.jpg)
 
 ---
-![image](harmfulcontrol2.jpg)
+![image](images/harmfulcontrol2.jpg)
 
 ---
-![image](harmfulcontrol3.jpg)
+![image](images/harmfulcontrol3.jpg)
 
 ---
 ### Is Salt Bad for You?
 
 ---
 ![Salt and Blood Pressure, Intersalt
-Data](FreedmanPetitti.png)
+Data](images/FreedmanPetitti.png)
 
