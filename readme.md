@@ -20,7 +20,7 @@
 * [Wednesday, April 16th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_009yuQHaqmcudUy)
 * [Monday, April 21st: Regression Everywhere](https://jnseawright.github.io/PS312/7regressioneverywhere.html#1)
 * [Monday, April 21st Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_6g0rfQoUewzlMMe)
-* [Wednesday, April 23rd: Regression in R](https://jnseawright.github.io/PS312/8regressioninR.html#1)
+* [Wednesday, April 23rd: Regression in R](https://jnseawright.github.io/PS312/8regressioninr.html#1)
 * [Wednesday, April 23rd Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_bqg7uhXszE2J0x0)
 * [Monday, April 28th: Choosing Control Variables](https://jnseawright.github.io/PS312/9choosingcontrolvariables.html#1)
 * [Monday, April 28th Activity](https://northwestern.az1.qualtrics.com/jfe/form/SV_2gdUkJkoJNSUvGe)
