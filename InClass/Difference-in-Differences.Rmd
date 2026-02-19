@@ -1,0 +1,43 @@
+---
+title: "Difference-In-Differences In-Class Activity PS 312"
+author: "Jaye Seawright"
+date: "April 23, 2026"
+output: html_document
+---
+
+
+Your task for today is to use a difference-in-differences model to test whether transition to democracy increases the risk of interstate war. 
+
+Start by loading the quality of governance data into R Studio:
+
+```{r read data etc}
+#Add libraries to load and process data
+#install.packages("devtools")
+#devtools::install_github("ropengov/rqog")
+library(rqog)
+#Read in the Quality of Governance dataset
+qog_ts <- read_qog(which_data = "standard", data_type = "time-series")
+```
+
+Use the codebook on the QOG website to find a variable that measures interstate military conflict and a variable that measures a country's level of democracy. Make sure that your variable measuring democracy is coded as 0 for authoritarian country-years and 1 for democratic country-years. This may require some modification.
+
+Carry out a difference-in-differences analysis using code modeled after the example below. (I am using different treatment and outcome variables, obviously.)
+ 
+
+```{r example difindif}
+qog_ts$central_bank_independence <- 1*(qog_ts$cbi_cbiu>0.5)
+
+library(fect)
+
+example_difindif <- fect(wdi_unempilo ~ central_bank_independence, index = c("cname", "year"), 
+                         force = "two-way", data = qog_ts, method="ife",
+                         min.T0=1, se=1, na.rm = TRUE)
+
+example_difindif
+```
+
+
+Your job is to assemble an analysis that makes sense to you as a group, interpret the results, and decide together what it does and does not tell us about the causal relationship between democracy and interstate conflict. Send your results and a paragraph you write about your conclusions to your TA!
+
+
+

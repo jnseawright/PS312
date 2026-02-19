@@ -1,0 +1,87 @@
+---
+title: "Regression In-Class Activity PS 312"
+author: "Jaye Seawright"
+date: "April 14, 2026"
+output: html_document
+---
+
+```{r read data etc}
+#Add libraries to load and process data
+library(readr)
+library(tidyverse)
+#This library contains a bunch of datasets, including one we will use about US states
+library(poliscidata)
+
+#Read in two datasets from github
+usterrorism <- read_csv("https://raw.githubusercontent.com/jnseawright/ps405/refs/heads/main/Data/usterrorism.csv")
+
+election2016 <- read_csv("https://raw.githubusercontent.com/jnseawright/ps405/refs/heads/main/Data/election2016.csv")
+
+#Count the number of terrorist attacks per state since 2016
+stateattacklist <- table(usterrorism$provstate[usterrorism$iyear>2016])
+
+election2016$Stateterrorism <- 0
+
+for (i in 1:nrow(election2016)){
+    if (election2016$State[i] %in% names(stateattacklist))
+        election2016$Stateterrorism[i] <- stateattacklist[election2016$State[i] ==names(stateattacklist)]
+}
+
+#By default, the vote shares have percentage signs, which makes them be interpreted as words.
+#Let's fix that.
+election2016$TrumpShare <- as.numeric(str_replace(election2016$TrumpShare, "%", ""))
+
+election2016$D12Margin <- as.numeric(str_replace(election2016$D12Margin, "%", ""))
+
+election2016$D16Margin <- as.numeric(str_replace(election2016$D12Margin, "%", ""))
+
+#Let's make sure the state names match between our datasets
+states$State <- states$state
+
+states <- states %>%
+  mutate(State = trimws(as.character(State)))
+
+states <- states %>%
+  mutate(State_key = str_to_lower(str_replace_all(State, "[^a-z]", "")))
+
+election2016 <- election2016 %>%
+  mutate(State_key = str_to_lower(str_replace_all(State, "[^a-z]", "")))
+
+#Let's finish joining our data.
+election_terrorism_data <- states %>%
+  left_join(election2016, by = "State_key")
+
+
+
+```
+
+## Data Explanation
+
+The election_terrorism_data dataset created by the code above combines three different collections of information. First is information from the states dataset that gives us access to a large number of background variables about states' political, social, and economic differences from the years before the start of the Trump period in US political history. 
+
+```{r states dataset info}
+? states
+```
+
+Second is information from official electoral returns about Clinton and Trump's popular vote in 2016 in each state, as well as the percentage of the popular vote that Obama and Romney won in 2012. Third is an aggregated count of terrorist attacks in each US state since Trump's election, drawing on data from [the Global Terrorism Database](https://www.start.umd.edu/gtd-download).
+
+Your task as a group is to put together a compelling regression analysis describing and exploring the relationship between Trump's 2016 vote share at the state level and the number of terrorist attacks that a state has experienced subsequently. Control for whatever variables make sense, and produce plots and tables to capture your results. A model to start with might be the following code.
+
+```{r bivariate example}
+too_simple <- lm(Stateterrorism ~ TrumpShare, data=election_terrorism_data)
+
+library(modelsummary)
+library(ggeffects)
+modelsummary(too_simple, stars = TRUE, output = "markdown")
+
+pred_data <- ggpredict(too_simple, terms = "TrumpShare")
+
+
+plot(pred_data) +   
+  labs(title = "Trump Vote Share and Terrorism: Adjusted Predictions",
+       x = "Trump Share (%)", y = "Predicted State Terrorism") +
+  theme_minimal()
+
+```
+
+Your job is to assemble an analysis that makes sense to you as a group, interpret the results, and decide together what it does and does not tell us about the relationship between these electoral results and patterns of terrorism. Send your table, figure, and a paragraph you write about your conclusions to your TA!
