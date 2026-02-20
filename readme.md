@@ -130,6 +130,12 @@ If your group did not present on this day, please send your TA a summary of your
 
 If your group did not present on this day, please send your TA a summary of your participation. This may take three forms. First, if you were a discussant for one of the presentations, you can mention that. Second, if you participated in one or more Q&A sessions, describe your participation. Third, because there may not always be time for everyone to actively speak in every session, you can write a couple of paragraphs discussing what you saw as the strengths and weaknesses of today's presentations.
 
-*Tuesday, June 2nd: In-Class Presentations Day 4*
+### Labs
 
-If your group did not present on this day, please send your TA a summary of your participation. This may take three forms. First, if you were a discussant for one of the presentations, you can mention that. Second, if you participated in one or more Q&A sessions, describe your participation. Third, because there may not always be time for everyone to actively speak in every session, you can write a couple of paragraphs discussing what you saw as the strengths and weaknesses of today's presentations.
+*  [Lab 1: Due April 17](https://jnseawright.github.io/PS312/Labs/Lab1.html)
+*  [Lab 2: Due April 24](https://jnseawright.github.io/PS312/Labs/Lab2.html)
+*  [Lab 3: Due May 1](https://jnseawright.github.io/PS312/Labs/Lab3.html)
+*  [Lab 4: Due May 8](https://jnseawright.github.io/PS312/Labs/Lab4.html)
+*  [Lab 5: Due May 15](https://jnseawright.github.io/PS312/Labs/Lab5.html)
+*  [Lab 6: Due May 22](https://jnseawright.github.io/PS312/Labs/Lab6.html)
+*  [Lab 7: Due May 29](https://jnseawright.github.io/PS312/Labs/Lab7.html)
