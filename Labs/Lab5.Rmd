@@ -23,16 +23,14 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: May 9, 2025
-
-### Main Causal Inference
-
-Put together an initial version of your main strategy for causal inference. If you are using control variables, run a multivariate regression using one control variable for each identified confounder (to the best of your ability). If you are using a different strategy, execute it. What causal effect estimate do you find? Is it similar to, or different from, the bivariate results? Are the findings surprising? Why or why not?
+# Due Date: May 15, 2026
 
 ### How Big Is Your Causal Effect?
 
 Using your causal effect estimate, figure out how big a difference your main independent variable can make. If your main variable is dichotomous, then the only possible change on the variable is 1, so figure out how big an effect a 1-unit change has on the outcome (taking into account any interaction terms). If your main independent variable is continuous, figure out how far apart the 25th and 75th percentiles are on that variable, and figure out how big an effect would be produced by a change of that size. Out of the overall range of your dependent variable, how much can you cover with this effect?
 
+It is often useful to use graphs to visualize the size of causal effects. Produce an attractive and professional visualization that represents the magnitude of your causal effect.
+
 ### Test Your Assumptions
 
-What can you do to test the assumptions behind your statistical model? Identify at least three assumptions, provide statistical tests, and explain the results.
+What can you do to test the assumptions behind your statistical model? Identify at least two assumptions, provide statistical tests, and explain the results.

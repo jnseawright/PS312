@@ -23,20 +23,14 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 25, 2025
+# Due Date: May 1, 2026
 
-### Summarize Your IV and DV
+### Choose a Causal Inference Strategy
 
-At this point, you should have a data source that measures your main cause (IV) and your outcome (DV). Summarize the distributions of both variables, in ways that make sense given whether they are categorical or continuous. Are there any interesting details?
+From the research designs we've discussed, choose a strategy for causal inference. Describe your choice and explain why this is a good fit for your problem. Does your existing data set contain what you need for this strategy? If not, search for other data that will provide what you need.
 
 ### Jointly Plot Your IV and DV
 
 Plot your two main variables together in a way that shows as much information about their relationship as possible. Describe what you can see and what that means for your thinking about your research question.
 
-### Bivariate Relationship
 
-Carry out a statistical analysis of the bivariate relationship between your IV and your DV, using an appropriate significance test or regression. Explain the results and clarify their substantive meaning with respect to your research question.
-
-### Initial Findings
-
-Based on the initial data exploration in this lab, what are your initial findings about your main research question?

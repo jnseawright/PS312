@@ -78,8 +78,7 @@ Class activity: We will brainstorm a list of topics that social scientists study
 
 Before class, read: Li, Chapters 1-2
 
-If you are new to R, work through the introductory
-exercises.
+If you are new to R, work through the [online introduction](https://rpubs.com/odenipinedo/introduction-to-R).
 
 Class activity:  Get together with your group from last time. Your task is to recreate one of the graphs [this web tutorial](https://rforpoliticalscience.com/2024/04/04/how-to-download-and-graph-the-of-democracy-v-dem-dataset-in-r/), either following its steps exactly or changing one or more of the variables to ask a question from the V-DEM data that interests your group. (Focus on producing a clear, static graph for this assignment.) Each group member should send the resulting image to their TA along with a brief paragraph describing the most difficult part of producing it.
 

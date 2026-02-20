@@ -1,0 +1,30 @@
+---
+title: "Political Science 312 Homework 4"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: May 8, 2026
+
+### Carry Out Your Causal Inference Strategy
+
+With your data, and using the skills we've practiced in class, carry out your causal inference strategy, producing initial tables and plots. What problems do you run into? What conclusions can you reach? If you run into problems, what are your plans to resolve them?

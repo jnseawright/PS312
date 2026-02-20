@@ -1,5 +1,5 @@
 ---
-title: "Political Science 312 Homework 6"
+title: "Political Science 312 Homework 7"
 date: "`r Sys.Date()`"
 output:
   html_document:
@@ -23,9 +23,8 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: May 16, 2025
+# Due Date: May 29, 2026
 
-### Interactions and Nonlinearity
+### Next Steps
 
-Does your regression have any interactions and/or nonlinearity? Try a model with at least one of these features, test its significance relative to the linear model from the last lab, and interpret your results.
-
+What are the next steps you would like to see taken to further your research agenda and solidify our knowledge given your contribution? Identify at least three directions scholars could productively go in order to build on your work or address the limitations of your project.

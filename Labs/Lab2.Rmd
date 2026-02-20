@@ -1,0 +1,36 @@
+---
+title: "Political Science 312 Homework 2"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: April 24, 2026
+
+### Finding Data
+
+In your last lab, you should have identified a research question that was interesting to you, and you should have formulated it as a causal question about the relationship between an independent and a dependent variable. In this lab, you should begin by identifying data sources that include at least measures of your independent and dependent variables. Please find a data source, which includes a measure of *both* variables that you care about. Provide a link to the data, as well as a brief description.
+
+Note that your data source should include the raw data set --- a spreadsheet or table including full values for each case, not just summary statistics or statistical analyses. You need to be able to do your own statistical work from scratch!
+
+### Initial Regression
+
+Carry out a regression analysis to get an initial sense of the relationship involved in your question of interest. What do you learn?
