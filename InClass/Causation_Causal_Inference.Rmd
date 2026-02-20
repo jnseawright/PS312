@@ -1,0 +1,23 @@
+---
+title: "Causation In-Class Activity PS 312"
+author: "Jaye Seawright"
+date: "April 9, 2026"
+output: html_document
+---
+
+Construct a directed acyclic graph (DAG) representing your ideas about the causal factors involved in your team's research question. These are diagrams that quantitative scholars use all the time to represent causal ideas. Here is an example of how to make them:
+
+```{r read data etc}
+library(tidyverse)
+library(dagitty)
+
+g1 <- dagitty( "dag {
+    Age -> Subculture -> BeingAwesome -> EnrollIn312
+    Subculture <- RegionOfBirth -> TechSkills
+    FearOfComputers -> TechSkills -> EnrollIn312
+    BeingAwesome <- Age -> FearOfComputers <-> EnrollIn312
+}")
+plot(graphLayout(g1))
+```
+
+Each group member should send the DAG to their TA together with a paragraph or two explaining what each element of the image means.

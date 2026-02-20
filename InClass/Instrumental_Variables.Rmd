@@ -5,101 +5,41 @@ date: "May 5, 2026"
 output: html_document
 ---
 
-
-Is ideological polarization in the US happening equally on both sides of the party system, or do the parties behave differently in terms of their distance from the ideological middle? Let's try to get an answer to this that cleans up some of the background noise by using a regression-discontinuity design. We'll compare close elections that Republicans just barely win to close elections that Democrats just barely win and look at the absolute value of the resulting ideological distance from the middle of the elected representatives.
+Does higher turnout help Democrats, Republicans, both, or neither? Let's try to find out by using bad weather as an instrumental variable to predict turnout. Run a standard regression predicting Republican vote share based on turnout, and also an instrumental-variables analysis adding rain- and snow-fall as instruments. Are there differences between the two? Are there signs of trouble for the instruments, or do they seem reasonable?
 
 Start by loading relevant data:
 
 ```{r read data etc}
 library(tidyverse)
-#Download data on US House elections
-housevotes <- read.csv("https://raw.githubusercontent.com/jnseawright/PS312/refs/heads/main/Data/housevotes.csv")
-
-#Discard data about third-party and independent candidacies
-housevotes <- housevotes %>% filter(party %in% c("DEMOCRAT","REPUBLICAN"))
-
-#Calculate the two-party vote margin for each district in each cycle
-election_totals <- housevotes %>%
-  group_by(year, state, district) %>%
-  summarise(
-    dem_votes = sum(candidatevotes[party == "DEMOCRAT"], na.rm = TRUE),
-    rep_votes = sum(candidatevotes[party == "REPUBLICAN"], na.rm = TRUE),
-    .groups = "drop"
-  ) %>%
-  mutate(
-    two_party_total = dem_votes + rep_votes,
-    # Compute Democratic share of two‑party vote (set to NA if no votes at all)
-    dem_two_party_share = if_else(two_party_total > 0,
-                                  dem_votes / two_party_total,
-                                  NA_real_),
-    # Margin: Democratic share minus Republican share = 2*dem_share - 1
-    two_party_margin = 2 * dem_two_party_share - 1
-  )
-
-#Read in data about US House members' ideology. These data come from https://voteview.com/data Information about each variable is here: https://voteview.com/articles/data_help_members
-Hall_members <- read.csv("https://raw.githubusercontent.com/jnseawright/PS312/refs/heads/main/Data/Hall_members.csv")
-
-#Filter the time period for the ideology variables to match our election data.
-members_1970sforward <- Hall_members %>% filter(congress >= 95)
-
-# Create a named vector mapping ICPSR codes (as integers) to uppercase state names
-icpsr_state_names <- c(
-  "1"  = "CONNECTICUT",        "2"  = "MAINE",
-  "3"  = "MASSACHUSETTS",      "4"  = "NEW HAMPSHIRE",
-  "5"  = "RHODE ISLAND",       "6"  = "VERMONT",
-  "11" = "DELAWARE",           "12" = "NEW JERSEY",
-  "13" = "NEW YORK",           "14" = "PENNSYLVANIA",
-  "21" = "ILLINOIS",           "22" = "INDIANA",
-  "23" = "MICHIGAN",           "24" = "OHIO",
-  "25" = "WISCONSIN",          "31" = "IOWA",
-  "32" = "KANSAS",             "33" = "MINNESOTA",
-  "34" = "MISSOURI",           "35" = "NEBRASKA",
-  "36" = "NORTH DAKOTA",       "37" = "SOUTH DAKOTA",
-  "40" = "VIRGINIA",           "41" = "ALABAMA",
-  "42" = "ARKANSAS",           "43" = "FLORIDA",
-  "44" = "GEORGIA",            "45" = "LOUISIANA",
-  "46" = "MISSISSIPPI",        "47" = "NORTH CAROLINA",
-  "48" = "SOUTH CAROLINA",     "49" = "TEXAS",
-  "51" = "KENTUCKY",           "52" = "MARYLAND",
-  "53" = "OKLAHOMA",           "54" = "TENNESSEE",
-  "55" = "DISTRICT OF COLUMBIA", "56" = "WEST VIRGINIA",
-  "61" = "ARIZONA",            "62" = "COLORADO",
-  "63" = "IDAHO",              "64" = "MONTANA",
-  "65" = "NEVADA",             "66" = "NEW MEXICO",
-  "67" = "UTAH",               "68" = "WYOMING",
-  "71" = "CALIFORNIA",         "72" = "OREGON",
-  "73" = "WASHINGTON",         "81" = "ALASKA",
-  "82" = "HAWAII"
-)
-
-# Function to convert numeric codes to state names
-icpsr_to_state <- function(codes) {
-  # Convert codes to character for safe indexing (handles both integer and factor input)
-  char_codes <- as.character(codes)
-  # Return mapped names, with NA for any unmapped codes
-  unname(icpsr_state_names[char_codes])
-}
-
-members_1970sforward$state_name <- icpsr_to_state(members_1970sforward$state_icpsr)
-
-#Calculate which Congress number each election year chose
-election_totals$congress <- floor((election_totals$year - 1789) / 2) + 2
-
-#Combine the datasets together
-elections_and_ideology <- election_totals %>% left_join(members_1970sforward, 
-                                                        by = c("state" = "state_name", 
-                                                               "district" = "district_code",
-                                                               "congress" = "congress"))
+#Download data on US House elections and weather
+#The data come from this collection: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ATSOYF
+rainfallelections <- read.csv("https://raw.githubusercontent.com/jnseawright/PS312/refs/heads/main/Data/rainfallelections.csv")
 ```
 
-At this point, you're ready to start carrying out your regression-discontinuity design. Fill in the sample code below with the outcome variable and the assignment variable, as makes sense for your analysis. 
+There is no comprehensive codebook for these data, but some of the most important variables are as follows (ignore the "label var" stuff, which is residual STATA code from the authors' data analysis about ten years ago): 
 
-```{r example regression discontinuity, eval=FALSE}
-library(rdrobust)
-ideology_party <- rdrobust(abs(PUT YOUR DEPENDENT VARIABLE HERE), PUT THE VARIABLE THAT SPLITS CASES BETWEEN DEMOCRATIC AND REPUBLICAN WINNERS HERE)
-summary(ideology_party)
+label var de_Rain_Dev "Election Day Rain - Normal Rain"
+label var de_Snow_Dev "Election Day Snow - Normal Snow"
+label var REP "ln(REP Share/Absentee)"
+label var DEM "ln(DEM Share/Absentee)"
+label var rep2 "Republican Share"
+label var dem2 "Democratic Share"
+label var abs2 "Absentee Ratio"
+label var Rain_Dev "Deviation from Normal Rainfall"
+label var GOPVoteShare_3MA "Average Republican Support"
+label var Turnout_Lag "Lag of Turnout"
+label var PcntBlack "% Black Population"
+label var ZPcntHSGrad "% High School Graduates"
+label var FarmsPerCap "% Farmer"
+label var Unemploy "% Unemployment"
+label var AdjIncome "Average County Income"
 
-rdplot(abs(elections_and_ideology$PUT YOUR DEPENDENT VARIABLE HERE), elections_and_ideology$PUT THE VARIABLE THAT SPLITS CASES BETWEEN DEMOCRATIC AND REPUBLICAN WINNERS HERE)
+
+At this point, you're ready to start carrying out your instrumental-variables design. Fill in the sample code below with the outcome variable, the treatment variable, and the instrument, as well as any control variables that make sense for your analysis. 
+
+```{r example IV, eval=FALSE}
+voteturnout.tsls <- tsls(OUTCOME ~ TREATMENT + CONTROLS, ~ INSTRUMENT + CONTROLS, data=rainfallelections)
+summary(voteturnout.tsls)
 ```
 
-As a group, evaluate the credibility of your results and interpret their meaning. Send your figure and a paragraph explaining your estimator and explaining your results to your TA.
+As a group, evaluate the credibility of your results and interpret their meaning. Send your results and a paragraph explaining your estimator and explaining your results to your TA.
