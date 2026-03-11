@@ -14,7 +14,7 @@ Class activity: We will brainstorm a list of topics that social scientists study
 
 *Tuesday, April 7th: Getting Started with R*
 
-Before class, read: Li, Chapters 1-2
+Before class, read: [Li, Chapters 1-2](InClass/LiCh1and2.pdf)
 
 If you are new to R, work through the [online introduction](https://rpubs.com/odenipinedo/introduction-to-R).
 
