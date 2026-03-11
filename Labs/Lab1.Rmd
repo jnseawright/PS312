@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: April 17, 2026
 
+[Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730849)
+
 Working together as a group, please answer the following questions. Each group member should submit a copy, but it is okay for the writing to be the same across group members.
 
 # Problem 1: Choosing a Causal Question

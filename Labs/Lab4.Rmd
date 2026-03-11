@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 8, 2026
 
+[Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730852)
+
 ### Carry Out Your Causal Inference Strategy
 
 With your data, and using the skills we've practiced in class, carry out your causal inference strategy, producing initial tables and plots. What problems do you run into? What conclusions can you reach? If you run into problems, what are your plans to resolve them?

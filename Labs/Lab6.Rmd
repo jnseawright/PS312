@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 22, 2026
 
+[Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730881)
+
 ### Answer Your Main Question
 
 Given the work you have done in the weeks up until now, your group should be in a position to answer your main question. Write an abstract for an article describing your results.

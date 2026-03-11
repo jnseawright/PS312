@@ -25,6 +25,8 @@ set.seed(27)             # make random results reproducible
 
 # Due Date: May 29, 2026
 
+[Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730884)
+
 ### Next Steps
 
 What are the next steps you would like to see taken to further your research agenda and solidify our knowledge given your contribution? Identify at least three directions scholars could productively go in order to build on your work or address the limitations of your project.
