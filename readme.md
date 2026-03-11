@@ -18,21 +18,31 @@ Before class, read: Li, Chapters 1-2
 
 If you are new to R, work through the [online introduction](https://rpubs.com/odenipinedo/introduction-to-R).
 
+It may be helpful to have a video introduction; I recommend [this one](https://www.youtube.com/watch?v=eYv_UjKwQ3I).
+
 Class activity:  Get together with your group from last time. Your task is to recreate one of the graphs [this web tutorial](https://rforpoliticalscience.com/2024/04/04/how-to-download-and-graph-the-of-democracy-v-dem-dataset-in-r/), either following its steps exactly or changing one or more of the variables to ask a question from the V-DEM data that interests your group. (Focus on producing a clear, static graph for this assignment.) Each group member should send the resulting image to their TA along with a brief paragraph describing the most difficult part of producing it.
 
 *Thursday, April 9th: Causation and Causal Inference*
 
 Before class, read The Effect, Chapters 5-7.
 
-Class activity: Construct a directed acyclic graph (DAG) representing your ideas about the causal factors involved in your team's research question. Each group member should send the DAG to their TA together with a paragraph or two explaining what each element of the image means. There is [a page with some resources to help with making DAGs in R](https://jnseawright.github.io/PS312/InClass/Causation_Causal_Inference.html).
+For some extra explanation of the idea of multivariate causation and how that relates to graphs, consider watching [this video](https://www.youtube.com/watch?v=3bUZU23gAxw).
+
+For a nice resource on how to build DAGs in R, consider reading through [these slides](https://lfoswald.github.io/2021-spring-stats2/materials/session-3/03-online-tutorial/#directed-acyclic-graphs-dags-1).
+
+Class activity: Construct a directed acyclic graph (DAG) representing your ideas about the causal factors involved in your team's research question. Each group member should send the DAG to their TA together with a paragraph or two explaining what each element of the image means. If you need help making DAGs in R, use the class [DAG help page](https://jnseawright.github.io/PS312/InClass/Causation_Causal_Inference.html) or review [the slides](https://lfoswald.github.io/2021-spring-stats2/materials/session-3/03-online-tutorial/#directed-acyclic-graphs-dags-1) that were linked in the before-class reading section.
 
 *Tuesday, April 14th: Regression*
 
 Before class, read The Effect, Chapters 4 and 13.
 
+For video explanation, consider these discussions of [linear regression](https://www.youtube.com/watch?v=7ArmBVF2dCs), [multiple regression](https://www.youtube.com/watch?v=zITIFTsivN8), and [how to do regression in R](https://www.youtube.com/watch?v=hokALdIst8k).
+
 Class activity: How does electoral support for Donald Trump in 2016 relate to the pattern of domestic terrorism in the US in subsequent years? Is there more terrorism in Trump-supporting areas or in areas that oppose Trump? Alternatively, is terrorism unrelated to voting patterns? Use the available data and your knowledge of regression to provide the best analysis of these questions that you can. Produce one table and one figure to summarize your key findings. Each group member should send these together with a paragraph-length explanation to their TA.  There is [a page with some resources to help with loading the data and setting up regression](https://jnseawright.github.io/PS312/InClass/Regression.html).
 
 *Thursday, April 16th: Choosing Control Variables*
+
+Before class, watch [this video about back-door paths and controls](https://www.youtube.com/watch?v=IajzIKW518M).
 
 Class activity: Elaborate the group's DAG to include appropriate control variables. Show at least three variables that make sense as confounders. Each student should send the DAG to their TA. Include as well an explanation for why one of the variables meets the definition of a confounder; also explain why one variable the group chose not to include does not meet that definition.
 
@@ -40,17 +50,21 @@ Class activity: Elaborate the group's DAG to include appropriate control variabl
 
 Before class, read The Effect, Chapters 18-21
 
+Here is [a quick video explanation of the idea of natural experiments in political science](https://www.youtube.com/watch?v=1nt8ATK3s-k). Here is a helpful and short, if a bit older, [video introduction to regression-discontinuity designs](https://www.youtube.com/watch?v=gLAlb78p0Fk), [instrumental variables](https://www.youtube.com/watch?v=J2BMFBMO14o), and [difference-in-differences](https://www.youtube.com/watch?v=XFqFH97bDy4).
+
 Class activity: For your group's research question, choose one of the designs we read about/discussed and figure out a way you can use it to answer your question! Each student should write a paragraph to their TA explaining the design they have chosen and why they think it can work.
 
 *Thursday, April 23rd: Difference-in-Differences*
 
 Before class, read [https://mixtape.scunning.com/09-difference_in_differences](https://mixtape.scunning.com/09-difference_in_differences)
 
+I also recommend video explanations of [basic difference-in-differences](https://www.youtube.com/watch?v=95HxUdn-BJg), [parallel trends](https://www.youtube.com/watch?v=ihIWuC6ULjo), and [difference-in-differences with staggered treatments](https://www.youtube.com/watch?v=hu2nDbnpALA).
+
 Class activity: Does transitioning to democracy increase the chance of
 military conflict? We can study this with a difference-in-differences
 design using historical data on countries' regimes and conflicts, and
 you get to do just that. Test as many of your assumptions as you can,
-and explain what you learn! There is [a page with some resources to help with loading the data and setting up your difference-in-differences analysis](https://jnseawright.github.io/PS312/InClass/Difference-in-Differences.html).
+and explain what you learn! If you need help, you can access the [class help sheet on R for difference-in-differences analysis](https://jnseawright.github.io/PS312/InClass/Difference-in-Differences.html). You may also consider looking at this [R tutorial about difference-in-differences for simultaneous treatments](https://rpubs.com/phle/r_tutorial_difference_in_differences) and potentially this [much more thorough if more advanced discussion of difference-in-differences in R](https://mike-data-analysis.share.connect.posit.cloud/sec-difference-in-differences.html).
 
 *Tuesday, April 28th: Synthetic Control*
 
