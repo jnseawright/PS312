@@ -70,24 +70,30 @@ and explain what you learn! If you need help, you can access the [class help she
 
 Before class, read [https://mixtape.scunning.com/10-synthetic_controls](https://mixtape.scunning.com/10-synthetic_controls).
 
+Here is [a helpful and thorough video introduction to synthetic controls](https://www.youtube.com/watch?v=vmx3R8emVjQ).
+
 Class activity: Did Brexit in 2016 set the UK on a path of democratic
 backsliding? We can study this with a synthetic control design using
 historical data on countries' regimes, and you get to do just that.
 Present graphs and other results to explain your analysis, showing the
 quality of the control before the treatment as well as the size of any
-effect afterwards. There is [a page with some resources to help with loading the data and setting up your synthetic control analysis](https://jnseawright.github.io/PS312/InClass/Synthetic_Control.html).
+effect afterwards. If you need resources to help with coding issues, you can access the [class help file on synthetic control analysis in R](https://jnseawright.github.io/PS312/InClass/Synthetic_Control.html). You may also reference [this more detailed and general discussion of of synthetic controls in R](https://www.r-bloggers.com/2023/07/when-numbers-meet-stories-an-introduction-to-the-synthetic-control-method-in-r/).
 
 *Thursday, April 30th: Regression-Discontinuity Designs*
 
 Before class, read [https://mixtape.scunning.com/06-regression_discontinuity](https://mixtape.scunning.com/06-regression_discontinuity)
 
-Class activity: Is ideological polarization in the US happening equally on both sides of the party system, or do the parties behave differently in terms of their distance from the ideological middle? Let's try to get an answer to this that cleans up some of the background noise by using a regression-discontinuity design. We'll compare close elections that Republicans just barely win to close elections that Democrats just barely win and look at the absolute value of the resulting ideological distance from the middle of the elected representatives. Working with your group, find numerical estimates of the effect of switching party within this design, significance tests, and a plot that visualizes the results, the underlying data, and the design. Send these, together with a brief description of your conclusions, to your TA. There is [a page with some resources to help with loading the data and setting up your regression-discontinuity design](https://jnseawright.github.io/PS312/InClass/Regression_Discontinuity_Designs.html).
+For video discussion, watch this [introductory video on regression-discontinuity designs](https://www.youtube.com/watch?v=5FM4-xbaS58), this one on [estimating RDD effects](https://www.youtube.com/watch?v=FPBQL0OKmI0), this one on [adjustments to RDD](https://www.youtube.com/watch?v=3HazJ8Tv6d0), and this one on [checking RDD assumptions](https://www.youtube.com/watch?v=WJ7j08xVegY).
+
+Class activity: Is ideological polarization in the US happening equally on both sides of the party system, or do the parties behave differently in terms of their distance from the ideological middle? Let's try to get an answer to this that cleans up some of the background noise by using a regression-discontinuity design. We'll compare close elections that Republicans just barely win to close elections that Democrats just barely win and look at the absolute value of the resulting ideological distance from the middle of the elected representatives. Working with your group, find numerical estimates of the effect of switching party within this design, significance tests, and a plot that visualizes the results, the underlying data, and the design. Send these, together with a brief description of your conclusions, to your TA. If you need resources to help with coding issues, you can access the [class help file on regression-discontinuity designs](https://jnseawright.github.io/PS312/InClass/Regression_Discontinuity_Designs.html), or you can follow these two [video](https://vimeo.com/400826628) [tutorials](https://vimeo.com/400826660).
 
 *Tuesday, May 5th: Instrumental Variables Designs*
 
 Before class, read [https://mixtape.scunning.com/07-instrumental_variables](https://mixtape.scunning.com/07-instrumental_variables).
 
-Class activity: Does higher turnout help Democrats, Republicans, both, or neither? Let's try to find out by using bad weather as an instrumental variable to predict turnout. Run a standard regression predicting Republican vote share based on turnout, and also an instrumental-variables analysis adding rain- and snow-fall as instruments. Are there differences between the two? Are there signs of trouble for the instruments, or do they seem reasonable? Examine Google Scholar to see how popular instruments like these are in the social sciences. What, if anything, can we conclude about the validity of these as instruments from the applications you have seen? Each student should write a brief description of the findings and an evaluation of the credibility of the analysis and send the results to their TA. There is [a page with some resources to help with loading the data and setting up your instrumental variables design](https://jnseawright.github.io/PS312/InClass/Instrumental_Variables.html).
+I also recommend watching this [helpful video explanation of instrumental variables](https://www.youtube.com/watch?v=eoJUPd6104Q).
+
+Class activity: Does higher turnout help Democrats, Republicans, both, or neither? Let's try to find out by using bad weather as an instrumental variable to predict turnout. Run a standard regression predicting Republican vote share based on turnout, and also an instrumental-variables analysis adding rain- and snow-fall as instruments. Are there differences between the two? Are there signs of trouble for the instruments, or do they seem reasonable? Examine Google Scholar to see how popular instruments like these are in the social sciences. What, if anything, can we conclude about the validity of these as instruments from the applications you have seen? Each student should write a brief description of the findings and an evaluation of the credibility of the analysis and send the results to their TA. If you need help with coding, you can access the [class help page on instrumental variables in R](https://jnseawright.github.io/PS312/InClass/Instrumental_Variables.html). You can also access this [somewhat more detailed R tutorial on instrumental variables](https://rpubs.com/wsundstrom/t_ivreg).
 
 *Thursday, May 7th: Social Science Transparency Practices*
 
@@ -95,6 +101,8 @@ Before class, read Christensen, Garret, Zenan Wang, Elizabeth Levy
 Paluck, Nicholas Swanson, David Birke, Edward Miguel, and Rebecca
 Littman."Open science practices are on the rise: The state of social
 science (3S) survey." (2020). [https://escholarship.org/uc/item/0hx0207r](https://escholarship.org/uc/item/0hx0207r)
+
+It may also be productive to watch this [reasonably long but very informative talk on open social science](https://www.youtube.com/watch?v=CJ0kPic7fjA).
 
 Class activity: for a research question randomly provided for your
 group, find at least five published quantitative articles and evaluate
@@ -107,11 +115,15 @@ format of such documents.
 
 Before class, read [this overview of the problem of missing data.](https://www.publichealth.columbia.edu/research/population-health-methods/missing-data-and-multiple-imputation)
 
-Class activity: Let's look at whether missing data are a problem in the study of democracy and economic development. With your group, access the Quality of Governance (QoG) dataset, and assemble a regression model predicting countries' level of democracy based on per capita GDP and any control variables you see as relevant. Are there missing data? What are some possible solutions? Show how implementing a good solution would modify the results (if at all). Each student should send a table showing the original regression results and the results correcting for missing data to their TA, along with a paragraph discussing the extent to which missing data made a difference in the results. There is [a page with some resources to help with loading the data and setting up your missing data analysis](https://jnseawright.github.io/PS312/InClass/Missing_Data.html).
+You may also get value out of [this video explanation of categories of missingness](https://www.youtube.com/watch?v=UzsWr9X98J8), as well as [this introduction to multiple imputation](https://www.youtube.com/watch?v=f6YLnK27LyE).
+
+Class activity: Let's look at whether missing data are a problem in the study of democracy and economic development. With your group, access the Quality of Governance (QoG) dataset, and assemble a regression model predicting countries' level of democracy based on per capita GDP and any control variables you see as relevant. Are there missing data? What are some possible solutions? Show how implementing a good solution would modify the results (if at all). Each student should send a table showing the original regression results and the results correcting for missing data to their TA, along with a paragraph discussing the extent to which missing data made a difference in the results. If you need coding help, you can access [the class help page on missing data analysis](https://jnseawright.github.io/PS312/InClass/Missing_Data.html). You may also take advantage of this [somewhat more thorough tutorial on missing data and imputation in R](https://libguides.princeton.edu/R-Missingdata).
 
 *Thursday, May 14th: Common Pitfalls*
 
 Before class, read [this inventory of common mistakes in quantitative research.](https://pmc.ncbi.nlm.nih.gov/articles/PMC9477699/)
+
+You may also find [this related and partially overlapping video about statistical fallacies](https://www.youtube.com/watch?v=zzJgn12le4Q) useful.
 
 Class activity: What would it look like for your group project this quarter to make each of the mistakes we've highlighted this week? Describe the worst-case scenario where you would fall into each pitfall, and discuss how you can avoid that. As a group, create a table with three columns: the name of the pitfall, a sketch of the scenario where your project would really be subject to that criticism, and a set of precautions you can take to avoid that. Send this table to each TA together with the names of the group members.
 
@@ -127,6 +139,8 @@ AND
 [Noam Lupu and Leonid Peisakhin, 2017, "The Legacy of Political Violence
 across Generations." *American Journal of Political Science* 61 (Oct.):
 836-51.](https://doi.org/10.1111/ajps.12327)
+
+It will also be exceptionally helpful if you take the seven minutes to watch this careful video on [how to structure social-science papers](https://www.youtube.com/watch?v=6xVNhIRPTt8).
 
 We will discuss together the features of well-written quantitative
 social science, and how to structure a successful paper/article in this
