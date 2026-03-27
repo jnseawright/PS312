@@ -1,0 +1,70 @@
+---
+title: "Missing Data In-Class Activity PS 312"
+author: "Jaye Seawright"
+date: "May 12, 2026"
+output: html_document
+---
+
+Let's look at whether missing data are a problem in the study of democracy and economic development. With your group, access the Quality of Governance (QoG) dataset, and assemble a regression model predicting countries' level of democracy based on per capita GDP and any control variables you see as relevant. Are there missing data? What are some possible solutions? Show how implementing a good solution would modify the results (if at all).
+
+Start by loading relevant data:
+
+```{r read data etc}
+library(tidyverse)
+library(devtools)
+#install_github("ropengov/rqog")
+library(rqog)
+#Download the QOG data:
+qog_standard <- read_qog(which_data="standard", data_type = "time-series")
+```
+
+You can consult [the very long codebook](https://www.qogdata.pol.gu.se/data/codebook_std_jan26.pdf) for these data. It's immediately apparent that a lot of variables are included. There may in fact be too many for your computer to handle missingness during our class period. So your first task is to choose a set of variables for the model you want to estimate in the end. You need a measure of the outcome (democracy), the cause (economic development), and any control variables.
+
+In addition, select a handful of variables you think might be usefully related to the variables in your model in terms of providing information about their values when there is missingness.
+
+At this point, you're ready to start carrying out your instrumental-variables design. Fill in the sample code below with the outcome variable, the treatment variable, and the instrument, as well as any control variables that make sense for your analysis. In the example code below, I do this for an analysis focusing on democracy and carbon footprints.
+
+```{r selecting variables}
+qog_demcarbon_data <- data.frame(carbonfootprint = qog_standard$ef_carb, 
+                                 democracy = qog_standard$vdem_libdem,
+                                 gdp = qog_standard$wdi_gdpcapcon2015,
+                                 education = qog_standard$wdi_gerp,
+                                 lifeexp = qog_standard$wdi_lifexp,
+                                 fossilfuels = qog_standard$wdi_fossil,
+                                 corruption = qog_standard$bci_bci,
+                                 year = qog_standard$year,
+                                 country = qog_standard$cname)
+
+```
+
+Now look at the pattern of missingness in your smaller subset of the data:
+
+```{r pattern of missingness}
+library(naniar)
+vis_miss(qog_demcarbon_data)
+library(UpSetR)
+gg_miss_upset(qog_demcarbon_data)
+```
+
+What do you conclude? Are there some variables that seem to have more missingness than others? Can you see patterns where certain variables tend to be missing together?
+
+For my data, I notice that there is a large block of observations where all variables are simultaneously missing. They turn out to be clustered in the earlier years, which I remove. You may have a similar problem, or not, depending on your variables. It's worth exploring.
+
+```{r data cleanup}
+table(qog_standard$year,is.na(qog_standard$vdem_libdem))
+table(qog_standard$year,is.na(qog_standard$ef_carb))
+
+qog_demcarbon_data <- qog_demcarbon_data %>% filter(year>1960)
+```
+
+There are multiple possible solutions for missing data, but a common approach is multiple imputation. If your group wants to pursue this as a solution, you can start with the sample code below.
+
+```{r multiple imputation}
+library(mice)
+imputed_demcarbon_data <- mice(qog_demcarbon_data, m = 5, method = 'pmm', seed = 123)
+fit_demcarbon <- with(imputed_demcarbon_data, lm(carbonfootprint ~ democracy + I(log(gdp))))
+pooled_demcarbon_results <- pool(fit_demcarbon)
+summary(pooled_demcarbon_results)
+```
+
+As a group, discuss your results and interpret their meaning. Does adjusting for missing data change the results in any meaningful way? Send your results and a paragraph of explanation to your TA.

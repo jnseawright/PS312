@@ -1,0 +1,38 @@
+---
+title: "Political Science 312 Homework 3"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    highlight: tango
+  pdf_document: default
+urlcolor: blue
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,                 # don't show code
+  warning = FALSE,              # don't show warnings
+  message = FALSE,              # don't show messages (less serious warnings)
+  cache = FALSE,                # set to TRUE to save results from last compilation
+  fig.align = "center",         # center figures
+  attr.source = '.numberLines'  # add line numbers to code
+)
+
+library(tidyverse)       # load libraries you always use here
+
+set.seed(27)             # make random results reproducible
+```
+
+# Due Date: May 1, 2026
+
+[Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730851)
+
+### Choose a Causal Inference Strategy
+
+From the research designs we've discussed, choose a strategy for causal inference. Describe your choice and explain why this is a good fit for your problem. Does your existing data set contain what you need for this strategy? If not, search for other data that will provide what you need.
+
+### Jointly Plot Your IV and DV
+
+Plot your two main variables together in a way that shows as much information about their relationship as possible. Describe what you can see and what that means for your thinking about your research question.
+
+

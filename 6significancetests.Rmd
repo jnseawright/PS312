@@ -1,0 +1,97 @@
+---
+title: "6: Significance Tests in R"
+subtitle: "Statistical Research Methods"
+author: "<large>J. Seawright</large>"
+institute: "<small>Northwestern Political Science</small>" 
+date: "April 16, 2025"
+output: 
+  xaringan::moon_reader:
+    css: xaringan-themer.css
+  
+---
+class: center, middle
+
+```{css, echo=FALSE}
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+```
+
+```{css, echo=FALSE}
+.scroll-100 {
+  max-height: 100px;
+  overflow-y: auto;
+  background-color: inherit;
+}
+```
+
+```{r, load_refs, include=FALSE, cache=FALSE}
+# Initializes the bibliography
+library(RefManageR)
+
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(nlme)
+library(jtools)
+library(hrbrthemes)
+library(mice)
+options(warn=-1)
+
+BibOptions(check.entries = FALSE,
+           bib.style = "authoryear", # Bibliography style
+           max.names = 3, # Max author names displayed in bibliography
+           sorting = "nyt", #Name, year, title sorting
+           cite.style = "authoryear", # citation style
+           style = "markdown",
+           hyperlink = FALSE,
+           dashed = FALSE)
+#myBib <- ReadBib("assets/myBib.bib", check = FALSE)
+# Note: don't forget to clear the knitr cache to account for changes in the
+# bibliography.
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer,MnSymbol)
+style_mono_accent(
+  base_color = "#1c5253",
+  header_font_google = google_font("Josefin Sans"),
+  text_font_google   = google_font("Montserrat", "300", "300i"),
+  code_font_google   = google_font("Fira Mono"),
+  text_font_size = "1.3rem"
+)
+```
+
+---
+
+If we see a difference between two groups in our data, is that difference *real*?
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+anes2020 <- read.csv("anes_timeseries_2020_csv_20220210.csv")
+
+anes2020$partyid <- anes2020$V201231x
+anes2020$partyid[anes2020$partyid<0] <- NA
+
+anes2020$internet <- anes2020$V201569
+anes2020$internet[anes2020$internet<0] <- NA
+
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+mean(anes2020$internet[anes2020$partyid<4],na.rm=TRUE) - mean(anes2020$internet[anes2020$partyid>4],na.rm=TRUE)
+```
+
+---
+```{r, echo = TRUE, out.width="70%", fig.retina = 1, fig.align='center'}
+anes2020$pidbinary <- 1*(anes2020$partyid>4)
+anes2020$pidbinary[anes2020$partyid==4] <- NA
+
+t.test(anes2020$internet~anes2020$pidbinary)
+
+```

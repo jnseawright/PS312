@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="J. Seawright" />
     <meta name="date" content="2024-04-30" />
-    <script src="10basicregression_files/header-attrs-2.25/header-attrs.js"></script>
+    <script src="10basicregression_files/header-attrs-2.29/header-attrs.js"></script>
     <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
   </head>
   <body>
@@ -56,7 +56,7 @@ pre[class] {
 
 ---
 
-```r
+``` r
 library(ggplot2)
 library(GGally)
 ```
@@ -67,7 +67,7 @@ library(GGally)
 ##   +.gg   ggplot2
 ```
 
-```r
+``` r
 library(haven)
 library(tidyverse)
 ```
@@ -76,7 +76,7 @@ library(tidyverse)
 ## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
 ## ✔ forcats   1.0.0     ✔ stringr   1.5.1
 ## ✔ lubridate 1.9.3     ✔ tibble    3.2.1
-## ✔ purrr     1.0.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.2     ✔ tidyr     1.3.1
 ```
 
 ```
@@ -93,19 +93,19 @@ library(tidyverse)
 
 ---
 
-```r
+``` r
 uscinski2 &lt;- read_dta("uscinski2.dta")
 ```
 
 ---
 
-```r
+``` r
 uscinski2$conspiratorial &lt;- with(uscinski2, con1 + con2 + con3 +con4)
 ```
 
 ---
 
-```r
+``` r
 summary(uscinski2$conspiratorial)
 ```
 
@@ -116,7 +116,7 @@ summary(uscinski2$conspiratorial)
 
 ---
 
-```r
+``` r
 usc_consp_plot &lt;- uscinski2 %&gt;% 
   ggplot(aes(x=conspiratorial)) + 
   geom_histogram(binwidth=1) 
@@ -124,7 +124,7 @@ usc_consp_plot &lt;- uscinski2 %&gt;%
 
 ---
 
-```r
+``` r
 usc_consp_plot 
 ```
 
@@ -132,7 +132,7 @@ usc_consp_plot
 
 ---
 
-```r
+``` r
 usc_qanon_plot &lt;- uscinski2 %&gt;% 
   ggplot(aes(x=qanonft)) + 
   geom_histogram(binwidth=3) 
@@ -140,7 +140,7 @@ usc_qanon_plot &lt;- uscinski2 %&gt;%
 
 ---
 
-```r
+``` r
 usc_qanon_plot 
 ```
 
@@ -148,7 +148,7 @@ usc_qanon_plot
 
 ---
 
-```r
+``` r
 qft.lm &lt;- lm(qanonft~conspiratorial, data = uscinski2)
 
 summ(qft.lm)
@@ -216,7 +216,7 @@ summ(qft.lm)
 
 ---
 
-```r
+``` r
 summary(qft.lm)
 ```
 
@@ -244,7 +244,7 @@ summary(qft.lm)
 
 ---
 
-```r
+``` r
 qft2.lm &lt;- lm(qanonft~conspiratorial+pid, data = uscinski2)
 summary(qft2.lm)
 ```
@@ -274,7 +274,7 @@ summary(qft2.lm)
 
 ---
 
-```r
+``` r
 qft3.lm &lt;- lm(qanonft~conspiratorial+pid+ideo+female+age+income+edu, data = uscinski2)
 summary(qft3.lm)
 ```
@@ -310,7 +310,7 @@ summary(qft3.lm)
 
 ---
 
-```r
+``` r
 ggcoef(qft3.lm)
 ```
 
@@ -318,7 +318,7 @@ ggcoef(qft3.lm)
 
 ---
 
-```r
+``` r
 qft.lm.bad &lt;- lm(qanonft~conspiratorial+pid+ideo+female+age+income+edu+trumpft+collusion, data = uscinski2)
 summary(qft.lm.bad)
 ```
@@ -356,7 +356,7 @@ summary(qft.lm.bad)
 
 ---
 
-```r
+``` r
 ggcoef(qft.lm.bad)
 ```
 
@@ -387,7 +387,7 @@ In addition to assuming that we have the right control variables for causal infe
 
 ---
 
-```r
+``` r
 library(ggfortify)
 autoplot(qft3.lm)
 ```
@@ -396,7 +396,7 @@ autoplot(qft3.lm)
 
 ---
 
-```r
+``` r
 hist(uscinski2$qanonft)
 ```
 
@@ -408,7 +408,7 @@ When a variable is highly *skewed*, i.e., it is concentrated on one side of the 
 
 ---
 
-```r
+``` r
 uscinski2$logqft &lt;- log(uscinski2$qanonft + 1)
 hist(uscinski2$logqft)
 ```
@@ -417,7 +417,7 @@ hist(uscinski2$logqft)
 
 ---
 
-```r
+``` r
 qft3.5.lm &lt;- lm(logqft~conspiratorial+pid+ideo+female+age+income+edu, data = uscinski2)
 summary(qft3.5.lm)
 ```
@@ -453,7 +453,7 @@ summary(qft3.5.lm)
 
 ---
 
-```r
+``` r
 autoplot(qft3.5.lm)
 ```
 
@@ -461,7 +461,7 @@ autoplot(qft3.5.lm)
 
 ---
 
-```r
+``` r
 ggcoef(qft3.5.lm)
 ```
 
@@ -473,7 +473,7 @@ Let's check if our variables are sufficiently uncorrelated with each other!
 
 ---
 
-```r
+``` r
 library(car)
 ```
 
@@ -498,7 +498,7 @@ library(car)
 ##     recode
 ```
 
-```r
+``` r
 vif(qft3.lm)
 ```
 
@@ -515,7 +515,7 @@ Let's check if our error term has approximately the same variance across all the
 
 ---
 
-```r
+``` r
 ncvTest(qft3.5.lm)
 ```
 
@@ -527,7 +527,7 @@ ncvTest(qft3.5.lm)
 
 ---
 
-```r
+``` r
 library(lmtest)
 ```
 
@@ -546,7 +546,7 @@ library(lmtest)
 ##     as.Date, as.Date.numeric
 ```
 
-```r
+``` r
 bptest(qft3.5.lm)
 ```
 
@@ -564,7 +564,7 @@ Let's check if we've represented the relationships using the right mathematical 
 
 ---
 
-```r
+``` r
 reset(qft3.5.lm, power = 2:3, type = "regressor")
 ```
 
@@ -578,7 +578,7 @@ reset(qft3.5.lm, power = 2:3, type = "regressor")
 
 ---
 
-```r
+``` r
 qft3.75.lm &lt;- lm(logqft~conspiratorial+pid+ideo+female+age+I(age^2)+income+I(income^2)+edu+I(edu^2), data = uscinski2)
 summary(qft3.75.lm)
 ```
@@ -617,7 +617,7 @@ summary(qft3.75.lm)
 
 ---
 
-```r
+``` r
 reset(qft3.75.lm, power = 2:3, type = "regressor")
 ```
 
@@ -631,7 +631,7 @@ reset(qft3.75.lm, power = 2:3, type = "regressor")
 
 ---
 
-```r
+``` r
 qft3.9.lm &lt;- lm(logqft~conspiratorial+pid+ideo+I(ideo^2)+female+age+I(age^2)+income+I(income^2)+edu+I(edu^2)+I(edu^3), data = uscinski2)
 summary(qft3.9.lm)
 ```
@@ -673,7 +673,7 @@ summary(qft3.9.lm)
 
 ---
 
-```r
+``` r
 reset(qft3.9.lm, power = 2:3, type = "regressor")
 ```
 
@@ -685,7 +685,7 @@ reset(qft3.9.lm, power = 2:3, type = "regressor")
 ## RESET = 1.4097, df1 = 24, df2 = 1381, p-value = 0.09031
 ```
 
-```r
+``` r
 vif(qft3.9.lm)
 ```
 
@@ -704,7 +704,7 @@ Let's check if the error term is approximately normal!
 
 ---
 
-```r
+``` r
 library(tseries)
 ```
 
@@ -714,7 +714,7 @@ library(tseries)
 ##   as.zoo.data.frame zoo
 ```
 
-```r
+``` r
 jarque.bera.test(rstandard(qft3.5.lm))
 ```
 
@@ -732,7 +732,7 @@ Let's check if relationship between the main explanatory variable and the outcom
 
 ---
 
-```r
+``` r
 qft3.5.lm.int &lt;- lm(logqft~conspiratorial+pid+ideo+female+age+income+edu+conspiratorial:edu, data = uscinski2)
 summary(qft3.5.lm.int)
 ```
@@ -769,7 +769,7 @@ summary(qft3.5.lm.int)
 
 ---
 
-```r
+``` r
 meplot &lt;- function(model,var1,var2,int,vcov,ci=.95,
                    xlab=var2,ylab=paste("Marginal Effect of",var1),
                    main="Marginal Effect Plot",
@@ -805,7 +805,7 @@ meplot &lt;- function(model,var1,var2,int,vcov,ci=.95,
 
 ---
 
-```r
+``` r
 meplot(qft3.5.lm.int, var1="conspiratorial", var2="edu", int="conspiratorial:edu", vcov=vcov(qft3.5.lm.int))
 ```
 

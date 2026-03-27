@@ -23,9 +23,9 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: June 3, 2024
+# Due Date: June 10, 2025
 
-[Submit your final paper here.](https://canvas.northwestern.edu/courses/209958/assignments/1381393)
+[Submit your final paper here.](https://canvas.northwestern.edu/courses/230308/assignments/1541817)
 
 ### Outline of a Quantitative Essay
 

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>3: Finding or Creating Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="J. Seawright" />
+    <meta name="date" content="2024-04-04" />
+    <script src="4findingdata_files/header-attrs-2.29/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# 3: Finding or Creating Data
+]
+.subtitle[
+## Statistical Research Methods
+]
+.author[
+### <large>J. Seawright</large>
+]
+.institute[
+### <small>Northwestern Political Science</small>
+]
+.date[
+### April 4, 2024
+]
+
+---
+
+class: center, middle
+
+&lt;style type="text/css"&gt;
+pre {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+pre[class] {
+  max-height: 200px;
+}
+&lt;/style&gt;
+
+
+
+
+---
+### What are Some Really Unusual Ideas About Society/Politics that are Going Around?
+
+---
+[For example...](https://trends.google.com/trends/explore?date=today%205-y&amp;q=%2Fg%2F11hk3_sx0c,%2Fm%2F0174w5,%2Fm%2F052bk3,%2Fg%2F11c3w6djhb&amp;hl=en)
+
+---
+
+``` r
+unusualideas &lt;- read_csv("unusualideas.csv")
+```
+
+```
+## Rows: 261 Columns: 5
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## dbl  (4): fifteenminutecity, worldeconomicforum, klausschwab, cricketflour
+## date (1): week
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+``` r
+head(unusualideas)
+```
+
+```
+## # A tibble: 6 × 5
+##   week       fifteenminutecity worldeconomicforum klausschwab cricketflour
+##   &lt;date&gt;                 &lt;dbl&gt;              &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;
+## 1 2019-03-03                 0                 10           1            1
+## 2 2019-03-10                 0                  9           1            1
+## 3 2019-03-17                 0                  8           1            1
+## 4 2019-03-24                 0                  8           1            1
+## 5 2019-03-31                 0                  8           1            1
+## 6 2019-04-07                 0                  8           1            1
+```
+
+---
+
+``` r
+summary(unusualideas)
+```
+
+```
+##       week            fifteenminutecity worldeconomicforum  klausschwab  
+##  Min.   :2019-03-03   Min.   : 0.000    Min.   :  6.0      Min.   : 1.0  
+##  1st Qu.:2020-05-31   1st Qu.: 0.000    1st Qu.:  9.0      1st Qu.: 1.0  
+##  Median :2021-08-29   Median : 1.000    Median : 13.0      Median : 5.0  
+##  Mean   :2021-08-29   Mean   : 1.349    Mean   : 14.2      Mean   : 5.1  
+##  3rd Qu.:2022-11-27   3rd Qu.: 1.000    3rd Qu.: 16.0      3rd Qu.: 7.0  
+##  Max.   :2024-02-25   Max.   :21.000    Max.   :100.0      Max.   :24.0  
+##   cricketflour  
+##  Min.   :0.000  
+##  1st Qu.:1.000  
+##  Median :1.000  
+##  Mean   :1.149  
+##  3rd Qu.:1.000  
+##  Max.   :8.000
+```
+
+---
+
+``` r
+standardized_ideas &lt;- data.frame(week = 1:nrow(unusualideas), scale(unusualideas[,2:5]))
+```
+
+---
+
+``` r
+cricketcity.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=fifteenminutecity, y=cricketflour)) +
+  geom_jitter() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  theme_tufte()
+```
+---
+
+``` r
+cricketcity.plot
+```
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="4findingdata_files/figure-html/unnamed-chunk-6-1.png" width="60%" /&gt;
+
+---
+
+``` r
+wefcity.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=fifteenminutecity, y=worldeconomicforum)) +
+  geom_jitter() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  theme_tufte() 
+```
+---
+
+``` r
+wefcity.plot
+```
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="4findingdata_files/figure-html/unnamed-chunk-8-1.png" width="60%" /&gt;
+
+---
+
+``` r
+cricketwef.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=worldeconomicforum, y=cricketflour)) +
+  geom_jitter() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  theme_tufte() 
+```
+---
+
+``` r
+cricketwef.plot
+```
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="4findingdata_files/figure-html/unnamed-chunk-10-1.png" width="60%" /&gt;
+
+---
+
+``` r
+schwabwef.plot &lt;- standardized_ideas %&gt;% ggplot(aes(x=worldeconomicforum, y=klausschwab)) +
+  geom_jitter() +
+  geom_smooth(method=lm , color="red", fill="#69b3a2", se=TRUE) +
+  theme_tufte() 
+```
+---
+
+``` r
+schwabwef.plot
+```
+
+```
+## `geom_smooth()` using formula = 'y ~ x'
+```
+
+&lt;img src="4findingdata_files/figure-html/unnamed-chunk-12-1.png" width="60%" /&gt;
+
+---
+### Using Existing Data
+
+1. We can't always get what we want!
+
+2. Some projects will end up being defined by data availability.
+
+3. Projects will typically end up being shaped in some ways by what we can get, when we don't have time/resources to create our own data.
+
+---
+### Where can you find data?
+
+-   Harvard Dataverse
+
+-   kaggle.com
+
+-   Google Scholar
+
+-   Famous existing datasets (QoG, COW, ANES, WVS)
+
+-   Github repositories
+
+---
+### Evaluating Existing Data
+
+1. Can you get access to the raw data?
+
+2. Does the project include all of the variables you're likely to be interested in?
+
+3. Is the sampling approach well documented, and does it fit your project?
+
+4. Is the measurement approach well documented and high quality?
+
+---
+### Example: Measuring Democracy
+
+&lt;img src="images/vdem.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/vdem1.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/vdem2.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+&lt;img src="images/vdem3.png" width="100%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+library(devtools)
+```
+
+```
+## Warning: package 'devtools' was built under R version 4.4.3
+```
+
+```
+## Loading required package: usethis
+```
+
+``` r
+#devtools::install_github("vdeminstitute/vdemdata")
+library(vdemdata)
+```
+
+---
+
+``` r
+vdem2024 &lt;- vdem
+
+plot_indicator("v2x_libdem")
+```
+
+&lt;img src="4findingdata_files/figure-html/unnamed-chunk-18-1.png" width="70%" style="display: block; margin: auto;" /&gt;
+
+---
+
+``` r
+names(vdem)[1:50]
+```
+
+```
+##  [1] "country_name"           "country_text_id"        "country_id"            
+##  [4] "year"                   "historical_date"        "project"               
+##  [7] "historical"             "histname"               "codingstart"           
+## [10] "codingend"              "codingstart_contemp"    "codingend_contemp"     
+## [13] "codingstart_hist"       "codingend_hist"         "gapstart1"             
+## [16] "gapstart2"              "gapstart3"              "gapend1"               
+## [19] "gapend2"                "gapend3"                "gap_index"             
+## [22] "COWcode"                "v2x_polyarchy"          "v2x_polyarchy_codelow" 
+## [25] "v2x_polyarchy_codehigh" "v2x_polyarchy_sd"       "v2x_libdem"            
+## [28] "v2x_libdem_codelow"     "v2x_libdem_codehigh"    "v2x_libdem_sd"         
+## [31] "v2x_partipdem"          "v2x_partipdem_codelow"  "v2x_partipdem_codehigh"
+## [34] "v2x_partipdem_sd"       "v2x_delibdem"           "v2x_delibdem_codelow"  
+## [37] "v2x_delibdem_codehigh"  "v2x_delibdem_sd"        "v2x_egaldem"           
+## [40] "v2x_egaldem_codelow"    "v2x_egaldem_codehigh"   "v2x_egaldem_sd"        
+## [43] "v2x_api"                "v2x_api_codelow"        "v2x_api_codehigh"      
+## [46] "v2x_api_sd"             "v2x_mpi"                "v2x_mpi_codelow"       
+## [49] "v2x_mpi_codehigh"       "v2x_mpi_sd"
+```
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
