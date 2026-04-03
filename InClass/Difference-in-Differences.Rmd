@@ -22,7 +22,8 @@ qog_ts <- read_qog(which_data = "standard", data_type = "time-series")
 Use the codebook on the QOG website to find a variable that measures interstate military conflict and a variable that measures a country's level of democracy. Make sure that your variable measuring democracy is coded as 0 for authoritarian country-years and 1 for democratic country-years. This may require some modification.
 
 Carry out a difference-in-differences analysis using code modeled after the example below. (I am using different treatment and outcome variables, obviously.)
- 
+
+The code below uses a contemporary difference-in-differences technique called interactive fixed effects. While the details are beyond the scope of this course, the idea is that it provides an estimate for fixed effect without some of the specific technical limitations of the approaches discussed in the textbook. 
 
 ```{r example difindif}
 qog_ts$central_bank_independence <- 1*(qog_ts$cbi_cbiu>0.5)

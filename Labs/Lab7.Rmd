@@ -29,4 +29,6 @@ set.seed(27)             # make random results reproducible
 
 ### Next Steps
 
-What are the next steps you would like to see taken to further your research agenda and solidify our knowledge given your contribution? Identify at least three directions scholars could productively go in order to build on your work or address the limitations of your project.
+What are the next steps you would like to see taken to further your research agenda and solidify our knowledge given your contribution? Identify at least three directions scholars could productively go in order to build on your work or address the limitations of your project. What would you do differently if you started the project over? What are the biggest strengths and weaknesses of your research design, as it turns out?
+
+Part of professional communication is developing a section in your conclusion that spells out the limitations of your work, good ways to resolve those limitations, and the opportunities your work provides for future learning. Draft two to three paragraphs that provide such a conclusion.

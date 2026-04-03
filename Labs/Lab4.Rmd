@@ -29,4 +29,6 @@ set.seed(27)             # make random results reproducible
 
 ### Carry Out Your Causal Inference Strategy
 
-With your data, and using the skills we've practiced in class, carry out your causal inference strategy, producing initial tables and plots. What problems do you run into? What conclusions can you reach? If you run into problems, what are your plans to resolve them?
+With your data, and using the skills we've practiced in class, carry out your causal inference strategy, producing initial tables and plots. You should generate an estimate of an average treatment effect complete with a standard error, and an appropriate visualization. You should also generate one to three relevant tests of assumptions.
+
+What problems do you run into? What conclusions can you reach? If you run into problems, what are your plans to resolve them?

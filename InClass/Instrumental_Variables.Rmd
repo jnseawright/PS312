@@ -11,6 +11,7 @@ Start by loading relevant data:
 
 ```{r read data etc}
 library(tidyverse)
+library(tsls)
 #Download data on US House elections and weather
 #The data come from this collection: https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/ATSOYF
 rainfallelections <- read.csv("https://raw.githubusercontent.com/jnseawright/PS312/refs/heads/main/Data/rainfallelections.csv")

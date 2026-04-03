@@ -23,13 +23,15 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 24, 2026
+# Due Date: April 17, 2026
 
 [Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730850)
 
 ### Finding Data
 
 In your last lab, you should have identified a research question that was interesting to you, and you should have formulated it as a causal question about the relationship between an independent and a dependent variable. In this lab, you should begin by identifying data sources that include at least measures of your independent and dependent variables. Please find a data source, which includes a measure of *both* variables that you care about. Provide a link to the data, as well as a brief description.
+
+Most students find data sources in the [Harvard Dataverse](https://dataverse.harvard.edu/), or by using a canonical data source like the [Quality of Government data](https://www.gu.se/en/quality-government/qog-data) for cross-national research or the [General Social Survey](https://gss.norc.org/) for research on individual behavior and decision-making in the U.S.
 
 Note that your data source should include the raw data set --- a spreadsheet or table including full values for each case, not just summary statistics or statistical analyses. You need to be able to do your own statistical work from scratch!
 

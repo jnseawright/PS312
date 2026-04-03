@@ -31,3 +31,5 @@ set.seed(27)             # make random results reproducible
 
 Given the work you have done in the weeks up until now, your group should be in a position to answer your main question. Write an abstract for an article describing your results.
 
+A good social-science abstract typically runs 150–250 words and covers five things in roughly this order: the question and why it matters, a brief description of your data and research design, your main finding, a note on the strength of the evidence (including any important limitations or assumptions), and a sentence on the broader implications. It should be self-contained: a reader who sees only the abstract should understand what you studied, how, and what you learned. The two articles assigned for the Writing session (Butler et al. and Lupu and Peisakhin) are good models to consult if you want to see what this looks like in practice.
+

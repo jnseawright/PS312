@@ -33,7 +33,7 @@ election2016$TrumpShare <- as.numeric(str_replace(election2016$TrumpShare, "%", 
 
 election2016$D12Margin <- as.numeric(str_replace(election2016$D12Margin, "%", ""))
 
-election2016$D16Margin <- as.numeric(str_replace(election2016$D12Margin, "%", ""))
+election2016$D16Margin <- as.numeric(str_replace(election2016$D16Margin, "%", ""))
 
 #Let's make sure the state names match between our datasets
 states$State <- states$state

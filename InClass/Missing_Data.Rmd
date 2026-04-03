@@ -22,7 +22,7 @@ You can consult [the very long codebook](https://www.qogdata.pol.gu.se/data/code
 
 In addition, select a handful of variables you think might be usefully related to the variables in your model in terms of providing information about their values when there is missingness.
 
-At this point, you're ready to start carrying out your instrumental-variables design. Fill in the sample code below with the outcome variable, the treatment variable, and the instrument, as well as any control variables that make sense for your analysis. In the example code below, I do this for an analysis focusing on democracy and carbon footprints.
+At this point, you're ready to start carrying out your missing-data analysis. Fill in the sample code below with variables that make sense for your analysis. In the example code below, I do this for an analysis focusing on democracy and carbon footprints.
 
 ```{r selecting variables}
 qog_demcarbon_data <- data.frame(carbonfootprint = qog_standard$ef_carb, 
