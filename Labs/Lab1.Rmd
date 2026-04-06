@@ -23,7 +23,7 @@ library(tidyverse)       # load libraries you always use here
 set.seed(27)             # make random results reproducible
 ```
 
-# Due Date: April 10, 2026
+# Due Date: April 17, 2026
 
 [Submit your lab here.](https://canvas.northwestern.edu/courses/251652/assignments/1730849)
 
