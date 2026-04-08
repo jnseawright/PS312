@@ -1,0 +1,198 @@
+---
+title: "Class Activity: DAG Construction"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(dagitty)
+library(ggdag)
+library(ggplot2)
+```
+
+## Today's Activity
+
+- **Goal:** Translate your team's research question into a **Directed Acyclic Graph (DAG)**.
+- **Deliverable:** Each group member sends the DAG to their TA with a short paragraph explaining the nodes and edges.
+- **Why?** DAGs make causal assumptions transparent and guide covariate selection.
+
+I'll walk through an example from my own work on the January 6 insurrection, building the DAG step by step.
+
+---
+
+## Step 1: The Core Relationship
+
+**Research Question:** Does social media use increase the likelihood of engaging in violence during the January 6 Capitol attack?
+
+We start with the simplest possible DAG: just the exposure and the outcome.
+
+```{r dag-step1, echo=FALSE, fig.width=5, fig.height=3}
+dag1 <- dagitty('dag {
+  SocialMedia [pos="0,0"]
+  Violence [pos="2,0"]
+  SocialMedia -> Violence
+}')
+
+ggdag(dag1, layout = "nicely", text_col = "blue") +
+  theme_dag() +
+  labs(title = "Step 1: Core Relationship")
+```
+
+- **SocialMedia:** Use of platforms like Twitter, Facebook, Parler, YouTube to live broadcast the experience of January 6th.
+- **Violence:** Physical aggression during the Capitol breach (assault, property destruction).
+
+This is our starting hypothesis. But is this relationship causal, or could something else explain it?
+
+---
+
+## Step 2: Adding Confounders
+
+To estimate the causal effect of SocialMedia on Violence, we need to consider **confounders**—variables that affect both the exposure and the outcome.
+
+```{r dag-step2, echo=FALSE, fig.width=8, fig.height=5}
+dag2 <- dagitty('dag {
+  SocialMedia [pos="0,0"]
+  Violence [pos="2,0"]
+  SocialMedia -> Violence
+  
+  PoliticalEngagement [pos="0,2"]
+  InternetUse [pos="0,1"]
+  Personality [pos="-1,1"]
+  Age [pos="-1,0"]
+  Education [pos="-1,-1"]
+  Region [pos="0,-1"]
+  
+  PoliticalEngagement -> SocialMedia
+  PoliticalEngagement -> Violence
+  InternetUse -> SocialMedia
+  InternetUse -> Violence
+  Personality -> SocialMedia
+  Personality -> Violence
+  Age -> SocialMedia
+  Age -> Violence
+  Education -> SocialMedia
+  Education -> Violence
+  Region -> SocialMedia
+  Region -> Violence
+}')
+
+ggdag(dag2, layout = "nicely", text_col = "blue") +
+  theme_dag() +
+  labs(title = "Step 2: Add Confounders")
+```
+
+---
+
+**Confounders (each affects both SocialMedia and Violence):**
+- **PoliticalEngagement:** Activists use social media more and attend more protests (some turn violent).
+- **InternetUse:** Tech‑savvy individuals use social media heavily and were over‑represented in D.C.
+- **Personality:** Traits like sensation‑seeking or aggression.
+- **Age:** Younger people use social media more and may be more impulsive.
+- **Education:** Correlated with digital literacy and political participation.
+- **Region:** Areas with strong pro‑Trump sentiment had higher social media engagement and rally attendance.
+
+**Implication:** To estimate SocialMedia → Violence without bias, we must control for these confounders.
+
+---
+
+## Step 3: Downstream Consequences
+
+Some participants may have been motivated by a desire for **media visibility**. Does engaging in violence increase post‑attack fame?
+
+```{r dag-step3, echo=FALSE, fig.width=9, fig.height=6}
+dag3 <- dagitty('dag {
+  SocialMedia [pos="0,0"]
+  Violence [pos="2,0"]
+  SocialMedia -> Violence
+
+  PoliticalEngagement [pos="0,2"]
+  InternetUse [pos="0,1"]
+  Personality [pos="-1,1"]
+  Age [pos="-1,0"]
+  Education [pos="-1,-1"]
+  Region [pos="0,-1"]
+  
+  PoliticalEngagement -> SocialMedia
+  PoliticalEngagement -> Violence
+  InternetUse -> SocialMedia
+  InternetUse -> Violence
+  Personality -> SocialMedia
+  Personality -> Violence
+  Age -> SocialMedia
+  Age -> Violence
+  Education -> SocialMedia
+  Education -> Violence
+  Region -> SocialMedia
+  Region -> Violence
+
+  MediaVisibility [pos="4,0"]
+  Violence -> MediaVisibility
+  PriorFame [pos="3,1"]
+  PriorFame -> MediaVisibility
+  PriorFame -> Violence [pos="3,0.5"]
+}')
+
+ggdag(dag3, layout = "nicely", text_col = "blue") +
+  theme_dag() +
+  labs(title = "Step 3: Add Downstream Outcome (Media Visibility)")
+```
+
+---
+
+**New Nodes:**
+- **MediaVisibility:** Post‑attack media coverage (news articles, interviews, social media fame).
+- **PriorFame:** Pre‑existing public profile (e.g., local politician, internet personality).
+
+**New Edges:**
+- **Violence → MediaVisibility:** Violent acts attract coverage—this could be a motive.
+- **PriorFame → MediaVisibility:** Famous people get more coverage regardless.
+- **PriorFame → Violence:** (Dashed) Possible that prior fame increases propensity to act out.
+
+**Analytical Note:** If we want to estimate Violence → MediaVisibility, we must control for PriorFame (a confounder of that relationship).
+
+---
+
+## How This DAG Informs Analysis
+
+- For **SocialMedia → Violence:** Control for PoliticalEngagement, InternetUse, Personality, Age, Education, Region.
+- **Do NOT** control for MediaVisibility (it's downstream).
+- For **Violence → MediaVisibility:** Control for PriorFame; consider instrument or natural experiment for Violence.
+
+---
+
+## Your Turn
+
+1. Sketch a DAG for your team's research question, starting simple and building up.
+2. Label each node and explain it. Your entire explanation need not exceed a paragraph.
+3. Identify:
+   - The main variables that represent your causal question
+   - Background variables that help us understand the situation and meaningful differences among cases
+   - Variables that help tell the causal story of how effects might work
+   - Downstream variables that help interpret the causal question
+4. Send your DAG (image or R code) and paragraph to your TA.
+
+**Resources:**
+- [Class DAG Help Page](https://jnseawright.github.io/PS312/InClass/Causation_Causal_Inference.html)
+- `dagitty` and `ggdag` R packages
+
+---
+
+```{r, echo=TRUE, eval=FALSE}
+# Example R code for students:
+library(dagitty)
+my_dag <- dagitty('dag {
+  X -> Y
+  Z -> X
+  Z -> Y
+}')
+plot(my_dag)
+```

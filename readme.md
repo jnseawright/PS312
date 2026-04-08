@@ -32,6 +32,8 @@ For a nice resource on how to build DAGs in R, consider reading through [these s
 
 Class activity: Construct a directed acyclic graph (DAG) representing your ideas about the causal factors involved in your team's research question. Each group member should send the DAG to their TA together with a paragraph or two explaining what each element of the image means. If you need help making DAGs in R, use the class [DAG help page](https://jnseawright.github.io/PS312/InClass/Causation_Causal_Inference.html) or review [the slides](https://lfoswald.github.io/2021-spring-stats2/materials/session-3/03-online-tutorial/#directed-acyclic-graphs-dags-1) that were linked in the before-class reading section.
 
+[DAG session kickoff](dagkickoff.html) 
+
 *Tuesday, April 14th: Regression*
 
 Before class, read The Effect, Chapters 4 and 13.
@@ -130,7 +132,7 @@ Class activity: What would it look like for your group project this quarter to m
 *Tuesday, May 19th: Writing Quantitative Social Science*
 
 Before class, read BOTH [Daniel M Butler, Elin Naurin, and Patrik
-Öhberg, "Constituents Ask Female Legislators to do More." *The Journal
+Chberg, "Constituents Ask Female Legislators to do More." *The Journal
 of Politics*. Forthcoming.
 https://doi.org/10.1086/719631](https://doi.org/10.1086/719631)
 
