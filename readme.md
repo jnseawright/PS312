@@ -42,6 +42,8 @@ For video explanation, consider these discussions of [linear regression](https:/
 
 Class activity: How does electoral support for Donald Trump in 2016 relate to the pattern of domestic terrorism in the US in subsequent years? Is there more terrorism in Trump-supporting areas or in areas that oppose Trump? Alternatively, is terrorism unrelated to voting patterns? Use the available data and your knowledge of regression to provide the best analysis of these questions that you can. Produce one table and one figure to summarize your key findings. Each group member should send these together with a paragraph-length explanation to their TA.  There is [a page with some resources to help with loading the data and setting up regression](https://jnseawright.github.io/PS312/InClass/Regression.html).
 
+[Regression session kickoff](regressionkickoff.html) 
+
 *Thursday, April 16th: Choosing Control Variables*
 
 Before class, watch [this video about back-door paths and controls](https://www.youtube.com/watch?v=IajzIKW518M).

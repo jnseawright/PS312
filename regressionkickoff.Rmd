@@ -1,0 +1,222 @@
+---
+title: "Regression Kickoff: Social Media & Violence on Jan 6"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(broom)
+library(scales)
+library(ggplot2)
+```
+
+## Today's Activity
+
+- **Goal:** Use regression to understand how electoral support for Trump in 2016 relates to domestic terrorism in subsequent years.
+- **Deliverable:** One table, one figure, and a short paragraph per group.
+- **Why regression?** It estimates the **strength** and **uncertainty** of relationships while adjusting for confounders.
+
+To warm up, we'll work through a regression example with the **January 6 defendants data**—the same data we used to build DAGs last time.
+
+---
+
+## The Data: January 6 Defendants
+
+```{r load-data, echo=TRUE}
+# Read the data (adjust path if needed)
+df_raw <- read_csv("data/final_merged_data.csv")
+
+# Quick look at the variables we care about
+df_raw %>%
+  select("Case ID", Age, contains("SocialMedia"), contains("ChargedWithViolence")) %>%
+  head()
+```
+
+---
+
+**Challenge:** Three coders (`.jaye`, `.evelyn`, `.mia`) each recorded whether a defendant used social media and whether they were charged with violence. We need a single, combined measure. And we have a messy group membership variable.
+
+---
+
+## Combining Multiple Coders
+
+Use `coalesce()` to take the first non‑missing value across the three coder columns. And clean up the group membership variable with 'case_when()'.
+
+```{r combine-coders}
+df_clean <- df_raw %>%
+  mutate(
+    SocialMedia = coalesce(SocialMedia.jaye, SocialMedia.evelyn, SocialMedia.mia),
+    ChargedWithViolence = coalesce(ChargedWithViolence.jaye, ChargedWithViolence.evelyn, ChargedWithViolence.mia),
+    Age = as.numeric(if_else(Age == "#", NA_character_, Age)),
+    
+    # Create binary group membership
+    GroupMember = case_when(
+      str_detect(`Group affiliation`, regex("no\\s*known|unknown", ignore_case = TRUE)) ~ 0,
+      is.na(`Group affiliation`) | `Group affiliation` == "" ~ 0,
+      TRUE ~ 1
+    )
+  ) %>%
+  filter(!is.na(SocialMedia), !is.na(ChargedWithViolence))
+```
+
+---
+
+```{r combine-coders-2}
+# Check the combined variables
+df_clean %>%
+  count(SocialMedia, ChargedWithViolence) %>%
+  spread(ChargedWithViolence, n, fill = 0)
+
+# Check the group count
+df_clean %>% count(GroupMember)
+```
+
+Now we have a clean dataset ready for regression.
+
+---
+
+
+## Simple Regression: Social Media → Violence
+
+Our research question: **Does social media use increase the likelihood of engaging in violence during the January 6 attack?**
+
+Because `ChargedWithViolence` is binary (0/1), we use logistic regression.
+
+```{r simple-logit}
+mod1 <- glm(ChargedWithViolence ~ SocialMedia,
+            data = df_clean,
+            family = binomial)
+
+tidy(mod1, conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+- **Interpretation:** The odds ratio tells us how much the odds of a violence charge increase for social media users.
+- But this relationship may be **confounded** by age (younger defendants use social media more and may be more impulsive).
+
+---
+
+## Multiple Regression: Add a Confounder (Age)
+
+Recall our DAG from last time: **Age** affects both social media use and violence.
+
+```{r multiple-logit}
+mod2 <- glm(ChargedWithViolence ~ SocialMedia + Age,
+            data = df_clean,
+            family = binomial)
+
+tidy(mod2, conf.int = TRUE, exponentiate = TRUE) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+**Observations:**
+- The coefficient on `SocialMedia` may change after controlling for `Age`.
+- The adjusted odds ratio gives us an estimate **closer to the causal effect** (under the DAG's assumptions).
+
+---
+## Multiple Regression: Add Two Confounders
+
+Now we control for both **Age** and **Group Membership**, following our DAG.
+
+```{r multiple-logit-2}
+mod3 <- glm(ChargedWithViolence ~ SocialMedia + Age + GroupMember,
+            data = df_clean,
+            family = binomial)
+
+tidy(mod3, conf.int = TRUE, exponentiate = TRUE) %>%
+  mutate(across(where(is.numeric), ~ round(.x, 3)))
+```
+
+
+---
+
+## Visualizing Results
+
+A coefficient plot makes comparisons easy.
+
+```{r coef-plot, fig.width=7, fig.height=4}
+plotme <- mod3 %>%
+  tidy(conf.int = TRUE, exponentiate = TRUE) %>%
+  filter(term != "(Intercept)") %>%
+  ggplot(aes(x = estimate, y = term, xmin = conf.low, xmax = conf.high)) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray50") +
+  geom_pointrange(size = 1) +
+  scale_x_log10(labels = comma) +
+  labs(
+    title = "Odds Ratios for Violence Charge",
+    x = "Odds Ratio (log scale)",
+    y = NULL,
+    caption = "Dashed line at OR = 1 (no effect)"
+  ) +
+  theme_minimal(base_size = 14)
+```
+
+---
+
+```{r coef-plot-2, fig.width=7, fig.height=4}
+plotme
+```
+
+---
+
+## Predicted Probabilities
+
+What does the model imply for a 25‑year‑old vs. a 50‑year‑old?
+
+```{r predicted-prob, echo=TRUE}
+new_data <- crossing(
+  SocialMedia = c(0, 1),
+  GroupMember = c(0, 1),
+  Age = c(25, 50)
+)
+
+probsoutcome <- new_data %>%
+  mutate(
+    pred_prob = predict(mod3, newdata = ., type = "response")
+  ) %>%
+  arrange(Age, GroupMember, SocialMedia)
+```
+
+---
+
+```{r predicted-prob-2, echo=TRUE}
+probsoutcome
+```
+
+- **Takeaway:** Social media use might be associated with a lower predicted probability of a violence charge, and age maybe lowers the chance of violence, too. Group membership substantially increases the chance of violence.
+
+---
+
+## Your Turn
+
+1. Load the Trump vote & terrorism data (resources on the class page).
+2. Build a regression model that answers the question:
+   *How does 2016 Trump support relate to domestic terrorism incidents?*
+3. Consider **confounders** (e.g., population, region, economic conditions).
+4. Produce:
+   - One **regression table** (coefficients with standard errors / p‑values)
+   - One **figure** (coefficient plot or marginal effects plot)
+5. Write a short paragraph interpreting the key result.
+6. Email to your TA.
+
+**Resources:**  
+[Class regression help page](https://jnseawright.github.io/PS312/InClass/Regression.html)
+
+```{r, eval=FALSE}
+# Example code for your analysis
+model <- lm(terrorism_incidents ~ trump_vote_share + confounder1 + confounder2,
+            data = your_data)
+summary(model)
+```
+```
