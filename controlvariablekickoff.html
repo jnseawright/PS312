@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Choosing Control Variables: DAGs &amp; the Back-Door Criterion</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jaye Seawright" />
+    <meta name="date" content="2026-04-15" />
+    <script src="controlvariablekickoff_files/header-attrs-2.30/header-attrs.js"></script>
+    <link href="controlvariablekickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="controlvariablekickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Choosing Control Variables: DAGs &amp; the Back-Door Criterion
+]
+.subtitle[
+## PS 312
+]
+.author[
+### Jaye Seawright
+]
+.date[
+### 2026-04-15
+]
+
+---
+
+
+
+
+## Today's Roadmap
+
+1. **Hook &amp; Activation:** Quick review of back‑door paths (poll)
+2. **"Bad Control" Diagnostic:** Three scenarios to sharpen your instincts
+3. **Variable Dump Challenge:** Choose controls from a real dataset
+4. **Case Study Deconstruction:** Analyze a published regression table
+5. **Core Graded Activity:** Group DAG creation and justification
+
+**Goal:** Move from "I can draw a DAG" to "I know exactly which variables belong in my regression—and which don't."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook &amp; Activation  
+### Quick Review of the Back‑Door Criterion
+
+---
+
+## Recall from your Preparation
+
+A set of variables \( Z \) satisfies the **back‑door criterion** for \((X, Y)\) if:
+
+1. No node in \( Z \) is a *descendant* of \( X \).
+2. \( Z \) blocks **every** path between \( X \) and \( Y \) that starts with an arrow pointing *into* \( X \).
+
+---
+
+&gt; **Simple check:** Does adjusting for \( Z \) close all sneaky back‑door paths without opening any new ones?
+
+---
+
+## Let's Discuss
+
+**DAG:**  
+`Parental Income` → `Education` → `Earnings`  
+`Parental Income` → `Earnings`
+
+**Question:** To estimate the *total* effect of `Education` on `Earnings`, should we control for `Parental Income`?
+
+- A) Yes, it's a confounder.
+- B) No, it's a mediator.
+- C) Yes, but only if we also control for something else.
+- D) It doesn't matter.
+
+---
+
+class: inverse, center, middle
+
+# 2. "Bad Control" Diagnostic  
+### Three Scenarios to Test Your Instincts
+
+---
+
+## Scenario 1:
+
+![](controlvariablekickoff_files/figure-html/dag-step1-1.png)&lt;!-- --&gt;
+
+**Question:** You want the *total* effect of Campaign Contact on Turnout. Should you control for **Political Interest**?
+
+- [ ] Yes  
+- [ ] No
+
+**Why?**
+
+---
+
+## Scenario 2: 
+
+![](controlvariablekickoff_files/figure-html/dag-step2-1.png)&lt;!-- --&gt;
+
+
+**Question:** You are studying whether *Charisma* affects *Talent*. Should you control for **Star Status**?
+
+- [ ] Yes  
+- [ ] No
+
+**Why?**
+
+---
+
+## Scenario 3: 
+
+![](controlvariablekickoff_files/figure-html/dag-step3-1.png)&lt;!-- --&gt;
+
+
+**Question:** Is **Wealth** a confounder? Should you include it?
+
+- [ ] Yes  
+- [ ] No
+
+**Why?**
+
+---
+
+class: inverse, center, middle
+
+# 3. Variable Dump Challenge  
+
+---
+
+## The Research Question
+
+&gt; Does attending religious services increase an individual's annual charitable giving (in dollars)?
+
+**Data source:** General Social Survey (GSS)
+
+**Main variables:**
+- **Treatment:** `Religious Attendance` (0 = never, 8 = weekly+)
+- **Outcome:** `Charitable Giving` (total dollars donated to non‑religious charities)
+
+---
+
+## Available Variables in the Dataset
+
+- `age` (years)
+- `income` (annual household income)
+- `educ` (years of education)
+- `parent_relig` (how often parents attended services when R was child)
+- `altruism` (self‑reported agreement with "I often try to help others")
+- `pol_ideology` (1=extremely liberal to 7=extremely conservative)
+- `married` (1=married, 0=otherwise)
+- `childs` (number of children)
+- `south` (1=lives in South, 0=otherwise)
+
+---
+
+## Group Tasks (10 minutes)
+
+1. **Draw a minimal DAG** on scratch paper. Include at least `Religious Attendance`, `Charitable Giving`, and two other variables from the list that you suspect are confounders.
+
+2. **Select TWO variables** from the list that you would **definitely include as controls** in a regression.
+
+3. **Select ONE variable** from the list that you are **actively deciding NOT to control for**, even though it's available.
+
+**We will discuss your decisions together as a group at the end of 10 minutes.**  
+
+---
+
+## Discussion Debrief
+
+Let's hear from a few groups:
+
+- Which two variables did you pick as controls? Why are they confounders?
+- Which variable did you **not** control for? Why?
+
+**Watch out for:**  
+- `altruism` → likely a **mediator** (attendance → altruism → giving)  
+- `parent_relig` → strong **confounder** (upbringing affects both attendance and giving norms)  
+- `income` → **confounder** (ability to give and possibly attendance patterns)
+
+---
+
+class: inverse, center, middle
+
+# 4. Case Study Deconstruction  
+### DAG Thinking in the Wild
+
+---
+
+## Excerpt from a Published Study
+
+&gt; **Research Question:** Does receiving mail that publicizes one's voting record (treatment) increase voter turnout (outcome)?
+
+**Study:** Gerber, Green, and Larimer (2008) – *Social Pressure and Voter Turnout*
+
+**Design:** Large‑scale field experiment with random assignment to treatment conditions.
+
+---
+
+## Regression Table (Simplified)
+
+| Variable | Model 1 (No Controls) | Model 2 (With Controls) |
+| :--- | :--- | :--- |
+| Treatment (Social Pressure Mail) | 0.081*** (0.008) | 0.076*** (0.008) |
+| Age | | 0.004*** (0.000) |
+| Party Registration (Democrat) | | 0.012 (0.010) |
+| **Voted in Previous Election** | | 0.342*** (0.010) |
+| Household Size | | -0.002 (0.003) |
+| *Constant* | 0.302*** | 0.085*** |
+| Observations | 80,000 | 80,000 |
+
+*Standard errors in parentheses. ***p &lt; 0.01.*
+
+---
+
+## Discussion Questions
+
+1. **Coefficient change:** The treatment effect goes from 0.081 to 0.076. Is this a **large** change? What does it tell us about the relationship between treatment and the added controls?
+
+2. **Past turnout as a control:** Is `Voted in Previous Election` a **confounder** in this experiment? Why or why not?
+
+3. **Why include it then?** If treatment was randomly assigned, why might the authors still include `Voted in Previous Election`? What benefit does it provide?
+
+4. **A thought experiment:** Suppose the treatment was **not** randomized but instead a "Get Out the Vote" phone call that campaigns target at likely voters. How would your answer to Q2 change?
+
+---
+
+## Key Takeaways from the Case Study
+
+- **In randomized experiments,** covariates are *not* needed for unbiased estimation.  
+- **But** including strong predictors of the outcome (like past turnout) **reduces standard errors** and improves precision.
+- **In observational studies,** variables like past turnout are often **confounders** that *must* be controlled to avoid bias.
+
+&gt; The back‑door criterion tells you **when** to control.  
+&gt; Precision considerations tell you **why** you might still control even when unconfounded.
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity  
+### Group DAG Creation &amp; Justification
+
+---
+
+## Your Task (20 minutes)
+
+In your assigned group, create a DAG for a research question of your choice (or use the one provided below).
+
+**Requirements:**
+
+1. **Draw the DAG** (on paper, whiteboard, or using DAGitty). Take a photo/screenshot.
+2. **Identify at least three variables** that are **confounders** for the main relationship. These should be variables you would include as controls.
+3. **Explain why one of these variables meets the definition of a confounder.** (1–2 sentences: "Variable Z is a confounder because it is a common cause of both X and Y...")
+4. **Identify one variable that you explicitly chose NOT to include** as a control. Explain why it does *not* meet the definition (e.g., it's a mediator, collider, or post‑treatment).
+
+---
+
+## Submission
+
+**Each student** must submit to the TA via email **by the end of today**:
+
+- The DAG image (photo/screenshot)
+- The written justifications (confounder explanation + omitted variable explanation)
+
+---
+
+class: inverse, center, middle
+
+# Wrap‑Up
+
+---
+
+## What's the Single Most Important Rule?
+
+&gt; **"Close all back‑door paths. Do not control for mediators, colliders, or post‑treatment variables."**
+
+If you remember only one thing from today, make it this.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
