@@ -50,6 +50,8 @@ Before class, watch [this video about back-door paths and controls](https://www.
 
 Class activity: Elaborate the group's DAG to include appropriate control variables. Show at least three variables that make sense as confounders. Each student should send the DAG to their TA. Include as well an explanation for why one of the variables meets the definition of a confounder; also explain why one variable the group chose not to include does not meet that definition.
 
+[Control variable session activities](controlvariablekickoff.html) 
+
 *Tuesday, April 21st: More Advanced Social-Science Designs*
 
 Before class, read The Effect, Chapters 18-21

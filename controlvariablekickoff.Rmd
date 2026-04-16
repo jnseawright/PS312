@@ -325,7 +325,7 @@ In your assigned group, create a DAG for a research question of your choice (or 
 
 ## Submission
 
-**Each student** must submit to the TA via email **by the end of today**:
+**Each student** should submit to the TA via email **by the end of today**:
 
 - The DAG image (photo/screenshot)
 - The written justifications (confounder explanation + omitted variable explanation)
