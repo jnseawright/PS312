@@ -60,6 +60,8 @@ Here is [a quick video explanation of the idea of natural experiments in politic
 
 Class activity: For your group's research question, choose one of the designs we read about/discussed and figure out a way you can use it to answer your question! Each student should write a paragraph to their TA explaining the design they have chosen and why they think it can work.
 
+[Advanced designs activities](advanceddesignskickoff.html) 
+
 *Thursday, April 23rd: Difference-in-Differences*
 
 Before class, read [https://mixtape.scunning.com/09-difference_in_differences](https://mixtape.scunning.com/09-difference_in_differences)
