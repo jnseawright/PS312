@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Missing Data</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jaye Seawright" />
+    <meta name="date" content="2026-04-22" />
+    <script src="missingdatakickoff_files/header-attrs-2.30/header-attrs.js"></script>
+    <link href="missingdatakickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="missingdatakickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Missing Data
+]
+.subtitle[
+## PS 312
+]
+.author[
+### Jaye Seawright
+]
+.date[
+### 2026-04-22
+]
+
+---
+
+
+
+## Today's Roadmap
+
+1. **Hook &amp; Activation:** Why missing data matters  
+2. **Concept Introduction:** MCAR, MAR, MNAR, and solutions  
+3. **Data Doctor: NHANES Clinic** – Diagnose and treat missingness  
+4. **Your Turn: QoG Patient** – Missing data in democracy and development  
+5. **Core Graded Activity:** Table and paragraph for the TA  
+6. **Wrap‑Up:** Cheat sheet for missing data  
+
+**Goal:** Move from "I drop rows with NAs" to "I can diagnose missingness and implement multiple imputation in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook &amp; Activation  
+### Why Missing Data Matters
+
+---
+
+## Scenario: Survey Non‑Response
+
+You run a survey asking voters about their income and their presidential vote choice. You find that 30% of respondents refuse to answer the income question.
+
+- You run a regression of vote choice on income using only complete cases.  
+- What's the problem? (Hint: Who refuses to report income?)
+
+If high‑income Republicans and low‑income Democrats are more likely to skip the income question, your complete‑case analysis is biased. The missing data are **not random**.
+
+**The solution:** Model the missing data mechanism and impute plausible values, or use methods that are robust to certain types of missingness.
+
+---
+
+## The Cost of Ignoring Missing Data
+
+| **Approach** | **Consequence** |
+| :----------- | :-------------- |
+| **Listwise deletion** (drop any row with NA) | Loss of power, potential bias if data are not MCAR. |
+| **Mean imputation** (replace NA with variable mean) | Underestimates standard errors, distorts relationships. |
+| **Last observation carried forward** | Assumes stability that rarely holds; can induce bias. |
+
+&gt; **Bottom line:** How you handle missing data can change your substantive conclusions. Today we'll learn principled approaches.
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction  
+### MCAR, MAR, MNAR, and Solutions
+
+---
+
+## Three Mechanisms of Missingness
+
+| **Mechanism** | **Definition** | **Example** |
+| :------------ | :------------- | :---------- |
+| **MCAR** (Missing Completely at Random) | Missingness is unrelated to any observed or unobserved variables. | A random power outage corrupts 5% of survey responses. |
+| **MAR** (Missing at Random) | Missingness is related to *observed* variables but not to the unobserved value itself. | High‑income respondents are less likely to report income, but we *have* income predictors (education, occupation). |
+| **MNAR** (Missing Not at Random) | Missingness depends on the unobserved value itself. | People with very high or very low income refuse to report *because* of their income. |
+
+---
+
+## Principled Solutions
+
+| **Method** | **When to Use** | **R Package** |
+| :--------- | :-------------- | :------------ |
+| **Multiple Imputation** | Data are MAR or MCAR. Creates multiple plausible datasets, analyzes each, pools results. | `mice`, `Amelia` |
+| **Full Information Maximum Likelihood (FIML)** | Data are MAR. Uses all available information without imputing. | `lavaan` |
+| **Inverse Probability Weighting** | Data are MAR. Weights complete cases by probability of being observed. | `ipw` |
+| **Sensitivity Analysis** | Suspect MNAR. Tests how robust results are to different missingness assumptions. | `mice` (with post‑processing) |
+
+**Today's focus:** Multiple imputation with `mice` (Multivariate Imputation by Chained Equations).
+
+---
+
+## How Multiple Imputation Works
+
+1. **Create** `m` copies of the dataset (e.g., `m = 20`), each with missing values filled in by predictive models.
+2. **Analyze** each imputed dataset separately (e.g., run your regression 20 times).
+3. **Pool** the results using Rubin's rules to obtain final estimates and standard errors that account for imputation uncertainty.
+
+The `mice` package automates this entire workflow.
+
+---
+
+class: inverse, center, middle
+
+# 3. Data Doctor: NHANES Clinic  
+### Examine → Diagnose → Treat → Recover
+
+---
+
+## The Patient: NHANES Subsample
+
+We have a patient—a dataset from a U.S. health survey with 25 individuals. Four vital signs were measured:
+
+- `age`: Age group (1 = 20‑39, 2 = 40‑59, 3 = 60+)
+- `bmi`: Body mass index (kg/m²)
+- `hyp`: Hypertension status (1 = no, 2 = yes)
+- `chl`: Total cholesterol (mg/dL)
+
+**But some measurements are missing.** As the attending Data Doctor, your job is to:
+
+1. **Examine** the patient – Where are the missing values?  
+2. **Diagnose** the condition – What is the likely missingness mechanism?  
+3. **Treat** the patient – Apply multiple imputation.  
+4. **Check recovery** – Compare results before and after treatment.
+
+---
+
+## Examination: Vital Signs
+
+
+``` r
+data("nhanes", package = "mice")
+glimpse(nhanes)
+```
+
+```
+## Rows: 25
+## Columns: 4
+## $ age &lt;dbl&gt; 1, 2, 1, 3, 1, 3, 1, 1, 2, 2, 1, 2, 3, 2, 1, 1, 3, 2, 1, 3, 1, 1, …
+## $ bmi &lt;dbl&gt; NA, 22.7, NA, NA, 20.4, NA, 22.5, 30.1, 22.0, NA, NA, NA, 21.7, 28…
+## $ hyp &lt;dbl&gt; NA, 1, 1, NA, 1, NA, 1, 1, 1, NA, NA, NA, 1, 2, 1, NA, 2, 2, 1, 2,…
+## $ chl &lt;dbl&gt; NA, 187, 187, NA, 113, 184, 118, 187, 238, NA, NA, NA, 206, 204, N…
+```
+
+---
+
+## Examination: Missingness Pattern
+
+
+``` r
+md.pattern(nhanes, rotate.names = TRUE)
+```
+
+![](missingdatakickoff_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+```
+##    age hyp bmi chl   
+## 13   1   1   1   1  0
+## 3    1   1   1   0  1
+## 1    1   1   0   1  1
+## 1    1   0   0   1  2
+## 7    1   0   0   0  3
+##      0   8   9  10 27
+```
+
+**Questions for the attending physician:**
+- How many complete cases?  
+- Which variable is most severely affected?  
+- Do missing values cluster together?
+
+---
+
+## Examination: Visualizing the Condition
+
+
+``` r
+aggr(nhanes, numbers = TRUE, sortVars = TRUE,
+     cex.axis = 0.7, gap = 3, ylab = c("Proportion of missingness", "Pattern"))
+```
+
+![](missingdatakickoff_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+```
+## 
+##  Variables sorted by number of missings: 
+##  Variable Count
+##       chl  0.40
+##       bmi  0.36
+##       hyp  0.32
+##       age  0.00
+```
+
+---
+
+## Diagnosis: What's the Mechanism?
+
+Discuss with your team of specialists:
+
+| **Possible Diagnosis** | **Supporting Evidence** | **Contradicting Evidence** |
+| :--------------------- | :---------------------- | :------------------------- |
+| **MCAR** | Missingness appears scattered. | Missingness in `chl` and `bmi` may correlate with `age`. |
+| **MAR** | Older patients may be less willing to give blood samples. | Can test: does missingness in `chl` depend on `age`? |
+| **MNAR** | Patients with very high BMI or cholesterol may avoid measurement. | Cannot test without knowing true values. |
+
+**Team vote:** What's the most plausible diagnosis?
+
+---
+
+## Baseline: Before Treatment (Complete‑Case Regression)
+
+Suppose we want to predict cholesterol from age, BMI, and hypertension. First, we see what happens if we ignore the missingness.
+
+
+``` r
+model_cc &lt;- lm(chl ~ age + bmi + hyp, data = nhanes)
+summary(model_cc)
+```
+
+```
+## 
+## Call:
+## lm(formula = chl ~ age + bmi + hyp, data = nhanes)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -31.315 -15.782   0.576   6.315  59.335 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)   
+## (Intercept)  -80.971     61.772  -1.311  0.22238   
+## age           55.210     14.290   3.864  0.00383 **
+## bmi            7.065      2.052   3.443  0.00736 **
+## hyp           -6.222     23.177  -0.268  0.79441   
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 29.05 on 9 degrees of freedom
+##   (12 observations deleted due to missingness)
+## Multiple R-squared:  0.7339,	Adjusted R-squared:  0.6452 
+## F-statistic: 8.274 on 3 and 9 DF,  p-value: 0.005915
+```
+
+**How many patients were included?** 13 out of 25.
+
+---
+
+## Treatment: Multiple Imputation
+
+We administer **Multiple Imputation (mice)** as treatment.
+
+
+``` r
+set.seed(312)
+imp &lt;- mice(nhanes, m = 20, maxit = 10, printFlag = FALSE)
+
+# Check treatment response (convergence)
+plot(imp, c("bmi", "chl"))
+```
+
+![](missingdatakickoff_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+
+---
+
+## Recovery: Post‑Treatment Analysis
+
+We re‑run the regression on the imputed datasets and pool the results.
+
+
+``` r
+models &lt;- with(imp, lm(chl ~ age + bmi + hyp))
+pooled &lt;- pool(models)
+summary(pooled)
+```
+
+```
+##          term   estimate std.error  statistic        df    p.value
+## 1 (Intercept) -17.215270 71.568892 -0.2405412 11.935167 0.81399282
+## 2         age  36.095226 15.501531  2.3284943  8.828411 0.04538593
+## 3         bmi   5.882224  2.470862  2.3806361 10.988694 0.03648166
+## 4         hyp  -6.013208 29.546805 -0.2035147  7.581392 0.84408851
+```
+
+---
+
+## Recovery: Before vs. After Comparison
+
+
+``` r
+modelsummary(list("Before Treatment (Complete Cases)" = model_cc, 
+                  "After Treatment (Multiple Imputation)" = pooled),
+             stars = TRUE, title = "Cholesterol Prediction: Before and After Imputation")
+```
+
+```{=html}
+&lt;!-- preamble start --&gt;
+
+    &lt;script src="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.js"&gt;&lt;/script&gt;
+
+    &lt;script&gt;
+      // Create table-specific functions using external factory
+      const tableFns_3tl5he7rz8yljyr20yru = TinyTable.createTableFunctions("tinytable_3tl5he7rz8yljyr20yru");
+      // tinytable span after
+      window.addEventListener('load', function () {
+          var cellsToStyle = [
+            // tinytable style arrays after
+          { positions: [ { i: '16', j: 2 }, { i: '16', j: 3 } ], css_id: 'tinytable_css_zwr5el1sqq3n02rol7tr',}, 
+          { positions: [ { i: '8', j: 2 }, { i: '8', j: 3 } ], css_id: 'tinytable_css_w0zzwz3q2p96q09birml',}, 
+          { positions: [ { i: '1', j: 2 }, { i: '2', j: 2 }, { i: '3', j: 2 }, { i: '4', j: 2 }, { i: '5', j: 2 }, { i: '6', j: 2 }, { i: '7', j: 2 }, { i: '9', j: 2 }, { i: '10', j: 2 }, { i: '11', j: 2 }, { i: '12', j: 2 }, { i: '13', j: 2 }, { i: '14', j: 2 }, { i: '15', j: 2 }, { i: '1', j: 3 }, { i: '2', j: 3 }, { i: '3', j: 3 }, { i: '4', j: 3 }, { i: '5', j: 3 }, { i: '6', j: 3 }, { i: '7', j: 3 }, { i: '9', j: 3 }, { i: '10', j: 3 }, { i: '11', j: 3 }, { i: '12', j: 3 }, { i: '13', j: 3 }, { i: '14', j: 3 }, { i: '15', j: 3 } ], css_id: 'tinytable_css_9yq7okht89bfzctgyhii',}, 
+          { positions: [ { i: '0', j: 2 }, { i: '0', j: 3 } ], css_id: 'tinytable_css_wboc10lv0ebhac5cyq06',}, 
+          { positions: [ { i: '16', j: 1 } ], css_id: 'tinytable_css_x7qn9k6somk9byzo8ups',}, 
+          { positions: [ { i: '8', j: 1 } ], css_id: 'tinytable_css_a3pnnnyy7f08djoqsrrm',}, 
+          { positions: [ { i: '1', j: 1 }, { i: '2', j: 1 }, { i: '3', j: 1 }, { i: '4', j: 1 }, { i: '5', j: 1 }, { i: '6', j: 1 }, { i: '7', j: 1 }, { i: '9', j: 1 }, { i: '10', j: 1 }, { i: '11', j: 1 }, { i: '12', j: 1 }, { i: '13', j: 1 }, { i: '14', j: 1 }, { i: '15', j: 1 } ], css_id: 'tinytable_css_yrb4xf33l0n1zkhr5ced',}, 
+          { positions: [ { i: '0', j: 1 } ], css_id: 'tinytable_css_agvgojnjkk3s6p7d2msv',}, 
+          ];
+
+          // Loop over the arrays to style the cells
+          cellsToStyle.forEach(function (group) {
+              group.positions.forEach(function (cell) {
+                  tableFns_3tl5he7rz8yljyr20yru.styleCell(cell.i, cell.j, group.css_id);
+              });
+          });
+      });
+    &lt;/script&gt;
+
+    &lt;link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vincentarelbundock/tinytable@main/inst/tinytable.css"&gt;
+    &lt;style&gt;
+    /* tinytable css entries after */
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_zwr5el1sqq3n02rol7tr, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_zwr5el1sqq3n02rol7tr {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_w0zzwz3q2p96q09birml, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_w0zzwz3q2p96q09birml {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_9yq7okht89bfzctgyhii, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_9yq7okht89bfzctgyhii { text-align: center }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_wboc10lv0ebhac5cyq06, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_wboc10lv0ebhac5cyq06 {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: center }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_x7qn9k6somk9byzo8ups, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_x7qn9k6somk9byzo8ups {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.1em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_a3pnnnyy7f08djoqsrrm, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_a3pnnnyy7f08djoqsrrm {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 0; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_yrb4xf33l0n1zkhr5ced, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_yrb4xf33l0n1zkhr5ced { text-align: left }
+    #tinytable_3tl5he7rz8yljyr20yru td.tinytable_css_agvgojnjkk3s6p7d2msv, #tinytable_3tl5he7rz8yljyr20yru th.tinytable_css_agvgojnjkk3s6p7d2msv {  position: relative; --border-bottom: 1; --border-left: 0; --border-right: 0; --border-top: 1; --line-color-bottom: black; --line-color-left: black; --line-color-right: black; --line-color-top: black; --line-width-bottom: 0.05em; --line-width-left: 0.1em; --line-width-right: 0.1em; --line-width-top: 0.1em; --trim-bottom-left: 0%; --trim-bottom-right: 0%; --trim-left-bottom: 0%; --trim-left-top: 0%; --trim-right-bottom: 0%; --trim-right-top: 0%; --trim-top-left: 0%; --trim-top-right: 0%; ; text-align: left }
+    &lt;/style&gt;
+    &lt;div class="container"&gt;
+      &lt;table class="tinytable" id="tinytable_3tl5he7rz8yljyr20yru" style="width: auto; margin-left: auto; margin-right: auto;" data-quarto-disable-processing='true'&gt;
+        &lt;caption&gt;Cholesterol Prediction: Before and After Imputation&lt;/caption&gt;
+        &lt;thead&gt;
+              &lt;tr&gt;
+                &lt;th scope="col" data-row="0" data-col="1"&gt; &lt;/th&gt;
+                &lt;th scope="col" data-row="0" data-col="2"&gt;Before Treatment (Complete Cases)&lt;/th&gt;
+                &lt;th scope="col" data-row="0" data-col="3"&gt;After Treatment (Multiple Imputation)&lt;/th&gt;
+              &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tfoot&gt;&lt;tr&gt;&lt;td colspan='3'&gt;+ p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+        &lt;tbody&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="1" data-col="1"&gt;(Intercept)&lt;/td&gt;
+                  &lt;td data-row="1" data-col="2"&gt;-80.971&lt;/td&gt;
+                  &lt;td data-row="1" data-col="3"&gt;-17.215&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="2" data-col="1"&gt;&lt;/td&gt;
+                  &lt;td data-row="2" data-col="2"&gt;(61.772)&lt;/td&gt;
+                  &lt;td data-row="2" data-col="3"&gt;(71.569)&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="3" data-col="1"&gt;age&lt;/td&gt;
+                  &lt;td data-row="3" data-col="2"&gt;55.210**&lt;/td&gt;
+                  &lt;td data-row="3" data-col="3"&gt;36.095*&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="4" data-col="1"&gt;&lt;/td&gt;
+                  &lt;td data-row="4" data-col="2"&gt;(14.290)&lt;/td&gt;
+                  &lt;td data-row="4" data-col="3"&gt;(15.502)&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="5" data-col="1"&gt;bmi&lt;/td&gt;
+                  &lt;td data-row="5" data-col="2"&gt;7.065**&lt;/td&gt;
+                  &lt;td data-row="5" data-col="3"&gt;5.882*&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="6" data-col="1"&gt;&lt;/td&gt;
+                  &lt;td data-row="6" data-col="2"&gt;(2.052)&lt;/td&gt;
+                  &lt;td data-row="6" data-col="3"&gt;(2.471)&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="7" data-col="1"&gt;hyp&lt;/td&gt;
+                  &lt;td data-row="7" data-col="2"&gt;-6.222&lt;/td&gt;
+                  &lt;td data-row="7" data-col="3"&gt;-6.013&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="8" data-col="1"&gt;&lt;/td&gt;
+                  &lt;td data-row="8" data-col="2"&gt;(23.177)&lt;/td&gt;
+                  &lt;td data-row="8" data-col="3"&gt;(29.547)&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="9" data-col="1"&gt;Num.Obs.&lt;/td&gt;
+                  &lt;td data-row="9" data-col="2"&gt;13&lt;/td&gt;
+                  &lt;td data-row="9" data-col="3"&gt;25&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="10" data-col="1"&gt;Num.Imp.&lt;/td&gt;
+                  &lt;td data-row="10" data-col="2"&gt;&lt;/td&gt;
+                  &lt;td data-row="10" data-col="3"&gt;20&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="11" data-col="1"&gt;R2&lt;/td&gt;
+                  &lt;td data-row="11" data-col="2"&gt;0.734&lt;/td&gt;
+                  &lt;td data-row="11" data-col="3"&gt;0.464&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="12" data-col="1"&gt;R2 Adj.&lt;/td&gt;
+                  &lt;td data-row="12" data-col="2"&gt;0.645&lt;/td&gt;
+                  &lt;td data-row="12" data-col="3"&gt;0.385&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="13" data-col="1"&gt;AIC&lt;/td&gt;
+                  &lt;td data-row="13" data-col="2"&gt;129.7&lt;/td&gt;
+                  &lt;td data-row="13" data-col="3"&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="14" data-col="1"&gt;BIC&lt;/td&gt;
+                  &lt;td data-row="14" data-col="2"&gt;132.5&lt;/td&gt;
+                  &lt;td data-row="14" data-col="3"&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="15" data-col="1"&gt;Log.Lik.&lt;/td&gt;
+                  &lt;td data-row="15" data-col="2"&gt;-59.852&lt;/td&gt;
+                  &lt;td data-row="15" data-col="3"&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+                &lt;tr&gt;
+                  &lt;td data-row="16" data-col="1"&gt;RMSE&lt;/td&gt;
+                  &lt;td data-row="16" data-col="2"&gt;24.17&lt;/td&gt;
+                  &lt;td data-row="16" data-col="3"&gt;&lt;/td&gt;
+                &lt;/tr&gt;
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/div&gt;
+&lt;!-- hack to avoid NA insertion in last line --&gt;
+```
+
+**Doctor's notes:**
+- Did the coefficient on `bmi` change?  
+- Did standard errors shrink or grow?  
+- How many additional patients' data were recovered?
+
+---
+
+## Discharge Instructions: From NHANES to QoG
+
+You've successfully treated a small patient. Now you'll apply the **exact same workflow** to a much larger patient: a cross‑national dataset on democracy and economic development.
+
+The steps are identical:
+1. **Examine** – Where are the missing values?  
+2. **Diagnose** – What is the likely mechanism?  
+3. **Treat** – Multiple imputation with `mice`.  
+4. **Recover** – Compare complete‑case vs. imputed results.
+
+---
+
+class: inverse, center, middle
+
+# 4. Your Turn: QoG Patient  
+### Missing Data in Democracy and Development
+
+---
+
+## The Research Question
+
+A classic finding in political science is that economic development (GDP per capita) is strongly associated with democracy. But how reliable is this relationship given missing data in cross‑national datasets?
+
+**Your task:** Apply the Data Doctor workflow to the Quality of Government (QoG) dataset.
+
+---
+
+## Step 1: Load the Patient Data
+
+
+``` r
+# Download QoG Standard dataset
+library(rqog)
+qog_raw &lt;- read_qog(which_data = "standard", data_type = "time-series")
+#Note: there is a fallback dataset available in the course /data directory in case this download fails.
+
+# Select and rename variables
+qog &lt;- qog_raw %&gt;%
+  select(
+    cname, year,
+    p_polity2,       # Democracy score (-10 to +10)
+    wdi_gdpcapcon2015,# GDP per capita
+    wdi_pop,         # Population
+    wdi_litrad,      # Literacy rate
+    wdi_chexppgdp,      # Health spending
+    wdi_oilrent,          # Oil rents as a share of GDP
+    wbgi_gee         # Government effectiveness
+  ) %&gt;%
+  rename(
+    country = cname,
+    democracy = p_polity2,
+    gdp_pc = wdi_gdpcapcon2015,
+    population = wdi_pop,
+    literacy_rate = wdi_litrad,
+    health_spend = wdi_chexppgdp,
+    oil = wdi_oilrent,
+    gov_effect = wbgi_gee
+  )
+
+glimpse(qog)
+```
+
+```
+## Rows: 15,366
+## Columns: 9
+## $ country       &lt;chr&gt; "Afghanistan", "Afghanistan", "Afghanistan", "Afghanista…
+## $ year          &lt;int&gt; 1946, 1947, 1948, 1949, 1950, 1951, 1952, 1953, 1954, 19…
+## $ democracy     &lt;int&gt; -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -10, -…
+## $ gdp_pc        &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ population    &lt;int&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ literacy_rate &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ health_spend  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ oil           &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+## $ gov_effect    &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, …
+```
+
+---
+
+## Step 2: Baseline (Before Treatment)
+
+Complete the code below to run a complete‑case regression. Remember to reach out to group members, TAs, and/or the professor early and often! TAs and the professor have cheat sheets available if you get stuck.
+
+
+``` r
+# Create a dataset with only complete cases
+qog_complete &lt;- qog %&gt;%
+  drop_na(____________)  # FILL IN: list all variables in your model
+
+# Run the regression
+model_complete &lt;- lm(____________ ~ ____________ + ____________ + ____________ + ____________ + ____________ + ____________,
+                     data = qog_complete)
+
+summary(model_complete)
+```
+
+**Hint:** Your model should predict `democracy` from `gdp_pc`, `population`, `literacy_rate`, `health_spend`, `oil`, and `gov_effect`.
+
+---
+
+## Step 3: Examine the Patient
+
+Fill in the blanks to diagnose missingness.
+
+
+``` r
+# Pattern of missingness
+md.pattern(qog %&gt;% select(-country, -year), rotate.names = TRUE)
+
+# Visualization
+aggr(qog %&gt;% select(____________), numbers = TRUE, sortVars = TRUE)  # FILL IN: which variables to examine?
+```
+
+**Questions:**
+- What proportion of observations are complete?  
+- Which variable has the most missingness?  
+- Does missingness cluster in particular years or countries?
+
+---
+
+## Step 4: Diagnosis Discussion
+
+With your group, discuss:
+
+1. Is the missingness pattern more consistent with **MCAR**, **MAR**, or **MNAR**?  
+2. What evidence supports your diagnosis?  
+3. If MAR, which observed variables might predict missingness?
+
+---
+
+## Step 5: Treatment (Multiple Imputation)
+
+Complete the code to perform multiple imputation.
+
+
+``` r
+# Select variables for imputation
+impute_vars &lt;- qog %&gt;%
+  select(____________)  # FILL IN: variables to include in imputation model
+
+set.seed(312)
+imp &lt;- mice(impute_vars, m = ____________, maxit = 10, printFlag = FALSE)  # FILL IN: number of imputations (suggest 20)
+
+# Check convergence
+plot(imp, c("____________", "____________"))  # FILL IN: two variables to check
+```
+
+---
+
+## Step 6: Recovery (Analyze Imputed Data)
+
+Complete the code to fit models on imputed data and pool results.
+
+
+``` r
+# Fit models on each imputed dataset
+models &lt;- with(imp, lm(____________ ~ ____________ + ____________ + ____________ + ____________ + ____________ + ____________))
+
+# Pool results
+pooled &lt;- pool(____________)  # FILL IN: what object contains the fitted models?
+
+summary(pooled)
+```
+
+---
+
+## Step 7: Before vs. After Comparison
+
+
+``` r
+modelsummary(list("Before Treatment (Complete Cases)" = ____________, 
+                  "After Treatment (Multiple Imputation)" = ____________),
+             stars = TRUE,
+             title = "Democracy and Economic Development: Before and After Imputation")
+```
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity  
+### Table and Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA:**
+
+1. **A table** showing the original regression results (complete‑case) and the results correcting for missing data (multiple imputation).  
+2. **A paragraph** discussing the extent to which missing data made a difference in the results.
+
+---
+
+## Paragraph Should Include
+
+- Your research question (one sentence).  
+- Proportion of missing data and number of complete cases vs. original observations.  
+- Comparison of the key coefficient (`gdp_pc`) between models (point estimate and standard error).  
+- A brief assessment of the plausibility of the MAR assumption for these data.  
+- Your conclusion: Did missing data substantively change the findings?
+
+---
+
+## Example Paragraph
+
+&gt; *Our group asks: Does economic development predict higher levels of democracy? In the QoG dataset, 34% of observations were missing data on at least one variable, reducing the sample from 8,000 to 5,300 complete cases. The complete‑case model estimated a GDP per capita coefficient of 0.21 (SE = 0.03). After multiple imputation (m = 20), the coefficient increased to 0.25 (SE = 0.04), and the education spending variable became statistically significant. The MAR assumption is plausible because missingness in GDP and democracy appears related to observed variables like government effectiveness and oil production. We conclude that missing data modestly attenuated the estimated effect of development on democracy; using imputation recovers a slightly stronger and more precisely estimated relationship.*
+
+---
+
+## Reminders
+
+- One submission per student.  
+- Include the comparison table in your email (screenshot or exported CSV).
+
+---
+
+class: inverse, center, middle
+
+# 6. Wrap‑Up  
+### Cheat Sheet for Missing Data
+
+---
+
+| **Method** | **Pros** | **Cons** | **When to Use** |
+| :--------- | :------- | :------- | :-------------- |
+| **Listwise Deletion** | Simple, unbiased under MCAR. | Inefficient, biased under MAR/MNAR. | MCAR, or very low missingness (&lt;5%). |
+| **Multiple Imputation** | Uses all data, valid under MAR, reflects uncertainty. | Computationally intensive, requires modeling. | MAR, moderate to high missingness. |
+| **FIML** | Efficient, no imputation needed. | Requires specialized software. | MAR, structural equation models. |
+| **Sensitivity Analysis** | Assesses robustness to MNAR. | No single correct method. | Always a good idea. |
+
+&gt; **Single most important rule:** Always diagnose the missingness pattern before choosing a method.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

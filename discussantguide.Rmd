@@ -1,0 +1,110 @@
+---
+title: "PS 312: Discussant Preparation Guide"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Your Role as Discussant
+
+As a discussant, you are a **colleague** providing constructive, professional feedback. Your goal is to help the presenting group improve their project—not to tear it down. The best discussants balance genuine praise with actionable suggestions.
+
+---
+
+## Before the Session
+
+1. **Obtain the slides** at least one hour before class.  
+2. **Read them carefully.** If the group provides a draft paper or additional materials, review those too.  
+3. **Prepare a 3–4 minute feedback presentation** (2–3 slides maximum). You will deliver this immediately after the group's presentation and before the general Q&A.
+
+---
+
+## Structuring Your Feedback: The "3‑2‑1" Method
+
+| **Component** | **What to Include** | **Approx. Time** |
+|:--------------|:--------------------|:-----------------|
+| **3 Strengths** | Identify three specific things the group did well. Be concrete: *"The parallel trends figure was compelling because…"* or *"Your explanation of the exclusion restriction was clear and honest."* | ~1 min |
+| **2 Areas for Development** | Identify two aspects that could be improved or questions that remain unanswered. Frame constructively: *"I wonder if you considered…"* or *"One additional robustness check might be…"* | ~1.5 min |
+| **1 Big‑Picture Suggestion** | Offer one overarching suggestion for how the project could be strengthened as it moves toward a final paper. This could be about framing, additional data, or alternative explanations. | ~30 sec |
+
+**Total:** ~3 minutes (never exceed 4 minutes)
+
+---
+
+## Tips for High‑Quality Feedback
+
+- **Be specific.** Instead of *"Good slides,"* say *"Your use of a coefficient plot instead of a regression table made the results easy to grasp."*
+- **Be constructive.** Instead of *"You didn't check the parallel trends assumption,"* say *"I'd love to see an event study plot to support the parallel trends assumption."*
+- **Balance praise and critique.** Start and end with genuine strengths. The middle can include your suggestions.
+- **Respect time.** Prepare more than you think you'll need, but be ready to cut if you're running long.
+- **Stay collegial.** Your tone should be one of curiosity and collaboration, not judgment.
+
+---
+
+## Example Discussant Slide Outline
+
+### Slide 1: Strengths
+
+- **Clear motivation:** The puzzle is well‑articulated—why do women legislators work harder?
+- **Creative use of field experiment:** Randomizing which legislator contacts constituents is a strong design.
+- **Honest discussion of limitations:** You acknowledge the lower‑information context of state legislative races.
+
+### Slide 2: Areas for Development
+
+- **Mechanism evidence:** You show constituents respond more to women, but *why*? Could you add a survey question about perceived approachability?
+- **Generalizability:** The study involves two legislator pairs. How might the findings apply to other contexts (e.g., Congress, other states)?
+
+### Slide 3: Big‑Picture Suggestion
+
+- **Framing the contribution:** Consider emphasizing that this is a *demand‑side* explanation for gender differences in legislative effort—complementing the existing supply‑side explanations (e.g., women feel more pressure to prove themselves).
+
+---
+
+## During the Session
+
+- **Listen actively.** You may adjust your prepared feedback if the group addresses one of your points during their talk.
+- **Speak clearly and professionally.** Model the collegial exchange you'd see at a real conference.
+- **After your remarks**, the floor opens for general Q&A. You may participate further but prioritize letting other students ask questions.
+
+---
+
+## Grading (Extra Credit)
+
+| **Task** | **Extra Credit** |
+|:---------|:-----------------|
+| Volunteering and completing the discussant role | **+1%** |
+| High‑quality feedback (preparation, specificity, constructive tone) | **Additional +1%** |
+
+**Quality is judged by:**
+- **Preparation:** Did you make an effort to coordinate with the group to obtain slides early and prepare slides/notes?
+- **Specificity:** Did you point to concrete elements of the presentation?
+- **Constructiveness:** Did you offer actionable suggestions while affirming strengths?
+
+---
+
+## Quick Checklist (Bring to Class)
+
+- [ ] Reviewed group's slides at least one hour before class.
+- [ ] Prepared 2–3 slides with notes (or a printed outline).
+- [ ] Identified **3 specific strengths**.
+- [ ] Identified **2 areas for development**.
+- [ ] Prepared **1 big‑picture suggestion**.
+- [ ] Rehearsed timing (aim for 3 minutes).
+
+---
+
+## Additional Resources
+
+- **Professional Discussant Examples:** Watch discussant comments from APSA or MPSA panels (many available on YouTube). Notice how the best discussants are generous with praise and frame critiques as open questions.
+- **Questions to Ask Yourself:**
+  - *What did this presentation teach me that I didn't know before?*
+  - *If I were a reviewer for a journal, what one revision would I request?*
+  - *What would make this project even stronger for its next iteration?*

@@ -1,0 +1,110 @@
+---
+title: "PS 312: Final Presentation Evaluation Rubric"
+author: "Instructor & TAs"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: false
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(knitr)
+library(kableExtra)
+```
+
+## Scoring Guidelines
+
+Each criterion is scored on a **1–5 scale**. Use the descriptors below as a guide.
+
+| Score | Description |
+|:-----:|:------------|
+| **5** | Excellent – exceeds expectations; clear, compelling, and rigorous. |
+| **4** | Very Good – meets expectations with minor room for improvement. |
+| **3** | Satisfactory – meets basic expectations; some gaps in clarity or rigor. |
+| **2** | Needs Improvement – significant gaps; unclear or underdeveloped. |
+| **1** | Poor – missing or fundamentally flawed. |
+
+---
+
+## Evaluation Rubric
+
+```{r rubric-table, echo=FALSE}
+rubric <- data.frame(
+  Criterion = c(
+    "1. Research Design & Causal Identification",
+    "2. Assumption Evidence & Diagnostics",
+    "3. Professionalism & Clarity",
+    "4. Creativity & Originality",
+    "5. Use & Quality of Graphs/Tables",
+    "6. Handling of Q&A and Discussant Feedback"
+  ),
+  Weight = c("20%", "20%", "15%", "15%", "15%", "15%"),
+  Excellent_5 = c(
+    "Clearly identifies a causal design taught in class; articulates identification strategy and why it is credible.",
+    "Presents explicit diagnostic evidence (e.g., parallel trends plot, first-stage F-stat). Discusses limitations honestly.",
+    "Slides polished and well-organized; speaker maintains eye contact, speaks clearly, stays within time.",
+    "Question is novel or applies classic design to fresh context; presentation uses best practices to engage the audience.",
+    "Figures self-contained, properly labeled, and effectively communicate main result. Tables highlight key coefficients.",
+    "Responds to questions with precision and professionalism; acknowledges limitations; engages constructively with discussant."
+  ),
+  Satisfactory_3 = c(
+    "Mentions a design but does not fully explain identifying variation or how it addresses confounding.",
+    "Mentions assumptions but provides weak or no diagnostic evidence.",
+    "Slides adequate but minor issues (e.g., too much text). Speaker reads slides occasionally or rushes.",
+    "Question and design are competent but generic ; presentation shows little effort to engage.",
+    "Figures present but have minor labeling issues or are hard to interpret.",
+    "Answers questions but may be vague or defensive; partially addresses discussant feedback."
+  ),
+  Needs_Improvement_1 = c(
+    "No clear design; relies on cross-sectional correlations without addressing endogeneity.",
+    "Ignores assumptions entirely; presents results as self-evident.",
+    "Slides messy, unreadable, or disorganized. Speaker unprepared or significantly over time.",
+    "Question and/or design are superficial; presentation puts obstacles in audience's path.",
+    "Figures missing, misleading, or unreadable; raw output pasted onto slides.",
+    "Cannot answer questions; dismisses feedback; seems unfamiliar with project."
+  )
+)
+
+kable(rubric, format = "latex", booktabs = TRUE, longtable = FALSE, 
+      caption = "Detailed Rubric Descriptors") %>%
+  kable_styling(latex_options = c("striped", "hold_position"), font_size = 9) %>%
+  column_spec(1, width = "2.8cm") %>%
+  column_spec(2, width = "1.2cm") %>%
+  column_spec(3:5, width = "3.5cm")
+```
+
+---
+
+## Score Calculation
+
+```{r score-formula, echo=FALSE}
+score_calc <- "
+**Final Score (out of 5)** = 
+(C1 × 0.20) + (C2 × 0.20) + (C3 × 0.15) + (C4 × 0.15) + (C5 × 0.15) + (C6 × 0.15)
+"
+cat(score_calc)
+```
+
+Round to one decimal point before translating.
+
+**Grade Translation (Example):**
+- 4.5 – 5.0 = A
+- 4.0 – 4.4 = A–
+- 3.5 – 3.9 = B+
+- 3.0 – 3.4 = B
+- Below 3.0 = C or lower
+
+---
+
+## Scoring Sheet (for TA/Instructor Use)
+
+| Group Members | C1 (20%) | C2 (20%) | C3 (15%) | C4 (15%) | C5 (15%) | C6 (15%) | **Total** | **Grade** |
+|:--------------|:--------:|:--------:|:--------:|:--------:|:--------:|:--------:|:---------:|:---------:|
+|               |          |          |          |          |          |          |           |           |
+|               |          |          |          |          |          |          |           |           |
+|               |          |          |          |          |          |          |           |           |
+
+**Notes:**

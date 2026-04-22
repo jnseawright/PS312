@@ -1,0 +1,341 @@
+---
+title: "Instrumental Variables"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(AER)         # ivreg() with diagnostics
+library(knitr)
+```
+
+## Today's Roadmap
+
+1. **Hook & Activation:** The logic of instrumental variables  
+2. **Concept Introduction:** The IV model, relevance, and exclusion  
+3. **Instrument on Trial** – Does rainfall pass the test?  
+4. **Diagnostics & Assumptions:** Weak instruments and overidentification  
+5. **Instruments Brainstorm:** Inventing instruments that might work in political science  
+6. **Core Graded Activity:** Write your paragraph for the TA  
+7. **Wrap‑Up:** Cheat sheet for IV designs  
+
+**Goal:** Move from "I've heard of IV" to "I can design, run, and critically evaluate an instrumental‑variables analysis in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook & Activation  
+### The Logic of Instrumental Variables
+
+---
+
+## Scenario: Returns to Education
+
+You want to know the causal effect of an extra year of schooling on wages. You run a regression:
+
+`$$\text{Wage}_i = \beta_0 + \beta_1 \text{Education}_i + u_i$$`
+
+- Why might `\(\beta_1\)` be biased? (Hint: Ability is unobserved and correlated with both education and wages.)
+
+If we could find a variable that **affects education** but **has no direct effect on wages** (other than through education), we could use it as an **instrument**. A famous example is **quarter of birth**: people born in different quarters have slightly different compulsory schooling lengths, but birth quarter should not directly affect wages decades later.
+
+---
+
+## The IV Intuition
+
+1. **Instrumental variable (Z):** A variable that is correlated with the endogenous regressor (`X`) but uncorrelated with the error term (`u`).  
+2. **First stage:** Regress `X` on `Z` (and any exogenous covariates) to get the predicted values `\(\hat{X}\)`.  
+3. **Second stage:** Regress `Y` on `\(\hat{X}\)` (and the covariates). The coefficient on `\(\hat{X}\)` is the **IV estimate**.
+
+The IV estimator isolates variation in `X` that is *as good as random* (driven by `Z`), purging the bias from unobserved confounders.
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction  
+### The IV Model, Relevance, and Exclusion
+
+---
+
+## The Two IV Assumptions
+
+1. **Relevance:** The instrument must be strongly correlated with the endogenous regressor.  
+   - *Check:* First‑stage F‑statistic > 10 (rule of thumb).
+2. **Exclusion restriction:** The instrument must affect the outcome **only through** the endogenous regressor.  
+   - *Cannot be formally tested*—must be defended theoretically.
+
+For our activity, we will use **election‑day rainfall and snowfall** as instruments for **voter turnout**. Do these instruments satisfy the assumptions?
+
+---
+
+## The 2SLS Estimator in R
+
+We will use the `ivreg()` function from the `AER` package. The formula syntax is:
+
+`y ~ x1 + x2 | z1 + z2 + x2`
+
+- `y` is the outcome.
+- `x1` is the **endogenous** regressor (turnout).
+- `x2` are **exogenous** covariates (included in both stages).
+- `z1` and `z2` are the **instruments** (rain, snow).
+
+`ivreg()` automatically performs two‑stage least squares and can report diagnostics with `summary(..., diagnostics = TRUE)`.
+
+---
+
+class: inverse, center, middle
+
+# 3. Instrument on Trial  
+### Does Rainfall Pass the Test?
+
+---
+
+## The Setup
+
+You've seen the code that loads the data and runs the IV. Now we put the instruments—`Rain` and `Snow`—**on trial**.
+
+| **Role** | **Your Task** |
+| :------- | :------------ |
+| **Defense** | Argue that `Rain` and `Snow` are **valid instruments** for `Turnout`. Use the regression output to support your case. |
+| **Prosecution** | Argue that `Rain` and `Snow` are **invalid instruments**. Identify violations of relevance or the exclusion restriction. |
+
+**The evidence:** The R output from the analysis (OLS, IV, first‑stage, Sargan test).
+
+---
+
+**Procedure:**
+1. (3 min) We need volunteers to act as the prosecution and the defense. Each side will have a few minutes to prepare and to meet with the instructor.
+2. (5 min) Defense presents first; Prosecution rebuts.
+3. (2 min) Class votes: **Valid** or **Invalid**?
+
+---
+
+## Loading the Data
+
+The dataset `rainfallections.csv` contains county‑level election returns, battleground status, and weather for U.S. presidential elections from 1948 to 2000.
+
+```{r}
+iv_data <- read_csv("data/rainfallelections.csv")
+
+# Keep relevant variables and remove missing
+iv_clean <- iv_data %>%
+  select(Year, State, County, Turnout, battleground, Rain, Snow) %>%
+  filter(!is.na(Turnout), !is.na(battleground), !is.na(Rain), !is.na(Snow))
+
+glimpse(iv_clean)
+```
+
+---
+
+## Exhibit A: The OLS Regression
+
+```{r}
+ols_model <- lm(battleground ~ Turnout, data = iv_clean)
+summary(ols_model)
+```
+
+---
+
+## Exhibit B: The IV Regression (2SLS)
+
+```{r}
+iv_model <- ivreg(battleground ~ Turnout | Rain + Snow,
+                  data = iv_clean)
+summary(iv_model, diagnostics = TRUE)
+```
+---
+
+**Defense highlights:**
+- First‑stage F‑statistic > 10 → instruments are **relevant**.
+- Wu‑Hausman test significant → turnout is indeed endogenous; IV is justified.
+
+**Prosecution highlights:**
+- Sargan test p‑value is small → **overidentification rejected**; at least one instrument may be invalid.
+- The coefficient changed quite a bit from OLS, which could be a sign of weak‑instrument bias even if F > 10.
+
+---
+
+## Exhibit C: The First Stage (Relevance)
+
+```{r}
+first_stage <- lm(Turnout ~ Rain + Snow, data = iv_clean)
+summary(first_stage)
+```
+
+---
+
+## Exhibit D: The Exclusion Restriction (Conceptual)
+
+*No table for this one—it's about theory.*
+
+**Defense needs to argue that...:**
+> Rainfall on Election Day affects battleground status **only** by reducing turnout.
+
+**Prosecution needs to argue that...:**
+> Weather could affect long‑term political competitiveness in some way other than by reducing turnout. (Ideally, provide one or more examples of such an effect.) 
+
+---
+
+## Your Verdict
+
+After hearing both sides, **raise your hand**:
+
+- ✋ **Valid:** The instruments are credible.
+- ✋ **Invalid:** The instruments fail the relevance or exclusion requirement.
+
+*(Instructor tallies and discusses the majority view.)*
+
+---
+
+## Why This Matters for Your Project
+
+In your own analysis (using `GOPVoteShare` as the outcome), you will face the **exact same debate**. You must decide whether to trust the IV results. The tools you just used—first‑stage F, Sargan test, theoretical reasoning—are what you'll apply to defend your own conclusions.
+
+**Remember:** No instrument is perfect. The goal is to be **transparent** about the threats and to show that your results are robust to reasonable challenges.
+
+---
+
+class: inverse, center, middle
+
+# 4. Diagnostics & Assumptions  
+### Weak Instruments and Overidentification
+
+---
+
+## Weak Instrument Test
+
+A weak instrument leads to biased IV estimates and inflated standard errors. The rule of thumb: **first‑stage F‑statistic > 10**.
+
+We can examine the first stage directly (as in Exhibit C) or extract the F‑statistic from the `ivreg` diagnostics.
+
+```{r}
+# Extract first‑stage F‑statistic from ivreg object
+summary(iv_model, diagnostics = TRUE)$diagnostics["Weak instruments", "statistic"]
+```
+
+If this value is less than 10, the instruments are **weak** and the IV estimates should be interpreted with caution.
+
+---
+
+## Overidentification Test (Sargan)
+
+When we have **more instruments than endogenous regressors**, we can test whether the instruments are uncorrelated with the second‑stage error term.
+
+```{r}
+summary(iv_model, diagnostics = TRUE)$diagnostics["Sargan", "p-value"]
+```
+
+- **Null hypothesis:** The instruments are valid (exclusion restriction holds).
+- A small p‑value (< 0.05) suggests that at least one instrument may be invalid.
+
+---
+
+## Robustness Checks
+
+Do the results change if we use only one instrument (`Rain`)? What if we add controls like year fixed effects or state fixed effects?
+
+```{r}
+# IV with only rain
+iv_rain <- ivreg(battleground ~ Turnout | Rain, data = iv_clean)
+summary(iv_rain, diagnostics = TRUE)
+
+# With state fixed effects
+iv_fe <- ivreg(battleground ~ Turnout + factor(State) | Rain + Snow + factor(State),
+               data = iv_clean)
+summary(iv_fe, diagnostics = TRUE)
+```
+
+---
+
+class: inverse, center, middle
+
+# 5. Instruments Brainstorm  
+### Inventing Instruments That Might Work in Political Science
+
+---
+
+## The Challenge
+
+Finding a valid instrument is **hard**. The best instruments come from **institutional quirks, natural experiments, or random assignment** that is plausibly exogenous.
+
+In small groups, take **5 minutes** to brainstorm an instrument for one of the following research questions:
+
+| **Research Question** | **Endogenous Regressor** | **Your Task** |
+| :-------------------- | :----------------------- | :------------ |
+| Does attending a political protest increase future civic engagement? | Protest attendance | Propose an instrument for protest attendance. |
+| Does campaign spending increase a candidate's vote share? | Campaign spending | Propose an instrument for campaign spending. |
+| Does having a female mayor increase spending on public education? | Mayor's gender | Propose an instrument for electing a female mayor. |
+| Does watching partisan news make people more polarized? | Partisan news consumption | Propose an instrument for watching Fox News or MSNBC. |
+
+---
+
+## Some Classic Examples (For Inspiration)
+
+| **Instrument** | **Endogenous Regressor** | **Why It Works** |
+| :------------- | :----------------------- | :--------------- |
+| **Vietnam War draft lottery number** | Military service | Randomly assigned; affects earnings only through service. |
+| **Distance to the nearest community college** | College attendance | Affects attendance but (arguably) not wages directly. |
+| **Rainfall on Election Day** | Voter turnout | Affects turnout but (arguably) not vote share directly. |
+| **Quarter of birth** | Years of schooling | Affects compulsory schooling length; uncorrelated with ability. |
+| **Judge's ideology (randomly assigned)** | Sentencing severity | Random assignment of cases to judges; affects outcomes only through sentencing. |
+
+---
+
+## Share Out
+
+Each group will share their **best instrument idea** and defend why it satisfies:
+
+1. **Relevance** – Strongly correlated with the endogenous regressor.  
+2. **Exclusion** – Affects the outcome *only through* that regressor.
+
+The class will vote on the **most creative but credible instrument**.
+
+---
+
+class: inverse, center, middle
+
+# 6. Core Graded Activity  
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1. Your **research question** (one sentence).  
+2. A brief description of the **IV design** (endogenous regressor, instruments, outcome).  
+3. The **key result** (the IV coefficient from `ivreg()`) and how it differs from the OLS estimate.  
+4. An assessment of the **instrument strength** (first‑stage F‑statistic) and what it implies.  
+5. **One critical reflection** on the validity of rainfall/snowfall as instruments (exclusion restriction).
+
+---
+
+## Example Paragraph (for a different question)
+
+> *Our group asks: Does education increase wages? We use quarter of birth as an instrument for years of schooling. The OLS estimate suggests a 10% return per year of education, but the IV estimate is only 7% (p < 0.01). The first‑stage F‑statistic is 12.3, above the rule‑of‑thumb threshold of 10, suggesting the instrument is adequately strong. The exclusion restriction requires that birth quarter affects wages only through schooling; while this is plausible, critics note that birth quarter may correlate with season‑of‑birth effects on health. Overall, the IV results support a causal effect of education, albeit smaller than OLS suggests.*
+
+---
+
+## Reminders
+
+- One submission per student.
+
+---
+
+class: inverse, center, middle
+
+# 7. Wrap‑Up  
+
+> **Single most important rule for IV:** Always report the first‑stage F‑statistic. A weak instrument can be worse than no instrument at all.

@@ -1,0 +1,494 @@
+---
+title: "Synthetic Control"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(knitr)
+library(tidysynth)    # Tidy implementation of synthetic control
+```
+
+## Today's Roadmap
+
+1. **Hook & Activation:** The logic of synthetic control
+2. **Concept Introduction:** Building a counterfactual from donor units
+3. **Code Review** – Did Brexit set the UK on a path of democratic backsliding?
+4. **Diagnostics & Inference:** Placebo tests and assessing fit
+5. **Core Graded Activity:** Write your paragraph for the TA
+6. **Wrap‑Up:** When to use synthetic control and its modern extensions
+
+**Goal:** Move from "I've heard of synthetic control" to "I can design, run, and critically evaluate a synthetic control analysis in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook & Activation
+### The Logic of Synthetic Control
+
+
+---
+### The Canonical Example: California Proposition 99 (Abadie et al. 2010)
+
+- **Intervention**: California passed tobacco tax Proposition 99 in 1988.
+- **Question**: Did it reduce cigarette consumption?
+- **Donor pool**: 38 states without similar legislation.
+- **Predictors**: Pre-treatment cigarette sales, income, beer consumption, age composition.
+
+---
+
+```{r synth_setup, echo = TRUE, eval = TRUE}
+library(tidysynth)
+
+smoking_out <- smoking %>%
+  synthetic_control(outcome = cigsale,
+                    unit = state,
+                    time = year,
+                    i_unit = "California",
+                    i_time = 1988,
+                    generate_placebos = TRUE) %>%
+  generate_predictor(time_window = 1980:1988,
+                     ln_income = mean(lnincome, na.rm = TRUE),
+                     ret_price = mean(retprice, na.rm = TRUE),
+                     youth = mean(age15to24, na.rm = TRUE)) %>%
+  generate_predictor(time_window = 1984:1988,
+                     beer_sales = mean(beer, na.rm = TRUE)) %>%
+  generate_predictor(time_window = 1975, cigsale_1975 = cigsale) %>%
+  generate_predictor(time_window = 1980, cigsale_1980 = cigsale) %>%
+  generate_predictor(time_window = 1988, cigsale_1988 = cigsale) %>%
+  generate_weights(optimization_window = 1970:1988) %>%
+  generate_control()
+```
+
+---
+### Visualizing the Synthetic Control
+
+```{r synth_plot_1, echo = TRUE, eval = TRUE, out.width="60%"}
+# Plot the results
+smoking_out %>% plot_trends()
+```
+---
+### Visualizing the Synthetic Control
+
+```{r synth_plot_2, echo = TRUE, eval = TRUE, out.width="60%"}
+# Examine weights
+smoking_out %>% plot_weights()
+```
+---
+### Visualizing the Synthetic Control
+
+```{r synth_plot_3, echo = TRUE, eval = TRUE, out.width="80%"}
+# Check balance
+smoking_out %>% grab_balance_table()
+```
+
+---
+### Visualizing the Synthetic Control
+
+- **Pre-treatment fit**: Synthetic and observed California should track closely.
+- **Post-treatment divergence**: The gap is the estimated treatment effect.
+- **Weights**: Which states contribute to the synthetic control? (Often just a few.)
+
+---
+### The Synthetic Control Advantage
+
+**Why synthetic control often beats DiD**:
+
+1. **Transparency**: We see exactly which units form the counterfactual.
+2. **No extrapolation**: Weights are non-negative and sum to one.
+3. **Data-driven**: No researcher discretion in selecting comparison units.
+4. **Visual placebo tests**: We can apply the same method to every donor unit.
+
+---
+### Synthetic Control: Key Takeaways
+
+| What makes a good SC? | What threatens validity? |
+|------------------------|--------------------------|
+| Long pre-treatment period | Interpolation bias (donors too different) |
+| Good pre-treatment fit | Structural breaks in donors |
+| Diverse donor pool | Treatment diffusion to donors |
+| Plausible exclusion of treated unit's influencers | Anticipation effects |
+
+---
+
+**In potential outcomes terms**: SC imputes the counterfactual using a weighted average of untreated units, chosen to match pre-treatment characteristics and outcomes.
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction
+### Building a Counterfactual from Donor Units
+
+---
+
+## The Optimization Problem
+
+Formally, synthetic control solves a constrained optimization problem:
+
+- Let `\(Y_{it}\)` be the outcome for unit `\(i\)` at time `\(t\)`.
+- The treated unit is `\(i=1\)`. The donor pool is units `\(i=2, \dots, J+1\)`.
+- We seek a vector of weights `\(W = (w_2, \dots, w_{J+1})\)` such that:
+  - `\(w_j \ge 0\)` for all `\(j\)` (weights are non‑negative)
+  - `\(\sum_{j=2}^{J+1} w_j = 1\)` (weights sum to 1)
+
+The weights are chosen to minimize the distance between the treated unit and the weighted donor units on a set of **pre‑treatment predictors** (which include pre‑treatment outcomes and other covariates).
+
+The synthetic control outcome is then:
+`$$\hat{Y}_{1t} = \sum_{j=2}^{J+1} w_j Y_{jt}$$`
+and the treatment effect is `\(Y_{1t} - \hat{Y}_{1t}\)` for `\(t > T_0\)`.
+
+---
+
+## The Key Assumptions
+
+1. **No anticipation:** The treatment had no causal effect before it occurred.
+2. **No spillovers:** The treatment in the treated unit does not affect the outcomes of units in the donor pool.
+3. **Convex hull:** The treated unit can be reasonably approximated by a convex combination of donor units.
+4. **Sufficient pre‑treatment period:** Enough pre‑treatment data to establish a credible counterfactual.
+
+> **Single most important diagnostic:** The pre‑treatment fit. If the synthetic control does not closely track the treated unit *before* the intervention, any post‑treatment divergence is suspect.
+
+---
+
+## Synthetic Control vs. Other Designs
+
+| Design | Counterfactual | When to Use |
+| :----- | :------------- | :---------- |
+| **DiD** | Parallel trends assumption | Many treated units, clear control group |
+| **Synthetic Control** | Weighted average of untreated units | One (or few) treated units, many potential donors |
+| **Matching** | Matched untreated units | Cross‑sectional data, many covariates |
+
+Synthetic control is particularly useful for **comparative case studies** where only one or a few units receive the treatment and you want a transparent, data‑driven counterfactual.
+
+---
+
+class: inverse, center, middle
+
+# 3. Code Review
+### Did Brexit Set the UK on a Path of Democratic Backsliding?
+
+---
+
+## The Research Question
+
+The 2016 Brexit referendum marked a major political shock for the United Kingdom. In the years following, observers have raised concerns about democratic backsliding—weakening of judicial independence, restrictions on protest rights, and attacks on the media and civil service.
+
+**Your task:** I've provided some sample code to set up and run a synthetic control analysis for this question. (I recognize the overlap with today's group assignment!) You, as a class, are to carry out a **code review**, discussing what works well in the screens that follow, what is perhaps silly or inefficient, and what just doesn't make sense.
+
+---
+
+We will use the **V‑Dem Liberal Democracy Index** as our outcome. This index ranges from 0 to 1 and captures the quality of liberal democracy, including constraints on executive power, civil liberties, and rule of law.
+
+---
+
+## Getting Set Up in R
+
+We'll use the `vdemdata` package to access the V‑Dem dataset and `tidysynth` for the synthetic control analysis.
+
+```{r, eval=FALSE}
+# Install the vdemdata package (development version)
+# install.packages("devtools")
+# devtools::install_github("vdeminstitute/vdemdata")
+
+# Install tidysynth
+# install.packages("tidysynth")
+```
+
+```{r synth_packageloading, echo = TRUE, eval = TRUE}
+# Load packages
+library(vdemdata)
+library(tidysynth)
+library(tidyverse)
+```
+
+---
+
+## Loading and Preparing the V‑Dem Data
+
+The V‑Dem dataset contains country‑year observations for hundreds of democracy indicators. We'll extract the Liberal Democracy Index (`v2x_libdem`) and several predictors that could be relevant for democratic quality.
+
+```{r vdem_data_loading, echo = TRUE, eval = TRUE}
+# Load the V-Dem dataset
+data("vdem")
+```
+
+---
+
+## Selecting Our Variables
+
+We need:
+- **Outcome:** `v2x_libdem` – Liberal Democracy Index
+- **Predictors:** Economic and social factors that correlate with democratic quality (we won't use any in this demo)
+- **Unit identifier:** `country_name` or `country_id`
+- **Time identifier:** `year`
+
+---
+
+```{r synth_data_clean, echo = TRUE, eval = TRUE}
+# ----------------------------------------------------------------------
+# 1. Load and clean V-Dem data
+# ----------------------------------------------------------------------
+vdem_complete <- vdem %>%
+  select(country_name, year, v2x_libdem) %>%
+  #Synthetic control hates missing data, so we'll junk it!
+  filter(!is.na(v2x_libdem)) %>%
+  #Let's make sure there are no duplicate country-years
+  distinct(country_name, year, .keep_all = TRUE)
+```
+
+---
+
+```{r synth_data_restructure, echo = TRUE, eval = TRUE}
+# ----------------------------------------------------------------------
+# 2. Keep only countries with a complete 1990-2015 time series
+# ----------------------------------------------------------------------
+complete_countries <- vdem_complete %>%
+  filter(year %in% 1990:2015) %>%
+  group_by(country_name) %>%
+  summarise(n_years = n_distinct(year)) %>%
+  filter(n_years == length(1990:2015)) %>%
+  pull(country_name)
+
+# ----------------------------------------------------------------------
+# 3. Filter dataset to only balanced countries AND relevant years
+# ----------------------------------------------------------------------
+vdem_balanced <- vdem_complete %>%
+  filter(country_name %in% complete_countries) %>%
+  filter(year >= 1990, year <= 2024)   # Pre-treatment + early post-treatment
+
+# Verify balanced panel (should return 35 for 1990-2024)
+vdem_balanced %>%
+  group_by(country_name) %>%
+  summarise(n = n()) %>%
+  pull(n) %>%
+  unique()
+```
+
+---
+
+```{r synth_carry_out, echo = TRUE, eval = TRUE}
+# ----------------------------------------------------------------------
+# 4. Run synthetic control
+# ----------------------------------------------------------------------
+uk_synth <- vdem_balanced %>%
+  synthetic_control(
+    outcome = v2x_libdem,
+    unit = country_name,
+    time = year,
+    i_unit = "United Kingdom",
+    i_time = 2016,
+    generate_placebos = TRUE
+  ) %>%
+  generate_predictor(
+    time_window = 1990:2015,
+    libdem_avg = mean(v2x_libdem, na.rm = TRUE)
+  ) %>%
+  generate_weights(optimization_window = 1990:2015) %>%
+  generate_control()
+
+uk_synth
+```
+
+---
+
+## Examining the Weights
+
+Which countries contribute to the synthetic UK?
+
+```{r country_weights, echo = TRUE, eval = TRUE}
+# Extract and plot unit weights
+uk_synth %>%
+  grab_unit_weights() %>%
+  filter(weight > 0.01) %>%  # Show only non-trivial weights
+  arrange(desc(weight)) %>%
+  kable(digits = 3, caption = "Donor Country Weights for Synthetic UK")
+```
+
+**Interpretation:** The synthetic UK is built primarily from countries with similar democratic trajectories. Do these countries make substantive sense? Are they plausible comparators?
+
+---
+
+## Visualizing the Results
+
+```{r synth_plot, echo = TRUE, eval = TRUE}
+# Plot the treated unit vs. synthetic control
+synthplot <- uk_synth %>%
+  plot_trends(
+    time_window = 1990:2024
+  ) +
+  geom_vline(xintercept = 2016, linetype = "dashed", color = "red") +
+  labs(
+    title = "Did Brexit Cause Democratic Backsliding in the UK?",
+    subtitle = "United Kingdom vs. Synthetic United Kingdom",
+    caption = "Data: V-Dem v13"
+  ) +
+  theme_minimal()
+```
+
+---
+
+```{r synth_plot_show, echo = FALSE, eval = TRUE}
+synthplot
+```
+
+---
+
+## Interpreting the Results
+
+Examine the plot carefully:
+
+- **Pre‑2016 fit:** How closely does the synthetic UK track the actual UK before the Brexit referendum? A good fit is essential for credibility.
+- **Post‑2016 divergence:** Is there a visible gap between the actual UK and the synthetic UK after 2016? What is the direction and magnitude?
+- **Trend over time:** Does any gap widen, narrow, or remain stable?
+
+**Key questions to answer:**
+- What is the estimated effect of Brexit on the UK's Liberal Democracy Index by 2020 or 2025?
+- Is this effect substantively meaningful? (Recall the index ranges from 0 to 1.)
+
+---
+
+class: inverse, center, middle
+
+# 4. Diagnostics & Inference
+### Placebo Tests and Assessing Fit
+
+---
+
+## The Placebo Test: In‑Space Placebos
+
+A key inferential tool in synthetic control is the **placebo test** (or "in‑space placebo"). We re‑run the synthetic control analysis on each country in the donor pool, pretending that *they* were treated in 2016. If the UK's estimated effect is unusually large compared to the placebo effects, we have stronger evidence that the effect is real.
+
+`tidysynth` makes this easy by setting `generate_placebos = TRUE`.
+
+---
+
+```{r placebo_plot, echo = TRUE, eval = TRUE}
+# Plot the UK effect against all placebos
+placeboplot <- uk_synth %>%
+  plot_placebos(
+    time_window = 1990:2025,
+    prune = TRUE  # Remove placebos with poor pre-treatment fit
+  ) +
+  geom_vline(xintercept = 2016, linetype = "dashed", color = "red") +
+  labs(
+    title = "Placebo Test: UK vs. Donor Countries",
+    subtitle = "Does the UK effect stand out from the noise?",
+    x = "Year",
+    y = "Gap: Actual - Synthetic Liberal Democracy Index"
+  ) +
+  theme_minimal()
+```
+
+---
+
+```{r placebo_plot_2, echo = FALSE, eval = TRUE}
+placeboplot
+```
+
+---
+
+## Interpreting the Placebo Plot
+
+- **Pre‑2016:** All gaps should hover near zero. If many placebos have large pre‑treatment gaps, the model fit is poor.
+- **Post‑2016:** Look at the distribution of placebo gaps. Does the UK's gap lie outside the "cloud" of placebo effects? If so, the effect is unlikely to be due to chance.
+
+A common rule of thumb: If the UK's post‑treatment gap is larger (in absolute value) than the gaps for 95% of the placebos, the effect is statistically significant at the 5% level.
+
+---
+
+## Alternative Inference: Leave‑One‑Out Robustness
+
+Another check: Does the result depend heavily on any single donor country?
+
+```{r}
+# Generate leave-one-out synthetic controls (optional, may be time-consuming)
+# uk_synth %>%
+#   generate_control(leave_one_out = TRUE) %>%
+#   plot_leave_one_out(time_window = 1990:2025)
+```
+
+If removing any single donor dramatically changes the synthetic control, the results are fragile. A robust synthetic control should not depend on any one country.
+
+---
+
+## Pre‑Treatment Fit: MSPE
+
+The **Mean Squared Prediction Error (MSPE)** measures how well the synthetic control matches the treated unit in the pre‑treatment period. Lower MSPE indicates better fit.
+
+```{r mspe, echo = TRUE, eval = TRUE} 
+# Extract the full time series data from the synthetic control object
+uk_series <- uk_synth %>%
+  grab_synthetic_control(placebo = FALSE)
+
+# Compute pre‑treatment MSPE
+uk_mspe <- uk_series %>%
+  filter(time_unit < 2016) %>%
+  summarise(
+    mspe = mean((real_y - synth_y)^2, na.rm = TRUE)
+  )
+
+uk_mspe
+```
+
+---
+
+Compare this to the MSPE of the placebos. If the UK's pre‑treatment MSPE is among the lowest, the fit is good.
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1. Your **research question** (one sentence).
+2. A brief description of the **synthetic control design** (treated unit, treatment year, donor pool, outcome).
+3. A description of the **pre‑treatment fit** (e.g., "The synthetic UK closely tracks the actual UK before 2016, with an MSPE of X.").
+4. The **key result** (the estimated effect of Brexit on the Liberal Democracy Index) and its **interpretation**.
+5. An assessment of **inferential strength** (e.g., "The placebo test shows that the UK's post‑2016 gap is larger than Y% of placebo gaps, suggesting the effect is statistically meaningful.").
+
+---
+
+## Example Paragraph (for a different question)
+
+> *Our group asks: Did California's Proposition 99 reduce cigarette consumption? We used a synthetic control design, constructing a "synthetic California" from a weighted average of 38 other U.S. states that did not enact similar tobacco control programs. The outcome is per‑capita cigarette sales. The pre‑treatment fit was excellent: the synthetic California closely mirrored actual California's cigarette sales from 1970 to 1988, with an MSPE of 0.02. After Proposition 99 passed in 1988, actual California cigarette sales fell sharply, ending up approximately 20 packs per capita lower than the synthetic control by 2000. A placebo test reveals that California's post‑treatment gap is larger than 95% of the placebo gaps, indicating that the effect is statistically significant at the 5% level. The main limitation is the assumption of no spillovers—tobacco companies may have shifted marketing to neighboring states.*
+
+---
+
+## Reminders
+
+- One submission per student.
+
+---
+
+class: inverse, center, middle
+
+# 6. Wrap‑Up
+### Cheat Sheet for Synthetic Control
+
+---
+
+| Design | Identification Strategy | Data Requirements | Key Assumption |
+| :----- | :---------------------- | :---------------- | :------------- |
+| **Synthetic Control** | Creates a counterfactual from a weighted average of untreated units. | One (or few) treated units, many untreated units with long pre‑treatment period. | The treated unit can be approximated by a convex combination of donor units; no spillovers. |
+| **Difference‑in‑Differences** | Compares change in treated group to change in untreated group. | Panel data with treated and control groups. | Parallel trends. |
+| **Synthetic DiD** | Combines SCM and DiD; weights control units to match pre‑treatment trends and differences them out. | Panel data with multiple treated units. | Weaker parallel trends; allows for unit‑specific time trends. |
+
+> **Single most important rule for Synthetic Control:** The pre‑treatment fit is everything!

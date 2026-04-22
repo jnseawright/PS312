@@ -1,0 +1,374 @@
+---
+title: "Social Science Transparency Practices"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Today's Roadmap
+
+1. **Hook & Activation:** The transparency revolution—what is it and why does it matter?  
+2. **Core Concepts:** The 3S Survey, TOP Guidelines, and open science badges  
+3. **Group Activity:** Audit published articles for transparency practices  
+4. **Hands‑On:** Find and examine a preregistration on OSF  
+5. **Hands‑On:** Share your own data with GitHub  
+6. **Core Graded Activity:** Write your paragraph for the TA  
+7. **Wrap‑Up:** The future of open social science  
+
+**Goal:** Move from "I've heard of open science" to "I can systematically evaluate the transparency of published research, locate preregistered studies, and share data in a trusted repository."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook & Activation
+### The Transparency Revolution
+
+---
+
+## What's Changing in Social Science?
+
+You've spent the semester learning causal inference methods—DiD, RDD, IV. But here's a different question:
+
+> *How do we know whether the results we read in journals can be trusted?*
+
+Over the past decade, the social sciences have undergone a **transparency revolution**:
+
+- **Preregistration:** Specifying hypotheses and analysis plans *before* seeing the data.
+- **Open data & code:** Sharing the materials needed to reproduce published findings.
+- **Open science badges:** Journals recognizing authors who engage in transparent practices.
+- **Registered Reports:** Peer review *before* results are known.
+
+**The question for today:** How widespread are these practices *really*? And how can you, as a consumer of research, evaluate them?
+
+---
+
+## The Replication Crisis: A Quick Primer
+
+| **What We Thought** | **What We Learned** |
+| :----------------- | :------------------ |
+| Published findings are robust and replicable. | Large‑scale replication projects found that many high‑profile results fail to replicate. |
+| Transparency practices are niche. | Journals and funders are increasingly requiring open data, code, and preregistration. |
+| The crisis is over. | Change is happening, but adoption remains uneven across fields and subfields. |
+
+---
+
+> **Key fact:** A 2026 study published in Nature by Brodeur et al. found that more than 85% of results in top economics and political science journals were computationally reproducible. However, roughly one in four studies that published statistically significant results had errors that made the correct results not significant or even flipped the direction of the finding.
+
+---
+
+class: inverse, center, middle
+
+# 2. Core Concepts
+### The 3S Survey, TOP Guidelines, and Open Science Badges
+
+---
+
+## The State of Social Science (3S) Survey
+
+Christensen et al. (2020) conducted the first comprehensive assessment of open science practices across the social sciences.
+
+**Key findings:**
+
+| **Practice** | **Awareness** | **Adoption** |
+| :----------- | :------------ | :----------- |
+| Posting data online | ~90% | ~40% |
+| Preregistering analyses | ~80% | ~10–15% |
+| Posting code | ~85% | ~30% |
+| Using reporting guidelines | ~60% | ~20% |
+
+**Bottom line:** Awareness is high. Adoption is growing but still far from universal.
+
+---
+
+## The TOP Guidelines
+
+The **Transparency and Openness Promotion (TOP) Guidelines** are a policy framework for journals and funders.
+
+TOP 2025 organizes standards into three types:
+1. **Research Practices:** Study registration, study protocol, analysis plan, materials transparency, analysis code transparency, data transparency, reporting transparency.
+2. **Verification Practices:** Results transparency, computational transparency.
+3. **Verification Studies:** Replication, Registered Reports, Multiverse, Many Analysts.
+
+Each standard can be implemented at three levels:
+- **Level 1 (Disclose):** Authors state whether the practice was followed.
+- **Level 2 (Share and Cite):** Authors share materials in a trusted repository and cite them.
+- **Level 3 (Certify):** An independent party certifies compliance.
+
+---
+
+## Open Science Badges
+
+Badges are visual signals on published articles that recognize transparent practices.
+
+| **Badge** | **Criteria** |
+| :-------- | :----------- |
+| 🟢 **Open Data** | Data are publicly available in a trusted repository with a persistent identifier. |
+| 🔵 **Open Materials** | Research materials (surveys, stimuli, codebooks) are publicly available. |
+| 🟠 **Preregistered** | Study design and analysis plan were preregistered before data collection/analysis. |
+
+**Evidence of effectiveness:** Before badges, <3% of articles in *Psychological Science* reported open data. After badges were introduced, this rose to ~39% with an accelerating trend.
+
+---
+
+class: inverse, center, middle
+
+# 3. Group Activity
+### Audit Published Articles for Transparency Practices
+
+---
+
+## The Task
+
+**For a research question randomly assigned to your group:**
+
+1. Find **at least five published quantitative articles** that address this question.
+2. Evaluate each article's transparency practices using the **Audit Rubric** (next slide).
+3. Record your findings in a shared spreadsheet or document.
+
+**Where to search:** Google Scholar, Web of Science, or discipline‑specific databases (e.g., *American Political Science Review*, *American Journal of Political Science*, *Journal of Politics*).
+
+---
+
+## Audit Rubric: What to Look For
+
+| **Criterion** | **Yes (1 pt)** | **Partial (0.5 pt)** | **No (0 pt)** |
+| :------------ | :------------- | :------------------- | :------------ |
+| **Data Availability** | Data posted in trusted repository with DOI | Data available "upon request" or only summary statistics provided | No data access information |
+| **Code Availability** | Analysis code posted in repository with DOI | Code available "upon request" or partial code only | No code access information |
+| **Preregistration** | Preregistration explicitly mentioned, with link or registration number | Authors state study was preregistered but provide no link | No mention of preregistration |
+| **Open Materials** | Surveys, stimuli, or other materials available | Partial materials available | No materials available |
+| **Reporting Transparency** | Authors use a reporting guideline (e.g., CONSORT, JARS) or provide comprehensive methods | Methods section is detailed but no formal guideline used | Methods are vague or incomplete |
+
+
+---
+
+## Assigned Research Questions
+
+| **Random Number** | **Research Question** |
+| :-------- | :--------------------- |
+| **1** | Does contact with out‑group members reduce prejudice? |
+| **2** | Does voter ID legislation affect turnout? |
+| **3** | Do conditional cash transfer programs improve educational outcomes? |
+| **4** | Does exposure to partisan media increase affective polarization? |
+| **5** | Does foreign aid reduce conflict in recipient countries? |
+| **6** | Do quotas for women in politics change policy outcomes? |
+
+---
+
+## Group Discussion (10 minutes)
+
+After auditing your articles, discuss with your group:
+
+1. **What patterns did you notice?** Were older articles less transparent than newer ones?
+2. **Which journals had stronger transparency practices?** Did you see any open science badges?
+3. **What was the biggest barrier** to finding transparent articles?
+4. **If you were an editor, what one policy would you implement** to improve transparency in your subfield?
+
+**Prepare to share your key takeaway with the class.**
+
+---
+
+class: inverse, center, middle
+
+# 4. Hands‑On
+### Find and Examine a Preregistration
+
+---
+
+## The Task
+
+Preregistration is one of the fastest‑growing transparency practices, but it remains unfamiliar to many students.
+
+**Your task:**
+1. Go to the **Open Science Framework (OSF)** at [osf.io](https://osf.io).
+2. Search for a preregistration related to **your group's research question**.
+3. Examine the preregistration form. What information does it contain?
+
+---
+
+## What to Look for in a Preregistration
+
+| **Section** | **Questions to Ask** |
+| :---------- | :------------------- |
+| **Hypotheses** | Are the hypotheses clearly stated and falsifiable? |
+| **Study Design** | Is the design (experiment, survey, observational) described in detail? |
+| **Variables** | Are independent and dependent variables clearly defined? |
+| **Sample Size** | Is the planned sample size specified, and is there a power analysis? |
+| **Analysis Plan** | Are statistical tests specified in advance? Is there a plan for multiple comparisons? |
+| **Exclusion Criteria** | Are criteria for excluding observations stated before data collection? |
+
+---
+
+## Example: OSF Preregistration Template
+
+The standard OSF preregistration template includes:
+- Study information (title, authors, description)
+- Design plan (study type, blinding, randomization)
+- Sampling plan (sample size rationale, stopping rule)
+- Variables (manipulated, measured, indices)
+- Analysis plan (statistical models, transformations, inference criteria)
+
+**A well‑completed preregistration** makes it possible for a reader to distinguish **confirmatory** analyses (planned in advance) from **exploratory** analyses (discovered in the data).
+
+---
+
+## Find One and Share
+
+Take **5–7 minutes** to locate a preregistration relevant to your group's question.
+
+**If you can't find one:** That's data. Note what that tells you about the state of preregistration in that research area.
+
+**Share with your group:** What did you find? Was the preregistration detailed enough that you could replicate the study from it alone?
+
+---
+
+class: inverse, center, middle
+
+# 5. Hands‑On: Share Your Own Data
+### From Survey to GitHub Repository
+
+---
+
+## The Task
+
+You've evaluated others' transparency. Now practice it yourself.
+
+1. **Complete the brief class survey** at [this Google form](https://forms.gle/JYTJW5X5fSpL7wCz5) (3 questions, fully anonymized).  
+2. **Download the survey data** (we'll provide the CSV file).  
+3. **Create a GitHub repository** and upload the data with a README file.  
+4. **Share the repository link** with your TA.
+
+**If GitHub setup fails:** Use the **OSF (osf.io)** as a fallback—the goal is to deposit data in *any* trusted repository.
+
+---
+
+## Why GitHub?
+
+- **Version control:** Track changes to your data and code over time.  
+- **Collaboration:** Multiple authors can work on the same project.  
+- **Visibility:** GitHub is searchable and citable (via Zenodo DOI integration).  
+
+> **Pro tip:** Even if you don't use GitHub for your own work, understanding its structure will help you access replication materials from other researchers.
+
+---
+
+## Class Survey Questions (Anonymized)
+
+| **Question** | **Response Options** |
+| :----------- | :------------------- |
+| 1. Are you aware of the recent controversy involving Chappell Roan and a security guard in Rio de Janeiro? | Yes / No / Vaguely |
+| 2. What is your general opinion of Chappell Roan? | Very favorable / Somewhat favorable / Neutral / Somewhat unfavorable / Very unfavorable / I don't know who that is |
+| 3. How often do you listen to pop music? | Daily / Weekly / Monthly / Rarely / Never |
+
+**Data will be shared as `class_survey_2026.csv`**—no names, no identifiers.
+
+---
+
+## Step‑by‑Step: GitHub
+
+1. Go to [github.com](https://github.com) and sign up (free).  
+2. Click the **+** icon → **New repository**.  
+3. Name it `ps312-survey-data`.  
+4. Check **"Add a README file"**.  
+5. Click **"Create repository"**.  
+6. Click **"Add file" → "Upload files"**.  
+7. Drag the `class_survey_2026.csv` file into the window.  
+8. Scroll down, write a short commit message (e.g., "Add class survey data"), and click **"Commit changes"**.
+
+**You're done!** Your data is now publicly available (or private, if you choose that option) with a permanent URL.
+
+---
+
+## Fallback: OSF (Open Science Framework)
+
+If GitHub gives you trouble:
+
+1. Go to [osf.io](https://osf.io) and sign up.  
+2. Click **"Create new project"**.  
+3. Title it "PS 312 Survey Data".  
+4. Click **"Create"**, then **"Go to project"**.  
+5. In the **"Files"** widget, click **"Upload"** and select the CSV.  
+6. Click **"Save"**.
+
+OSF automatically assigns a persistent identifier (GUID) that you can cite.
+
+---
+
+## Wrap‑Up
+
+Once you've uploaded the data, paste the repository/OSF link into the class chat or email it to your TA. This counts as part of your participation for the day.
+
+---
+
+class: inverse, center, middle
+
+# 6. Core Graded Activity
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1. The **research question** your group was assigned (one sentence).  
+2. A **summary of your audit findings**—e.g., "Of five articles examined, two had open data, one had open code, and none were preregistered."  
+3. A **description of the preregistration** you found (or note that you couldn't find one, and what that implies).  
+4. **One recommendation** for how journals or authors could improve transparency in this research area.  
+5. **The link to your GitHub (or OSF) repository** containing the class survey data.
+
+---
+
+## Example Paragraph
+
+> *Our group examined the question: Does contact with out‑group members reduce prejudice? We audited five articles published between 2010 and 2023. Two articles posted data in a trusted repository; one also posted analysis code. None of the articles were preregistered, though one mentioned that the study was "preregistered" without providing a link. We located one preregistration on OSF for a related study on intergroup contact; it specified hypotheses and an analysis plan but did not include a power analysis. To improve transparency, we recommend that journals in this subfield adopt the open data badge and require authors to deposit replication materials upon acceptance. Our class survey data is available at: https://github.com/studentname/ps312-survey-data.*
+
+---
+
+## Reminders
+
+- One submission per student.  
+- Paragraphs are due by the end of class.
+
+---
+
+class: inverse, center, middle
+
+# 7. Wrap‑Up
+### The Future of Open Social Science
+
+---
+
+## Where Are We Headed?
+
+| **Trend** | **Implication for You** |
+| :-------- | :---------------------- |
+| **Journals requiring open data/code** | You'll need to learn data management and reproducible workflows. |
+| **Preregistration becoming standard** | Your dissertation and future papers will likely be preregistered. |
+| **Registered Reports growing** | Peer review before results reduces publication bias. |
+| **Computational reproducibility tools** | Tools like R Markdown, Quarto, and Docker will be essential skills. |
+
+> **The takeaway:** Transparency is not a fad—it's becoming the baseline expectation for credible social science.
+
+---
+
+## Cheat Sheet: How to Evaluate Transparency in a Published Article
+
+| **Practice** | **Green Flag** | **Yellow Flag** | **Red Flag** |
+| :----------- | :------------- | :-------------- | :----------- |
+| **Data** | Posted in repository with DOI | "Available upon request" | No mention |
+| **Code** | Posted in repository with DOI | Partial code only | No mention |
+| **Preregistration** | Link to OSF or other registry | Mentioned but no link | No mention |
+| **Materials** | Surveys/stimuli available | Partial materials | No mention |
+| **Open Science Badges** | Badge displayed on article | — | No badges |

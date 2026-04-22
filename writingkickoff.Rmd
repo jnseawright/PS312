@@ -1,0 +1,377 @@
+---
+title: "Writing Quantitative Social Science"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+## Today's Roadmap
+
+1. **Hook & Activation:** What makes a quantitative paper readable?  
+2. **Anatomy of a Quantitative Article:** The IMRaD structure (with examples from Butler et al. and Lupu & Peisakhin)  
+3. **Active Learning:** Reverse outlining a results section  
+4. **From Paper to Presentation:** Converting written work into a conference talk  
+5. **Core Graded Activity:** Submit a slide outline  
+6. **Wrap‑Up:** A writer's checklist  
+
+**Goal:** Move from "I can run the analysis" to "I can write and present my research clearly and persuasively."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook & Activation  
+### What Makes a Quantitative Paper Readable?
+
+---
+
+## Quick Pair‑and‑Share
+
+Take **2 minutes** with a neighbor. Recall a quantitative article you found **easy and enjoyable** to read. What specifically made it that way?
+
+- Clear roadmap at the beginning?  
+- Plain‑language explanations of results?  
+- Well‑designed figures?  
+- A compelling story?
+
+---
+
+## Common Answers (and Why They Matter)
+
+| **Feature** | **Why It Works** |
+| :---------- | :--------------- |
+| **Roadmap paragraph** | Tells the reader where the paper is going; reduces cognitive load. |
+| **Signposting** | Reminds the reader where they are in the argument. |
+| **Plain‑English interpretation** | Translates coefficients into substantive meaning. |
+| **Effective visuals** | Communicates patterns faster than tables of numbers. |
+| **Concise literature review** | Situates the paper without overwhelming. |
+
+> **Key takeaway:** Good writing is **reader‑centered**, not writer‑centered. Your goal is to make the reader's job as easy as possible.
+
+---
+
+class: inverse, center, middle
+
+# 2. Anatomy of a Quantitative Article  
+### The IMRaD Structure and the CARS Introduction
+
+---
+
+## The Core Structure: IMRaD
+
+Most quantitative social science articles follow a predictable structure:
+
+| **Section** | **Purpose** | **Reader's Question** |
+| :---------- | :---------- | :------------------- |
+| **I**ntroduction | Motivate the question, state the argument, preview findings. | Why should I care? What do you argue? |
+| **M**ethods / Data | Describe research design, data sources, measurement. | How did you study this? Can I trust it? |
+| **R**esults | Present empirical findings (tables, figures, text). | What did you find? |
+| **A**nd **D**iscussion | Interpret results, address limitations, conclude. | What does it mean? Why does it matter? |
+
+Some papers add a **Theory** section before Methods.
+
+---
+
+## Activity 1: IMRaD Jigsaw (5 minutes)
+
+In your groups, you'll receive four short excerpts from **Butler et al. (2022)** and **Lupu & Peisakhin (2017)** . Your task:
+
+1. **Match each excerpt to the correct IMRaD section** (Introduction, Methods, Results, or Discussion).  
+2. **Identify one "signal phrase"** in the excerpt that clued you in.
+
+---
+
+| **Excerpt** | **Which Section?** | **Signal Phrase** |
+| :---------- | :----------------- | :---------------- |
+| A. "We conducted a face‑to‑face, multigenerational survey of Crimean Tatars living in Crimea between November 2014 and January 2015." | | |
+| B. "Our experiment provides strong evidence that constituents ask women legislators to work on more issues. We find that female state legislators received \(14\%\) more issue requests…" | | |
+| C. "Model 1 in table 1 shows that women legislators receive about 0.02 more issue requests per constituent that they contacted \((p = .058)\) ." | | |
+| D. "Does political violence leave a lasting legacy on identities, attitudes, and behaviors? […] This article overcomes these challenges by studying the Crimean Tatars." | | |
+
+---
+
+## Activity 1 Debrief
+
+| **Excerpt** | **Section** | **Signal Phrase** |
+| :---------- | :---------- | :---------------- |
+| A | Methods | "We conducted a… survey…" |
+| B | Discussion / Conclusion | "Our experiment provides strong evidence…" |
+| C | Results | "Model 1 in table 1 shows…" |
+| D | Introduction | "Does political violence… This article overcomes…" |
+
+---
+
+## The Introduction Formula: Swales' CARS Model
+
+A highly effective introduction follows three "moves":
+
+| **Move** | **What It Does** | **Example Phrases** |
+| :------- | :--------------- | :------------------ |
+| **Move 1: Establish a territory** | Show that the topic is important and interesting. | "A growing body of research…" "Scholars have long debated…" |
+| **Move 2: Establish a niche** | Identify a gap, puzzle, or limitation in prior work. | "However, we know less about…" "Yet, prior studies have not…" |
+| **Move 3: Occupy the niche** | State your argument, contribution, and preview findings. | "We argue that…" "Using [data/design], we find…" |
+
+---
+
+## Activity 2: Build an Introduction (7 minutes)
+
+Each group will receive the following **scrambled sentences** from the introduction of a hypothetical study on voter ID laws and turnout. Your task:
+
+1. **Reorder the sentences** into a logical introduction following the CARS model.  
+2. **Label each sentence** with its Move (1, 2, or 3).  
+3. Be prepared to explain your ordering.
+
+---
+
+**Scrambled Sentences:**
+
+> A. Using a difference‑in‑differences design comparing states that implemented strict voter ID laws between 2000 and 2020 to those that did not, we find that these laws reduce turnout by approximately 1.5 percentage points, with the largest effects concentrated among Black and Hispanic voters.  
+> B. However, existing studies reach conflicting conclusions, with some finding large suppressive effects and others finding no effect at all.  
+> C. A long‑standing debate in American politics concerns whether voter identification laws disproportionately reduce turnout among racial and ethnic minorities.  
+> D. We argue that these mixed findings stem from differences in research design; studies that fail to account for pre‑existing turnout trends may overestimate or underestimate the true effect.  
+> E. Our results suggest that strict voter ID laws modestly but detectably reduce participation among historically marginalized groups.  
+> F. Proponents argue that such laws prevent fraud and increase public confidence, while opponents contend that they erect unnecessary barriers to the ballot box.
+
+---
+
+## Activity 2 Debrief
+
+**Correct Order and Move Labels:**
+
+| **Order** | **Sentence** | **Move** |
+| :-------- | :----------- | :------- |
+| 1 | C | Move 1 (Territory) |
+| 2 | F | Move 1 (Territory, continued) |
+| 3 | B | Move 2 (Niche – conflicting findings) |
+| 4 | D | Move 2 (Niche – explanation for gap) |
+| 5 | A | Move 3 (Occupy – what we do and find) |
+| 6 | E | Move 3 (Occupy – preview of conclusion) |
+
+**Discussion Questions:**
+- Why does the territory come before the niche?  
+- Why is the preview of findings (Sentence A) placed near the end, not the very beginning?  
+- How could you adapt this structure for a **short article** like Butler et al. (which has a very compressed introduction)?
+
+---
+
+class: inverse, center, middle
+
+# 3. Active Learning: Reverse Outlining  
+### Dissect a Results Section
+
+---
+
+## The Task
+
+In your groups, you will **reverse outline** the results section of **Butler et al.** (the text surrounding Table 1, starting with "Model 1 in table 1 shows…" through the end of that paragraph).
+
+**Reverse outlining** means you write a short phrase summarizing **what each sentence does** (not what it says).
+
+---
+
+## Example of Reverse Outlining
+
+Suppose the text read: *"Model 1 shows that women legislators receive about 0.02 more issue requests (p = .058). While 0.02 may seem small, this is a per constituent effect. For each constituent contacted, women are asked to work on 0.16 issues, while men are asked to work on 0.14 issues."*
+
+| **Sentence** | **What It Does** |
+| :----------- | :--------------- |
+| 1 | States the coefficient and significance. |
+| 2 | Anticipates and addresses a potential objection ("small effect"). |
+| 3 | Translates coefficient into substantive magnitude (per‑constituent). |
+| 4 | Provides the baseline comparison (men vs. women). |
+
+---
+
+## Your Turn (7 minutes)
+
+1. **Read** the paragraph in Butler et al. that interprets Table 1 (Model 1 and Model 2).  
+2. **Write** a phrase for each sentence describing its **function**.  
+3. **Identify** one technique the authors used that you could apply to your own writing.
+
+---
+
+## Debrief
+
+What functions did you find?
+
+- Stating the main result.  
+- Addressing the "small coefficient" concern.  
+- Translating into substantive terms (\(14\%\) increase).  
+- Explaining the control variables.  
+- Noting robustness (controls don't change the main result).  
+- Interpreting control variable findings (e.g., out‑party requests less).
+
+**Which technique will you steal?**
+
+---
+
+class: inverse, center, middle
+
+# 4. From Project to Presentation  
+### Converting Your Work into a Conference Talk
+
+---
+
+## The Challenge
+
+You've spent your time so far this quarter learning, collecting data, designing a project, building models, and analyzing them. Now you have **12–15 minutes** to present it at a conference. What do you cut? What do you keep? How do you design slides?
+
+**Key principle:** A presentation is **not** a paper read aloud. It is a **guided tour** of your research designed for a listening audience.
+
+---
+
+## The Presentation Formula
+
+| **Paper Section** | **Presentation Equivalent** | **Time (approx.)** |
+| :---------------- | :-------------------------- | :----------------- |
+| **Introduction** (2–3 pages) | **1–2 slides:** Hook, puzzle, research question. | 2 min |
+| **Theory** (5–8 pages) | **1 slide:** Core argument in plain language, maybe a simple diagram. | 2–3 min |
+| **Methods** (3–5 pages) | **1 slide:** Research design (case, data, identification strategy). | 2 min |
+| **Results** (8–12 pages) | **3–4 slides:** Main findings, key figures, robustness. | 5–6 min |
+| **Conclusion** (2–3 pages) | **1 slide:** Takeaway, contribution, limitations. | 1–2 min |
+
+**Total: ~12–15 minutes.**
+
+---
+
+## Slide Design Principles for Quantitative Presentations
+
+| **Do** | **Don't** |
+| :----- | :-------- |
+| Use **one main point per slide**. | Cram an entire regression table onto one slide. |
+| Highlight the **key coefficient** with a box or color. | Show raw Stata/R output. |
+| Include a **figure** whenever possible. | Use tiny font that no one can read. |
+| Write **sentence‑length titles** that convey the finding. | Write vague titles like "Results (cont.)." |
+| **Narrate** the slide; don't read it. | Turn your back to the audience and read bullet points. |
+
+---
+
+## Example: Butler et al. Results in Presentation Form
+
+**Bad Slide (Don't Do This):**
+
+```
+Table 1: OLS Results
+Female legislator    0.019* (0.010)
+Female constituent  -0.036** (0.010)
+Voted 1 of 3         0.049** (0.017)
+… [10 more rows]
+Constant             0.138** (0.011)
+N = 30,589, R² = 0.0003
+```
+
+**Good Slide (Do This Instead):**
+
+---
+
+### Women Legislators Receive 14% More Issue Requests
+
+- **Main finding:** Female legislators get **0.02 more issue requests** per constituent contacted (p = .058).  
+- **Substantive magnitude:** Men → 7 requests per 50 constituents; Women → 8 requests per 50 constituents.  
+- **14% increase** in workload requests.  
+
+![Figure idea: simple bar chart comparing men and women]
+
+---
+
+## Example Slide Outline: Butler et al. (2022)
+
+Here's how the Butler et al. article might be presented in **7 slides** over 12 minutes.
+
+| **Slide** | **Title** | **Content (One Sentence)** |
+| :-------- | :-------- | :------------------------- |
+| 1 | **Do Constituents Ask Female Legislators to Do More?** | Introduce the puzzle: women legislators work harder—could it be because constituents ask them to do more? |
+| 2 | **Argument: Gender Stereotypes Shape Constituent Demands** | Voters may see women as more approachable or more in need of proving themselves, leading them to request more work. |
+| 3 | **Research Design: A Preregistered Field Experiment with State Legislators** | Two pairs of state legislators (one Republican, one Democrat) sent letters to constituents; we randomized whether the letter came from the male or female legislator. |
+| 4 | **Women Legislators Receive 14% More Issue Requests** | Main result: female legislators received 0.019 more requests per constituent (p = .058), equivalent to a \(14\%\) increase in workload. |
+
+---
+
+## Example Slide Outline: Butler et al. (2022)
+
+
+| **Slide** | **Title** | **Content (One Sentence)** |
+| :-------- | :-------- | :------------------------- |
+| 5 | **Constituents Are 10% More Likely to Respond to Women** | Mechanism: the effect is driven by constituents being more likely to respond to women, not by asking more per response. |
+| 6 | **The Increase Occurs Across a Wide Range of Issues** | Women were asked to do more on health, education, immigration, and fiscal issues—no category showed a decrease. |
+| 7 | **Conclusion: Demand‑Side Pressures Contribute to Gender Gaps in Legislative Effort** | Constituent demands may be one mechanism driving women legislators to work harder; future work should explore how legislators perceive these requests. |
+
+---
+
+## Group Discussion: Adapting Your Project
+
+Take **5 minutes** with your group to discuss:
+
+1. **What is the single most important figure or result** from your project that you would feature in a presentation?  
+2. **What is one slide title** that would convey your main finding in a sentence?  
+3. **What is one thing you would cut** from your work in progress when presenting?
+
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity  
+### Submit a Paragraph or Slide Outline
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA the following:**
+
+A **slide outline** for a 12‑minute conference presentation of your project. Include:
+- Slide titles (5–7 slides)  
+- One sentence describing the content of each slide  
+
+---
+
+## Reminders
+
+- One submission per student.  
+- Due by the end of class.
+
+---
+
+class: inverse, center, middle
+
+# 6. Wrap‑Up  
+### A Writer's Checklist
+
+---
+
+## Before You Submit (or Present) Your Project, Ask:
+
+- **Introduction:** Does it follow the three‑move structure? Is the puzzle clear by the end of page 1?  
+- **Roadmap:** Did I tell the reader where the paper is going?  
+- **Results:** Did I translate every coefficient into **substantive meaning**?  
+- **Figures:** Are they self‑contained with clear titles and labels?  
+- **Signposting:** Do I remind the reader of the argument at key transitions?  
+- **Conclusion:** Does it answer "So what?" and acknowledge limitations?
+
+---
+
+## For Presentations, Add:
+
+- **Timing:** Have I rehearsed and stayed within 12–15 minutes?  
+- **Slide readability:** Is font size ≥ 24pt? Can someone in the back row read it?  
+- **Narrative:** Do my slides tell a story, or are they a list of facts?  
+- **Backup slides:** Do I have extra slides (robustness, additional results) at the end for Q&A?
+
+---
+
+## Final Thought
+
+The skills you practiced today—structuring an argument, translating coefficients, designing clear slides—are **career‑long skills**. They will serve you in academic papers, policy memos, and professional presentations.
+
+**Now go write something great.**

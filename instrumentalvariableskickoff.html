@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Instrumental Variables</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jaye Seawright" />
+    <meta name="date" content="2026-04-22" />
+    <script src="instrumentalvariableskickoff_files/header-attrs-2.30/header-attrs.js"></script>
+    <link href="instrumentalvariableskickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="instrumentalvariableskickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Instrumental Variables
+]
+.subtitle[
+## PS 312
+]
+.author[
+### Jaye Seawright
+]
+.date[
+### 2026-04-22
+]
+
+---
+
+
+
+## Today's Roadmap
+
+1. **Hook &amp; Activation:** The logic of instrumental variables  
+2. **Concept Introduction:** The IV model, relevance, and exclusion  
+3. **Instrument on Trial** – Does rainfall pass the test?  
+4. **Diagnostics &amp; Assumptions:** Weak instruments and overidentification  
+5. **Instruments Brainstorm:** Inventing instruments that might work in political science  
+6. **Core Graded Activity:** Write your paragraph for the TA  
+7. **Wrap‑Up:** Cheat sheet for IV designs  
+
+**Goal:** Move from "I've heard of IV" to "I can design, run, and critically evaluate an instrumental‑variables analysis in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook &amp; Activation  
+### The Logic of Instrumental Variables
+
+---
+
+## Scenario: Returns to Education
+
+You want to know the causal effect of an extra year of schooling on wages. You run a regression:
+
+`$$\text{Wage}_i = \beta_0 + \beta_1 \text{Education}_i + u_i$$`
+
+- Why might `\(\beta_1\)` be biased? (Hint: Ability is unobserved and correlated with both education and wages.)
+
+If we could find a variable that **affects education** but **has no direct effect on wages** (other than through education), we could use it as an **instrument**. A famous example is **quarter of birth**: people born in different quarters have slightly different compulsory schooling lengths, but birth quarter should not directly affect wages decades later.
+
+---
+
+## The IV Intuition
+
+1. **Instrumental variable (Z):** A variable that is correlated with the endogenous regressor (`X`) but uncorrelated with the error term (`u`).  
+2. **First stage:** Regress `X` on `Z` (and any exogenous covariates) to get the predicted values `\(\hat{X}\)`.  
+3. **Second stage:** Regress `Y` on `\(\hat{X}\)` (and the covariates). The coefficient on `\(\hat{X}\)` is the **IV estimate**.
+
+The IV estimator isolates variation in `X` that is *as good as random* (driven by `Z`), purging the bias from unobserved confounders.
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction  
+### The IV Model, Relevance, and Exclusion
+
+---
+
+## The Two IV Assumptions
+
+1. **Relevance:** The instrument must be strongly correlated with the endogenous regressor.  
+   - *Check:* First‑stage F‑statistic &gt; 10 (rule of thumb).
+2. **Exclusion restriction:** The instrument must affect the outcome **only through** the endogenous regressor.  
+   - *Cannot be formally tested*—must be defended theoretically.
+
+For our activity, we will use **election‑day rainfall and snowfall** as instruments for **voter turnout**. Do these instruments satisfy the assumptions?
+
+---
+
+## The 2SLS Estimator in R
+
+We will use the `ivreg()` function from the `AER` package. The formula syntax is:
+
+`y ~ x1 + x2 | z1 + z2 + x2`
+
+- `y` is the outcome.
+- `x1` is the **endogenous** regressor (turnout).
+- `x2` are **exogenous** covariates (included in both stages).
+- `z1` and `z2` are the **instruments** (rain, snow).
+
+`ivreg()` automatically performs two‑stage least squares and can report diagnostics with `summary(..., diagnostics = TRUE)`.
+
+---
+
+class: inverse, center, middle
+
+# 3. Instrument on Trial  
+### Does Rainfall Pass the Test?
+
+---
+
+## The Setup
+
+You've seen the code that loads the data and runs the IV. Now we put the instruments—`Rain` and `Snow`—**on trial**.
+
+| **Role** | **Your Task** |
+| :------- | :------------ |
+| **Defense** | Argue that `Rain` and `Snow` are **valid instruments** for `Turnout`. Use the regression output to support your case. |
+| **Prosecution** | Argue that `Rain` and `Snow` are **invalid instruments**. Identify violations of relevance or the exclusion restriction. |
+
+**The evidence:** The R output from the analysis (OLS, IV, first‑stage, Sargan test).
+
+---
+
+**Procedure:**
+1. (3 min) We need volunteers to act as the prosecution and the defense. Each side will have a few minutes to prepare and to meet with the instructor.
+2. (5 min) Defense presents first; Prosecution rebuts.
+3. (2 min) Class votes: **Valid** or **Invalid**?
+
+---
+
+## Loading the Data
+
+The dataset `rainfallections.csv` contains county‑level election returns, battleground status, and weather for U.S. presidential elections from 1948 to 2000.
+
+
+``` r
+iv_data &lt;- read_csv("data/rainfallelections.csv")
+
+# Keep relevant variables and remove missing
+iv_clean &lt;- iv_data %&gt;%
+  select(Year, State, County, Turnout, battleground, Rain, Snow) %&gt;%
+  filter(!is.na(Turnout), !is.na(battleground), !is.na(Rain), !is.na(Snow))
+
+glimpse(iv_clean)
+```
+
+```
+## Rows: 12,378
+## Columns: 7
+## $ Year         &lt;dbl&gt; 1988, 1992, 1996, 2000, 1988, 1992, 1996, 2000, 1988, 199…
+## $ State        &lt;chr&gt; "ALABAMA", "ALABAMA", "ALABAMA", "ALABAMA", "ALABAMA", "A…
+## $ County       &lt;chr&gt; "AUTAUGA", "AUTAUGA", "AUTAUGA", "AUTAUGA", "BALDWIN", "B…
+## $ Turnout      &lt;dbl&gt; 52.04409, 61.34813, 55.16013, 56.39563, 53.34472, 58.9024…
+## $ battleground &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+## $ Rain         &lt;dbl&gt; 0.14, 0.00, 0.00, 0.57, 0.00, 0.02, 0.07, 0.46, 0.01, 0.0…
+## $ Snow         &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, …
+```
+
+---
+
+## Exhibit A: The OLS Regression
+
+
+``` r
+ols_model &lt;- lm(battleground ~ Turnout, data = iv_clean)
+summary(ols_model)
+```
+
+```
+## 
+## Call:
+## lm(formula = battleground ~ Turnout, data = iv_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.4328 -0.3155 -0.2908  0.6680  0.8033 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.4505992  0.0233417  19.304  &lt; 2e-16 ***
+## Turnout     -0.0025390  0.0004046  -6.276 3.59e-10 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4603 on 12376 degrees of freedom
+## Multiple R-squared:  0.003172,	Adjusted R-squared:  0.003092 
+## F-statistic: 39.39 on 1 and 12376 DF,  p-value: 3.595e-10
+```
+
+---
+
+## Exhibit B: The IV Regression (2SLS)
+
+
+``` r
+iv_model &lt;- ivreg(battleground ~ Turnout | Rain + Snow,
+                  data = iv_clean)
+summary(iv_model, diagnostics = TRUE)
+```
+
+```
+## 
+## Call:
+## ivreg(formula = battleground ~ Turnout | Rain + Snow, data = iv_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.6051 -0.3280 -0.2694  0.6331  0.9530 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  0.647310   0.100455   6.444 1.21e-10 ***
+## Turnout     -0.006003   0.001768  -3.396 0.000685 ***
+## 
+## Diagnostic tests:
+##                    df1   df2 statistic p-value    
+## Weak instruments     2 12375    344.19  &lt;2e-16 ***
+## Wu-Hausman           1 12375      4.08  0.0434 *  
+## Sargan               1    NA    241.42  &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.4617 on 12376 degrees of freedom
+## Multiple R-Squared: -0.002734,	Adjusted R-squared: -0.002815 
+## Wald test: 11.53 on 1 and 12376 DF,  p-value: 0.0006853
+```
+---
+
+**Defense highlights:**
+- First‑stage F‑statistic &gt; 10 → instruments are **relevant**.
+- Wu‑Hausman test significant → turnout is indeed endogenous; IV is justified.
+
+**Prosecution highlights:**
+- Sargan test p‑value is small → **overidentification rejected**; at least one instrument may be invalid.
+- The coefficient changed quite a bit from OLS, which could be a sign of weak‑instrument bias even if F &gt; 10.
+
+---
+
+## Exhibit C: The First Stage (Relevance)
+
+
+``` r
+first_stage &lt;- lm(Turnout ~ Rain + Snow, data = iv_clean)
+summary(first_stage)
+```
+
+```
+## 
+## Call:
+## lm(formula = Turnout ~ Rain + Snow, data = iv_clean)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -49.139  -6.835  -0.079   6.485  43.876 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  56.1241     0.1035 542.243   &lt;2e-16 ***
+## Rain          0.7670     0.3777   2.031   0.0423 *  
+## Snow          5.0335     0.1954  25.760   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 9.955 on 12375 degrees of freedom
+## Multiple R-squared:  0.0527,	Adjusted R-squared:  0.05254 
+## F-statistic: 344.2 on 2 and 12375 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+## Exhibit D: The Exclusion Restriction (Conceptual)
+
+*No table for this one—it's about theory.*
+
+**Defense needs to argue that...:**
+&gt; Rainfall on Election Day affects battleground status **only** by reducing turnout.
+
+**Prosecution needs to argue that...:**
+&gt; Weather could affect long‑term political competitiveness in some way other than by reducing turnout. (Ideally, provide one or more examples of such an effect.) 
+
+---
+
+## Your Verdict
+
+After hearing both sides, **raise your hand**:
+
+- ✋ **Valid:** The instruments are credible.
+- ✋ **Invalid:** The instruments fail the relevance or exclusion requirement.
+
+*(Instructor tallies and discusses the majority view.)*
+
+---
+
+## Why This Matters for Your Project
+
+In your own analysis (using `GOPVoteShare` as the outcome), you will face the **exact same debate**. You must decide whether to trust the IV results. The tools you just used—first‑stage F, Sargan test, theoretical reasoning—are what you'll apply to defend your own conclusions.
+
+**Remember:** No instrument is perfect. The goal is to be **transparent** about the threats and to show that your results are robust to reasonable challenges.
+
+---
+
+class: inverse, center, middle
+
+# 4. Diagnostics &amp; Assumptions  
+### Weak Instruments and Overidentification
+
+---
+
+## Weak Instrument Test
+
+A weak instrument leads to biased IV estimates and inflated standard errors. The rule of thumb: **first‑stage F‑statistic &gt; 10**.
+
+We can examine the first stage directly (as in Exhibit C) or extract the F‑statistic from the `ivreg` diagnostics.
+
+
+``` r
+# Extract first‑stage F‑statistic from ivreg object
+summary(iv_model, diagnostics = TRUE)$diagnostics["Weak instruments", "statistic"]
+```
+
+```
+## [1] 344.1884
+```
+
+If this value is less than 10, the instruments are **weak** and the IV estimates should be interpreted with caution.
+
+---
+
+## Overidentification Test (Sargan)
+
+When we have **more instruments than endogenous regressors**, we can test whether the instruments are uncorrelated with the second‑stage error term.
+
+
+``` r
+summary(iv_model, diagnostics = TRUE)$diagnostics["Sargan", "p-value"]
+```
+
+```
+## [1] 1.928659e-54
+```
+
+- **Null hypothesis:** The instruments are valid (exclusion restriction holds).
+- A small p‑value (&lt; 0.05) suggests that at least one instrument may be invalid.
+
+---
+
+## Robustness Checks
+
+Do the results change if we use only one instrument (`Rain`)? What if we add controls like year fixed effects or state fixed effects?
+
+
+``` r
+# IV with only rain
+iv_rain &lt;- ivreg(battleground ~ Turnout | Rain, data = iv_clean)
+summary(iv_rain, diagnostics = TRUE)
+```
+
+```
+## 
+## Call:
+## ivreg(formula = battleground ~ Turnout | Rain, data = iv_clean)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -6.18378 -0.96637  0.03676  0.99365  7.02417 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -7.41550    1.70568  -4.348 1.39e-05 ***
+## Turnout      0.13599    0.03004   4.527 6.03e-06 ***
+## 
+## Diagnostic tests:
+##                    df1   df2 statistic  p-value    
+## Weak instruments     1 12376     23.56 1.23e-06 ***
+## Wu-Hausman           1 12375    227.28  &lt; 2e-16 ***
+## Sargan               0    NA        NA       NA    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.49 on 12376 degrees of freedom
+## Multiple R-Squared: -9.441,	Adjusted R-squared: -9.442 
+## Wald test:  20.5 on 1 and 12376 DF,  p-value: 6.029e-06
+```
+
+``` r
+# With state fixed effects
+iv_fe &lt;- ivreg(battleground ~ Turnout + factor(State) | Rain + Snow + factor(State),
+               data = iv_clean)
+summary(iv_fe, diagnostics = TRUE)
+```
+
+```
+## 
+## Call:
+## ivreg(formula = battleground ~ Turnout + factor(State) | Rain + 
+##     Snow + factor(State), data = iv_clean)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -6.49020 -0.62691  0.03098  0.65917  5.42817 
+## 
+## Coefficients:
+##                             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)                 -7.02956    1.63083  -4.310 1.64e-05 ***
+## Turnout                      0.13532    0.03137   4.314 1.62e-05 ***
+## factor(State)ARIZONA         0.36824    0.15708   2.344 0.019083 *  
+## factor(State)ARKANSAS        0.37436    0.09382   3.990 6.65e-05 ***
+## factor(State)CALIFORNIA     -0.31592    0.21165  -1.493 0.135552    
+## factor(State)COLORADO       -1.34480    0.43763  -3.073 0.002125 ** 
+## factor(State)CONNECTICUT    -1.30275    0.36117  -3.607 0.000311 ***
+## factor(State)DELAWARE       -0.17606    0.31518  -0.559 0.576438    
+## factor(State)FLORIDA         0.59620    0.09451   6.308 2.92e-10 ***
+## factor(State)GEORGIA         1.69311    0.28713   5.897 3.81e-09 ***
+## factor(State)IDAHO          -1.83457    0.43752  -4.193 2.77e-05 ***
+## factor(State)ILLINOIS       -0.86483    0.27152  -3.185 0.001450 ** 
+## factor(State)INDIANA        -0.40575    0.12681  -3.200 0.001380 ** 
+## factor(State)IOWA           -1.06112    0.31527  -3.366 0.000766 ***
+## factor(State)KANSAS         -1.52298    0.36263  -4.200 2.69e-05 ***
+## factor(State)KENTUCKY        0.67536    0.09055   7.458 9.37e-14 ***
+## factor(State)LOUISIANA      -0.54375    0.25906  -2.099 0.035840 *  
+## factor(State)MAINE          -1.66374    0.52278  -3.182 0.001464 ** 
+## factor(State)MARYLAND        0.12205    0.12912   0.945 0.344559    
+## factor(State)MASSACHUSETTS  -1.42457    0.36507  -3.902 9.58e-05 ***
+## factor(State)MICHIGAN       -0.42281    0.28545  -1.481 0.138573    
+## factor(State)MINNESOTA      -1.99231    0.52688  -3.781 0.000157 ***
+## factor(State)MISSISSIPPI    -0.16845    0.09556  -1.763 0.077950 .  
+## factor(State)MISSOURI       -0.07383    0.20765  -0.356 0.722182    
+## factor(State)MONTANA        -2.38652    0.61866  -3.858 0.000115 ***
+## factor(State)NEBRASKA       -1.69028    0.40091  -4.216 2.50e-05 ***
+## factor(State)NEVADA         -0.40208    0.20865  -1.927 0.053993 .  
+## factor(State)NEW HAMPSHIRE  -0.69276    0.32967  -2.101 0.035630 *  
+## factor(State)NEW JERSEY      0.14863    0.19229   0.773 0.439561    
+## factor(State)NEW MEXICO     -0.53853    0.31996  -1.683 0.092372 .  
+## factor(State)NEW YORK       -0.35987    0.16940  -2.124 0.033658 *  
+## factor(State)NORTH CAROLINA  0.94337    0.13249   7.120 1.14e-12 ***
+## factor(State)NORTH DAKOTA   -2.04490    0.48393  -4.226 2.40e-05 ***
+## factor(State)OHIO           -0.03526    0.20101  -0.175 0.860779    
+## factor(State)OKLAHOMA       -0.78865    0.20310  -3.883 0.000104 ***
+## factor(State)OREGON         -1.40650    0.42100  -3.341 0.000838 ***
+## factor(State)PENNSYLVANIA    0.96751    0.10447   9.261  &lt; 2e-16 ***
+## factor(State)RHODE ISLAND   -0.82478    0.31118  -2.650 0.008048 ** 
+## factor(State)SOUTH CAROLINA  0.97478    0.24768   3.936 8.34e-05 ***
+## factor(State)SOUTH DAKOTA   -2.43195    0.57119  -4.258 2.08e-05 ***
+## factor(State)TENNESSEE       1.13702    0.17013   6.683 2.44e-11 ***
+## factor(State)TEXAS          -0.01199    0.09476  -0.127 0.899287    
+## factor(State)UTAH           -1.84149    0.44281  -4.159 3.22e-05 ***
+## factor(State)VERMONT        -1.58280    0.39855  -3.971 7.19e-05 ***
+## factor(State)VIRGINIA        0.04395    0.07980   0.551 0.581780    
+## factor(State)WASHINGTON     -0.81333    0.32259  -2.521 0.011707 *  
+## factor(State)WEST VIRGINIA   0.56074    0.12031   4.661 3.18e-06 ***
+## factor(State)WISCONSIN      -1.23416    0.41193  -2.996 0.002741 ** 
+## factor(State)WYOMING        -1.63522    0.40009  -4.087 4.39e-05 ***
+## 
+## Diagnostic tests:
+##                    df1   df2 statistic  p-value    
+## Weak instruments     2 12328    10.475 2.85e-05 ***
+## Wu-Hausman           1 12328   141.359  &lt; 2e-16 ***
+## Sargan               1    NA     7.825  0.00515 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.059 on 12329 degrees of freedom
+## Multiple R-Squared: -4.258,	Adjusted R-squared: -4.278 
+## Wald test: 15.73 on 48 and 12329 DF,  p-value: &lt; 2.2e-16
+```
+
+---
+
+class: inverse, center, middle
+
+# 5. Instruments Brainstorm  
+### Inventing Instruments That Might Work in Political Science
+
+---
+
+## The Challenge
+
+Finding a valid instrument is **hard**. The best instruments come from **institutional quirks, natural experiments, or random assignment** that is plausibly exogenous.
+
+In small groups, take **5 minutes** to brainstorm an instrument for one of the following research questions:
+
+| **Research Question** | **Endogenous Regressor** | **Your Task** |
+| :-------------------- | :----------------------- | :------------ |
+| Does attending a political protest increase future civic engagement? | Protest attendance | Propose an instrument for protest attendance. |
+| Does campaign spending increase a candidate's vote share? | Campaign spending | Propose an instrument for campaign spending. |
+| Does having a female mayor increase spending on public education? | Mayor's gender | Propose an instrument for electing a female mayor. |
+| Does watching partisan news make people more polarized? | Partisan news consumption | Propose an instrument for watching Fox News or MSNBC. |
+
+---
+
+## Some Classic Examples (For Inspiration)
+
+| **Instrument** | **Endogenous Regressor** | **Why It Works** |
+| :------------- | :----------------------- | :--------------- |
+| **Vietnam War draft lottery number** | Military service | Randomly assigned; affects earnings only through service. |
+| **Distance to the nearest community college** | College attendance | Affects attendance but (arguably) not wages directly. |
+| **Rainfall on Election Day** | Voter turnout | Affects turnout but (arguably) not vote share directly. |
+| **Quarter of birth** | Years of schooling | Affects compulsory schooling length; uncorrelated with ability. |
+| **Judge's ideology (randomly assigned)** | Sentencing severity | Random assignment of cases to judges; affects outcomes only through sentencing. |
+
+---
+
+## Share Out
+
+Each group will share their **best instrument idea** and defend why it satisfies:
+
+1. **Relevance** – Strongly correlated with the endogenous regressor.  
+2. **Exclusion** – Affects the outcome *only through* that regressor.
+
+The class will vote on the **most creative but credible instrument**.
+
+---
+
+class: inverse, center, middle
+
+# 6. Core Graded Activity  
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1. Your **research question** (one sentence).  
+2. A brief description of the **IV design** (endogenous regressor, instruments, outcome).  
+3. The **key result** (the IV coefficient from `ivreg()`) and how it differs from the OLS estimate.  
+4. An assessment of the **instrument strength** (first‑stage F‑statistic) and what it implies.  
+5. **One critical reflection** on the validity of rainfall/snowfall as instruments (exclusion restriction).
+
+---
+
+## Example Paragraph (for a different question)
+
+&gt; *Our group asks: Does education increase wages? We use quarter of birth as an instrument for years of schooling. The OLS estimate suggests a 10% return per year of education, but the IV estimate is only 7% (p &lt; 0.01). The first‑stage F‑statistic is 12.3, above the rule‑of‑thumb threshold of 10, suggesting the instrument is adequately strong. The exclusion restriction requires that birth quarter affects wages only through schooling; while this is plausible, critics note that birth quarter may correlate with season‑of‑birth effects on health. Overall, the IV results support a causal effect of education, albeit smaller than OLS suggests.*
+
+---
+
+## Reminders
+
+- One submission per student.
+
+---
+
+class: inverse, center, middle
+
+# 7. Wrap‑Up  
+
+&gt; **Single most important rule for IV:** Always report the first‑stage F‑statistic. A weak instrument can be worse than no instrument at all.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

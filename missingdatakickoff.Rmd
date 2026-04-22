@@ -1,0 +1,442 @@
+---
+title: "Missing Data"
+subtitle: "PS 312"
+author: "Jaye Seawright"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: ["default", "default-fonts"]
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(mice)        # Multiple imputation
+library(knitr)
+library(modelsummary) # Nice regression tables
+library(VIM)         # Missing data visualization
+```
+
+## Today's Roadmap
+
+1. **Hook & Activation:** Why missing data matters  
+2. **Concept Introduction:** MCAR, MAR, MNAR, and solutions  
+3. **Data Doctor: NHANES Clinic** – Diagnose and treat missingness  
+4. **Your Turn: QoG Patient** – Missing data in democracy and development  
+5. **Core Graded Activity:** Table and paragraph for the TA  
+6. **Wrap‑Up:** Cheat sheet for missing data  
+
+**Goal:** Move from "I drop rows with NAs" to "I can diagnose missingness and implement multiple imputation in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook & Activation  
+### Why Missing Data Matters
+
+---
+
+## Scenario: Survey Non‑Response
+
+You run a survey asking voters about their income and their presidential vote choice. You find that 30% of respondents refuse to answer the income question.
+
+- You run a regression of vote choice on income using only complete cases.  
+- What's the problem? (Hint: Who refuses to report income?)
+
+If high‑income Republicans and low‑income Democrats are more likely to skip the income question, your complete‑case analysis is biased. The missing data are **not random**.
+
+**The solution:** Model the missing data mechanism and impute plausible values, or use methods that are robust to certain types of missingness.
+
+---
+
+## The Cost of Ignoring Missing Data
+
+| **Approach** | **Consequence** |
+| :----------- | :-------------- |
+| **Listwise deletion** (drop any row with NA) | Loss of power, potential bias if data are not MCAR. |
+| **Mean imputation** (replace NA with variable mean) | Underestimates standard errors, distorts relationships. |
+| **Last observation carried forward** | Assumes stability that rarely holds; can induce bias. |
+
+> **Bottom line:** How you handle missing data can change your substantive conclusions. Today we'll learn principled approaches.
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction  
+### MCAR, MAR, MNAR, and Solutions
+
+---
+
+## Three Mechanisms of Missingness
+
+| **Mechanism** | **Definition** | **Example** |
+| :------------ | :------------- | :---------- |
+| **MCAR** (Missing Completely at Random) | Missingness is unrelated to any observed or unobserved variables. | A random power outage corrupts 5% of survey responses. |
+| **MAR** (Missing at Random) | Missingness is related to *observed* variables but not to the unobserved value itself. | High‑income respondents are less likely to report income, but we *have* income predictors (education, occupation). |
+| **MNAR** (Missing Not at Random) | Missingness depends on the unobserved value itself. | People with very high or very low income refuse to report *because* of their income. |
+
+---
+
+## Principled Solutions
+
+| **Method** | **When to Use** | **R Package** |
+| :--------- | :-------------- | :------------ |
+| **Multiple Imputation** | Data are MAR or MCAR. Creates multiple plausible datasets, analyzes each, pools results. | `mice`, `Amelia` |
+| **Full Information Maximum Likelihood (FIML)** | Data are MAR. Uses all available information without imputing. | `lavaan` |
+| **Inverse Probability Weighting** | Data are MAR. Weights complete cases by probability of being observed. | `ipw` |
+| **Sensitivity Analysis** | Suspect MNAR. Tests how robust results are to different missingness assumptions. | `mice` (with post‑processing) |
+
+**Today's focus:** Multiple imputation with `mice` (Multivariate Imputation by Chained Equations).
+
+---
+
+## How Multiple Imputation Works
+
+1. **Create** `m` copies of the dataset (e.g., `m = 20`), each with missing values filled in by predictive models.
+2. **Analyze** each imputed dataset separately (e.g., run your regression 20 times).
+3. **Pool** the results using Rubin's rules to obtain final estimates and standard errors that account for imputation uncertainty.
+
+The `mice` package automates this entire workflow.
+
+---
+
+class: inverse, center, middle
+
+# 3. Data Doctor: NHANES Clinic  
+### Examine → Diagnose → Treat → Recover
+
+---
+
+## The Patient: NHANES Subsample
+
+We have a patient—a dataset from a U.S. health survey with 25 individuals. Four vital signs were measured:
+
+- `age`: Age group (1 = 20‑39, 2 = 40‑59, 3 = 60+)
+- `bmi`: Body mass index (kg/m²)
+- `hyp`: Hypertension status (1 = no, 2 = yes)
+- `chl`: Total cholesterol (mg/dL)
+
+**But some measurements are missing.** As the attending Data Doctor, your job is to:
+
+1. **Examine** the patient – Where are the missing values?  
+2. **Diagnose** the condition – What is the likely missingness mechanism?  
+3. **Treat** the patient – Apply multiple imputation.  
+4. **Check recovery** – Compare results before and after treatment.
+
+---
+
+## Examination: Vital Signs
+
+```{r}
+data("nhanes", package = "mice")
+glimpse(nhanes)
+```
+
+---
+
+## Examination: Missingness Pattern
+
+```{r}
+md.pattern(nhanes, rotate.names = TRUE)
+```
+
+**Questions for the attending physician:**
+- How many complete cases?  
+- Which variable is most severely affected?  
+- Do missing values cluster together?
+
+---
+
+## Examination: Visualizing the Condition
+
+```{r}
+aggr(nhanes, numbers = TRUE, sortVars = TRUE,
+     cex.axis = 0.7, gap = 3, ylab = c("Proportion of missingness", "Pattern"))
+```
+
+---
+
+## Diagnosis: What's the Mechanism?
+
+Discuss with your team of specialists:
+
+| **Possible Diagnosis** | **Supporting Evidence** | **Contradicting Evidence** |
+| :--------------------- | :---------------------- | :------------------------- |
+| **MCAR** | Missingness appears scattered. | Missingness in `chl` and `bmi` may correlate with `age`. |
+| **MAR** | Older patients may be less willing to give blood samples. | Can test: does missingness in `chl` depend on `age`? |
+| **MNAR** | Patients with very high BMI or cholesterol may avoid measurement. | Cannot test without knowing true values. |
+
+**Team vote:** What's the most plausible diagnosis?
+
+---
+
+## Baseline: Before Treatment (Complete‑Case Regression)
+
+Suppose we want to predict cholesterol from age, BMI, and hypertension. First, we see what happens if we ignore the missingness.
+
+```{r}
+model_cc <- lm(chl ~ age + bmi + hyp, data = nhanes)
+summary(model_cc)
+```
+
+**How many patients were included?** `r length(model_cc$residuals)` out of 25.
+
+---
+
+## Treatment: Multiple Imputation
+
+We administer **Multiple Imputation (mice)** as treatment.
+
+```{r}
+set.seed(312)
+imp <- mice(nhanes, m = 20, maxit = 10, printFlag = FALSE)
+
+# Check treatment response (convergence)
+plot(imp, c("bmi", "chl"))
+```
+
+---
+
+## Recovery: Post‑Treatment Analysis
+
+We re‑run the regression on the imputed datasets and pool the results.
+
+```{r}
+models <- with(imp, lm(chl ~ age + bmi + hyp))
+pooled <- pool(models)
+summary(pooled)
+```
+
+---
+
+## Recovery: Before vs. After Comparison
+
+```{r}
+modelsummary(list("Before Treatment (Complete Cases)" = model_cc, 
+                  "After Treatment (Multiple Imputation)" = pooled),
+             stars = TRUE, title = "Cholesterol Prediction: Before and After Imputation")
+```
+
+**Doctor's notes:**
+- Did the coefficient on `bmi` change?  
+- Did standard errors shrink or grow?  
+- How many additional patients' data were recovered?
+
+---
+
+## Discharge Instructions: From NHANES to QoG
+
+You've successfully treated a small patient. Now you'll apply the **exact same workflow** to a much larger patient: a cross‑national dataset on democracy and economic development.
+
+The steps are identical:
+1. **Examine** – Where are the missing values?  
+2. **Diagnose** – What is the likely mechanism?  
+3. **Treat** – Multiple imputation with `mice`.  
+4. **Recover** – Compare complete‑case vs. imputed results.
+
+---
+
+class: inverse, center, middle
+
+# 4. Your Turn: QoG Patient  
+### Missing Data in Democracy and Development
+
+---
+
+## The Research Question
+
+A classic finding in political science is that economic development (GDP per capita) is strongly associated with democracy. But how reliable is this relationship given missing data in cross‑national datasets?
+
+**Your task:** Apply the Data Doctor workflow to the Quality of Government (QoG) dataset.
+
+---
+
+## Step 1: Load the Patient Data
+
+```{r}
+# Download QoG Standard dataset
+library(rqog)
+qog_raw <- read_qog(which_data = "standard", data_type = "time-series")
+#Note: there is a fallback dataset available in the course /data directory in case this download fails.
+
+# Select and rename variables
+qog <- qog_raw %>%
+  select(
+    cname, year,
+    p_polity2,       # Democracy score (-10 to +10)
+    wdi_gdpcapcon2015,# GDP per capita
+    wdi_pop,         # Population
+    wdi_litrad,      # Literacy rate
+    wdi_chexppgdp,      # Health spending
+    wdi_oilrent,          # Oil rents as a share of GDP
+    wbgi_gee         # Government effectiveness
+  ) %>%
+  rename(
+    country = cname,
+    democracy = p_polity2,
+    gdp_pc = wdi_gdpcapcon2015,
+    population = wdi_pop,
+    literacy_rate = wdi_litrad,
+    health_spend = wdi_chexppgdp,
+    oil = wdi_oilrent,
+    gov_effect = wbgi_gee
+  )
+
+glimpse(qog)
+```
+
+---
+
+## Step 2: Baseline (Before Treatment)
+
+Complete the code below to run a complete‑case regression. Remember to reach out to group members, TAs, and/or the professor early and often! TAs and the professor have cheat sheets available if you get stuck.
+
+```{r, eval=FALSE}
+# Create a dataset with only complete cases
+qog_complete <- qog %>%
+  drop_na(____________)  # FILL IN: list all variables in your model
+
+# Run the regression
+model_complete <- lm(____________ ~ ____________ + ____________ + ____________ + ____________ + ____________ + ____________,
+                     data = qog_complete)
+
+summary(model_complete)
+```
+
+**Hint:** Your model should predict `democracy` from `gdp_pc`, `population`, `literacy_rate`, `health_spend`, `oil`, and `gov_effect`.
+
+---
+
+## Step 3: Examine the Patient
+
+Fill in the blanks to diagnose missingness.
+
+```{r, eval=FALSE}
+# Pattern of missingness
+md.pattern(qog %>% select(-country, -year), rotate.names = TRUE)
+
+# Visualization
+aggr(qog %>% select(____________), numbers = TRUE, sortVars = TRUE)  # FILL IN: which variables to examine?
+```
+
+**Questions:**
+- What proportion of observations are complete?  
+- Which variable has the most missingness?  
+- Does missingness cluster in particular years or countries?
+
+---
+
+## Step 4: Diagnosis Discussion
+
+With your group, discuss:
+
+1. Is the missingness pattern more consistent with **MCAR**, **MAR**, or **MNAR**?  
+2. What evidence supports your diagnosis?  
+3. If MAR, which observed variables might predict missingness?
+
+---
+
+## Step 5: Treatment (Multiple Imputation)
+
+Complete the code to perform multiple imputation.
+
+```{r, eval=FALSE}
+# Select variables for imputation
+impute_vars <- qog %>%
+  select(____________)  # FILL IN: variables to include in imputation model
+
+set.seed(312)
+imp <- mice(impute_vars, m = ____________, maxit = 10, printFlag = FALSE)  # FILL IN: number of imputations (suggest 20)
+
+# Check convergence
+plot(imp, c("____________", "____________"))  # FILL IN: two variables to check
+```
+
+---
+
+## Step 6: Recovery (Analyze Imputed Data)
+
+Complete the code to fit models on imputed data and pool results.
+
+```{r, eval=FALSE}
+# Fit models on each imputed dataset
+models <- with(imp, lm(____________ ~ ____________ + ____________ + ____________ + ____________ + ____________ + ____________))
+
+# Pool results
+pooled <- pool(____________)  # FILL IN: what object contains the fitted models?
+
+summary(pooled)
+```
+
+---
+
+## Step 7: Before vs. After Comparison
+
+```{r, eval=FALSE}
+modelsummary(list("Before Treatment (Complete Cases)" = ____________, 
+                  "After Treatment (Multiple Imputation)" = ____________),
+             stars = TRUE,
+             title = "Democracy and Economic Development: Before and After Imputation")
+```
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity  
+### Table and Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA:**
+
+1. **A table** showing the original regression results (complete‑case) and the results correcting for missing data (multiple imputation).  
+2. **A paragraph** discussing the extent to which missing data made a difference in the results.
+
+---
+
+## Paragraph Should Include
+
+- Your research question (one sentence).  
+- Proportion of missing data and number of complete cases vs. original observations.  
+- Comparison of the key coefficient (`gdp_pc`) between models (point estimate and standard error).  
+- A brief assessment of the plausibility of the MAR assumption for these data.  
+- Your conclusion: Did missing data substantively change the findings?
+
+---
+
+## Example Paragraph
+
+> *Our group asks: Does economic development predict higher levels of democracy? In the QoG dataset, 34% of observations were missing data on at least one variable, reducing the sample from 8,000 to 5,300 complete cases. The complete‑case model estimated a GDP per capita coefficient of 0.21 (SE = 0.03). After multiple imputation (m = 20), the coefficient increased to 0.25 (SE = 0.04), and the education spending variable became statistically significant. The MAR assumption is plausible because missingness in GDP and democracy appears related to observed variables like government effectiveness and oil production. We conclude that missing data modestly attenuated the estimated effect of development on democracy; using imputation recovers a slightly stronger and more precisely estimated relationship.*
+
+---
+
+## Reminders
+
+- One submission per student.  
+- Include the comparison table in your email (screenshot or exported CSV).
+
+---
+
+class: inverse, center, middle
+
+# 6. Wrap‑Up  
+### Cheat Sheet for Missing Data
+
+---
+
+| **Method** | **Pros** | **Cons** | **When to Use** |
+| :--------- | :------- | :------- | :-------------- |
+| **Listwise Deletion** | Simple, unbiased under MCAR. | Inefficient, biased under MAR/MNAR. | MCAR, or very low missingness (<5%). |
+| **Multiple Imputation** | Uses all data, valid under MAR, reflects uncertainty. | Computationally intensive, requires modeling. | MAR, moderate to high missingness. |
+| **FIML** | Efficient, no imputation needed. | Requires specialized software. | MAR, structural equation models. |
+| **Sensitivity Analysis** | Assesses robustness to MNAR. | No single correct method. | Always a good idea. |
+
+> **Single most important rule:** Always diagnose the missingness pattern before choosing a method.

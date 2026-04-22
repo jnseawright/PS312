@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Difference‑in‑Differences</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jaye Seawright" />
+    <meta name="date" content="2026-04-22" />
+    <script src="didkickoff_files/header-attrs-2.30/header-attrs.js"></script>
+    <link href="didkickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="didkickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+    <script src="didkickoff_files/kePrint-0.0.1/kePrint.js"></script>
+    <link href="didkickoff_files/lightable-0.0.1/lightable.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Difference‑in‑Differences
+]
+.subtitle[
+## PS 312
+]
+.author[
+### Jaye Seawright
+]
+.date[
+### 2026-04-22
+]
+
+---
+
+
+
+## Today's Roadmap
+
+1. **Concept Introduction:** The 2x2 table and parallel trends
+2. **Your Turn: Core Activity** – Does democratization increase conflict?
+3. **Diagnostics &amp; Assumptions:** Event studies and the Bacon decomposition
+4. **Core Graded Activity:** Write your paragraph for the TA
+
+
+**Goal:** Move from "I've heard of DiD" to "I can design, run, and critically evaluate a DiD analysis in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook &amp; Activation
+### The Logic of Difference‑in‑Differences
+
+---
+### The Canonical DiD Example: Card and Krueger (1994)
+
+- **Question**: Does raising the minimum wage reduce employment?
+- **Setting**: New Jersey raised minimum wage; Pennsylvania did not.
+- **Data**: Fast food restaurants in both states, before and after the policy.
+
+---
+### The Canonical DiD Example: Card and Krueger (1994)
+
+
+
+``` r
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(kableExtra)
+
+data_path &lt;- file.path("data", "CK1994.csv")
+ck &lt;- read.csv(data_path, na.strings = c(".", ""))   # missing values are coded as "."
+
+ck &lt;- ck %&gt;%
+  mutate(
+    total_emp = empft + emppt + nmgrs,
+    # Label groups
+    state_name = ifelse(state == 1, "New Jersey (treated)", "Pennsylvania (control)"),
+    period = ifelse(time == 0, "Before", "After")
+  )
+```
+
+---
+
+
+``` r
+# Keep only complete cases for the three employment components
+ck_clean &lt;- ck %&gt;%
+  filter(!is.na(empft) &amp; !is.na(emppt) &amp; !is.na(nmgrs))
+
+# Calculate mean employment by state and period
+means &lt;- ck_clean %&gt;%
+  group_by(state_name, period) %&gt;%
+  summarise(mean_emp = mean(total_emp, na.rm = TRUE), .groups = "drop")
+
+# Pivot to wide format for easy differencing
+means_wide &lt;- means %&gt;%
+  pivot_wider(names_from = period, values_from = mean_emp)
+```
+
+---
+
+
+``` r
+# Compute differences (After - Before)
+means_wide &lt;- means_wide %&gt;%
+  mutate(Difference = After - Before)
+
+# Extract DiD estimate
+did_estimate &lt;- means_wide$Difference[means_wide$state_name == "New Jersey (treated)"] -
+                means_wide$Difference[means_wide$state_name == "Pennsylvania (control)"]
+
+# Create a clean presentation table
+
+table_did &lt;- means_wide %&gt;%
+  select(state_name, Before, After, Difference) %&gt;%
+  rename(State = state_name)
+
+# Add a row for the DiD estimate
+table_did &lt;- bind_rows(
+  table_did,
+  tibble(
+    State = "Difference-in-Differences",
+    Before = NA,
+    After = NA,
+    Difference = did_estimate
+  )
+)
+```
+
+---
+
+
+``` r
+# Format numbers (round to one decimal)
+table_did &lt;- table_did %&gt;%
+  mutate(
+    Before = round(Before, 1),
+    After = round(After, 1),
+    Difference = round(Difference, 1)
+  )
+```
+
+---
+
+
+``` r
+# Display the table (for RMarkdown slide)
+kable(table_did,
+      caption = "Effect of Minimum Wage Increase on Employment (Card &amp; Krueger 1994)",
+      align = "lccc") %&gt;%
+  kable_styling(full_width = FALSE)   # optional, requires kableExtra package
+```
+
+&lt;table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+&lt;caption&gt;Effect of Minimum Wage Increase on Employment (Card &amp;amp; Krueger 1994)&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt; State &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Before &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; After &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; Difference &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; New Jersey (treated) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 29.9 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 30.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Pennsylvania (control) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 31.2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; -2.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Difference-in-Differences &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; NA &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.3 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+### The Canonical DiD Example: Card and Krueger (1994)
+
+- Result: Employment **increased** in NJ relative to PA – contrary to traditional economic theory.
+- Sparked decades of debate about the parallel trends assumption.
+
+---
+
+## The Regression Equation
+
+We can also estimate this using a regression model, which makes it easy to add controls and get standard errors.
+
+`$$Y_{it} = \beta_0 + \beta_1 \text{Treat}_i + \beta_2 \text{Post}_t + \beta_3 (\text{Treat}_i \times \text{Post}_t) + \epsilon_{it}$$`
+
+Where:
+*   `\(Y_{it}\)` is the outcome for unit *i* at time *t*.
+*   `\(\text{Treat}_i\)` is a dummy variable = 1 for the treated group, 0 otherwise.
+*   `\(\text{Post}_t\)` is a dummy variable = 1 for the post-treatment period, 0 otherwise.
+*   `\(\text{Treat}_i \times \text{Post}_t\)` is the **interaction term**. Its coefficient `\(\beta_3\)` is our **DiD estimate**.
+
+---
+
+
+``` r
+did_lm &lt;- lm(total_emp ~ state + time + state:time, data=ck_clean)
+table &lt;- modelsummary(did_lm, stars = TRUE, output="kableExtra")
+```
+
+---
+
+&lt;table style="NAborder-bottom: 0; width: auto !important; margin-left: auto; margin-right: auto;" class="table"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;"&gt;   &lt;/th&gt;
+   &lt;th style="text-align:center;"&gt; &amp;amp;nbsp;(1) &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; (Intercept) &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 33.182*** &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (1.435) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; state &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −3.319* &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (1.598) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; time &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −1.987 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; (2.029) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; state × time &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 2.318 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;box-shadow: 0px 1.5px"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:center;box-shadow: 0px 1.5px"&gt; (2.260) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Num.Obs. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 794 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; R2 &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.006 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; R2 Adj. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 0.002 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AIC &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6281.8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; BIC &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 6305.2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Log.Lik. &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; −3135.916 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 1.574 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; RMSE &lt;/td&gt;
+   &lt;td style="text-align:center;"&gt; 12.56 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; + p &amp;lt; 0.1, * p &amp;lt; 0.05, ** p &amp;lt; 0.01, *** p &amp;lt; 0.001&lt;/td&gt;&lt;/tr&gt;&lt;/tfoot&gt;
+&lt;/table&gt;
+
+---
+
+## The Key Assumption: Parallel Trends
+
+The validity of DiD rests on the **parallel trends assumption**:
+
+&gt; In the absence of the treatment, the average outcome for the treated group would have changed by the same amount as the average outcome for the control group.
+
+**Crucially, we cannot directly test this assumption because we never observe the counterfactual.** However, we can provide supporting evidence by:
+1.  Plotting the pre-treatment trends to see if they are parallel.
+2.  Running a "placebo" DiD on a period where we *know* there was no treatment.
+3.  Using an alternative control group.
+
+---
+
+class: inverse, center, middle
+
+# 2. Your Turn: Core Activity
+### Does Transitioning to Democracy Increase the Chance of Military Conflict?
+
+---
+
+## The Research Question
+
+The "democratic peace" theory suggests that democracies are less likely to fight each other. But what about the process of *becoming* a democracy? Some scholars argue that the transition period itself is dangerous and can increase the risk of international conflict.
+
+**Your task:** Design and run a difference‑in‑differences analysis to test the hypothesis that democratization increases a country's probability of initiating or joining a militarized interstate dispute (MID).
+
+---
+
+## Getting Set Up in R
+
+We'll use the `peacesciencer` package to easily access and merge data on regime type (from Polity IV) and conflict (from the Correlates of War project).
+
+
+``` r
+# Run this in your console to install the package
+# install.packages("peacesciencer")
+```
+
+
+``` r
+# Load the package
+library(peacesciencer)
+
+# We'll also load the tidyverse for data wrangling
+library(tidyverse)
+```
+
+---
+
+## Building Our Dataset (1/3)
+
+We will create a state‑year panel dataset from 1945 to 2010. We'll define a **democratization event** as a large, positive change in a country's Polity IV score (which ranges from -10 for full autocracy to +10 for full democracy).
+
+
+``` r
+# 1. Create a base state-year data frame and add conflict data right away
+base_data &lt;- create_stateyears(system = "cow", subset_years = 1945:2010) %&gt;%
+  filter(!is.na(ccode)) %&gt;%
+  # Add state-year conflict onset (Gibler-Miller-Little MID data)
+  add_gml_mids(keep = c("gmlmidonset")) %&gt;%
+  # Create a clean conflict onset binary variable
+  mutate(conflict = if_else(!is.na(gmlmidonset), gmlmidonset, 0))
+
+# 2. Add democracy scores (Polity IV)
+data_with_polity &lt;- base_data %&gt;%
+  add_democracy()
+```
+
+---
+
+## Building Our Dataset (2/3)
+
+
+``` r
+# 3. Create a measure of democratization
+# We'll define a "democratization event" as an increase of 5+ points over 5 years
+data_with_treat &lt;- data_with_polity %&gt;%
+  group_by(ccode) %&gt;%
+  arrange(year) %&gt;%
+  mutate(
+    polity_change_5yr = polity2 - lag(polity2, 5),  # Change over last 5 years
+    # Treatment occurs in the year the 5-year change is &gt;= 5
+    treat_year = if_else(polity_change_5yr &gt;= 5 &amp; !is.na(polity_change_5yr), year, NA_real_),
+    # We'll treat a country as "ever treated" if it has a treatment year
+    ever_treated = any(!is.na(treat_year))
+  ) %&gt;%
+  ungroup()
+```
+
+---
+
+
+``` r
+# Let's inspect our dataset
+glimpse(data_with_treat)
+```
+
+```
+## Rows: 9,412
+## Columns: 15
+## $ ccode              &lt;dbl&gt; 2, 20, 40, 41, 42, 70, 90, 91, 92, 93, 94, 95, 100,…
+## $ cw_name            &lt;chr&gt; "United States of America", "Canada", "Cuba", "Hait…
+## $ year               &lt;dbl&gt; 1945, 1945, 1945, 1945, 1945, 1945, 1945, 1945, 194…
+## $ gmlmidongoing      &lt;dbl&gt; 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, …
+## $ gmlmidonset        &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, …
+## $ gmlmidongoing_init &lt;dbl&gt; 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, …
+## $ gmlmidonset_init   &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, …
+## $ conflict           &lt;dbl&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, …
+## $ euds               &lt;dbl&gt; 1.31688394, 1.55084227, 0.94861741, 0.31789328, -0.…
+## $ aeuds              &lt;dbl&gt; 0.509154385, 0.743112714, 0.140887851, -0.489836277…
+## $ polity2            &lt;dbl&gt; 9, 10, 3, 1, -9, -6, 5, -3, -8, -8, 5, -3, 5, -3, -…
+## $ v2x_polyarchy      &lt;dbl&gt; 0.560, 0.653, 0.428, 0.151, 0.151, 0.191, 0.291, 0.…
+## $ polity_change_5yr  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ treat_year         &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ ever_treated       &lt;lgl&gt; FALSE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, T…
+```
+
+---
+
+## Defining Treatment and Control Groups
+
+*   **Treated Group:** Countries that experienced a democratization event (our defined 5+ point increase in Polity score) at some point in the sample period.
+*   **Control Group:** Countries that *never* experienced such an event during the sample period.
+*   **Treatment Timing:** We'll consider a country "treated" in the year the event happened and all subsequent years.
+
+We need to create the necessary `treat`, `post`, and `treat_post` variables for our regression.
+
+---
+
+## Building Our Dataset (3/3)
+
+
+``` r
+# Create final analysis dataset with DiD variables
+did_data_clean &lt;- data_with_treat %&gt;%
+  group_by(ccode) %&gt;%
+  mutate(
+    # For now, just use the first democratization event for each country
+    first_treat_year = if_else(any(!is.na(treat_year)), min(treat_year, na.rm = TRUE), NA_real_),
+    # Define the DiD dummies
+    treat_group = if_else(!is.na(first_treat_year), 1, 0),
+    post_period = if_else(!is.na(first_treat_year) &amp; year &gt;= first_treat_year, 1, 0),
+    treat_post = treat_group * post_period
+  ) %&gt;%
+  ungroup() %&gt;%
+  # Keep only the variables we need for analysis
+  select(ccode, year, conflict, polity2, treat_group, post_period, treat_post, first_treat_year) %&gt;%
+  # Ensure we have no missing values for our main variables
+  filter(!is.na(treat_group) &amp; !is.na(post_period))
+```
+
+---
+
+
+``` r
+# Quick check of our data
+head(did_data_clean)
+```
+
+```
+## # A tibble: 6 × 8
+##   ccode  year conflict polity2 treat_group post_period treat_post
+##   &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;
+## 1     2  1945        0       9           0           0          0
+## 2    20  1945        0      10           0           0          0
+## 3    40  1945        0       3           1           0          0
+## 4    41  1945        0       1           1           0          0
+## 5    42  1945        0      -9           1           0          0
+## 6    70  1945        0      -6           1           0          0
+## # ℹ 1 more variable: first_treat_year &lt;dbl&gt;
+```
+
+---
+
+## Run the DiD Regression
+
+Now we can estimate the DiD model using a Two‑Way Fixed Effects (TWFE) model.
+
+
+``` r
+# Two-Way Fixed Effects 
+# This controls for all time-invariant country characteristics and common year shocks.
+# Fill in relevant variable names yourself to produce your own DiD!
+model_twfe &lt;- feols(OUTCOME VARIABLE ~ TREATMENT VARIABLE | UNIT VARIABLE + TIME VARIABLE, data = did_data_clean, cluster = ~ccode)
+summary(model_twfe)
+```
+
+---
+
+## Interpreting the Results
+
+The coefficient on `treat_post` (or the `treat_post` variable in the TWFE model) is your DiD estimate.
+
+*   **What is the sign and magnitude of the coefficient?**
+*   **Is it statistically significant?**
+*   **How would you interpret this substantively?** For example: "The transition to democracy is associated with a X percentage-point change in the probability of initiating a conflict."
+
+---
+
+## Checkpoint: Does Our Design Make Sense?
+
+Now that we've made sense of the results, consider:
+
+*   **Parallel Trends:** Do the treated and control countries have similar trends in conflict before the democratization events? (We'll test this visually in a bit.)
+*   **Stable Unit Treatment Value Assumption (SUTVA):** Does the democratization of one country affect the conflict propensity of other countries? (Spillover is a major threat here.)
+*   **Reverse Causality:** Could it be that conflict causes democratization, rather than the other way around? (Our simple DiD design doesn't solve this.)
+
+---
+
+class: inverse, center, middle
+
+# 3. Diagnostics &amp; Assumptions
+### Event Studies and the Bacon Decomposition
+
+---
+
+## Visualizing Parallel Trends: The Event Study Plot
+
+An event study is the best way to visually assess the parallel trends assumption. It plots the treatment effect in "event time" — years before and after the democratization event.
+
+We can create one by interacting our treatment indicator with dummies for years relative to the event.
+
+
+``` r
+# Create a relative time variable centered on the first treatment year
+did_data_event &lt;- did_data_clean %&gt;%
+  mutate(time_to_treat = year - first_treat_year) %&gt;%
+  # Keep only treated countries and those with a clear event year
+  filter(!is.na(first_treat_year) | treat_group == 0)
+
+# For control units, we can set a dummy time variable (e.g., -1000)
+did_data_event &lt;- did_data_event %&gt;%
+  mutate(time_to_treat = if_else(treat_group == 0, -1000, time_to_treat))
+
+# Run the event study regression using fixest
+# We use i(time_to_treat, ref = c(-1, -1000)) to use t-1 and never-treated as reference
+es_model &lt;- feols(conflict ~ i(time_to_treat, treat_group, ref = c(-1, -1000)) | ccode + year,
+                  data = did_data_event, cluster = ~ccode)
+```
+
+---
+
+
+``` r
+# Create the plot
+iplot(es_model,
+      xlab = 'Years Relative to Democratization',
+      main = 'Effect of Democratization on Conflict Initiation')
+```
+
+![](didkickoff_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+
+---
+
+## What to Look For
+
+*   **Pre‑treatment coefficients** (left of 0) should be close to zero and statistically insignificant. This suggests no pre-existing differences in trends.
+*   **Post‑treatment coefficients** (right of 0) will show the dynamic effect over time. Do they become significant? Do they grow or fade?
+
+If the pre‑treatment coefficients are not flat around zero, the parallel trends assumption is suspect.
+
+---
+
+## A Modern Concern: Staggered Treatment and the Bacon Decomposition
+
+In our design, countries democratize at different times. This is a **staggered treatment** design. Recent research (e.g., Goodman-Bacon 2021) shows that the standard TWFE estimator in this setting can be biased if treatment effects vary over time or across cohorts.
+
+The `bacondecomp` package can help you diagnose this problem.
+
+---
+
+
+``` r
+# You may need to install this package first:
+# install.packages("bacondecomp")
+ library(bacondecomp)
+
+# Identify countries with complete observations over the entire period
+balanced_countries &lt;- did_data_clean %&gt;%
+  group_by(ccode) %&gt;%
+  summarise(n_years = n(), .groups = "drop") %&gt;%
+  filter(n_years == length(1945:2010)) %&gt;%
+  pull(ccode)
+
+did_data_balanced &lt;- did_data_clean %&gt;%
+  filter(ccode %in% balanced_countries)
+
+# Then run bacon on the balanced panel
+library(bacondecomp)
+df_bacon &lt;- bacon(conflict ~ treat_post,
+                  data = did_data_balanced,
+                  id_var = "ccode",
+                  time_var = "year")
+```
+
+---
+
+&gt; **For your analysis:** If you have staggered treatment, consider using the modern DiD estimators from packages like `did` (Callaway &amp; Sant'Anna) or `fect` (Liu et al.). We've linked to tutorials on these in the session notes.
+
+---
+
+class: inverse, center, middle
+
+# 4. Core Graded Activity
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1.  Your **research question** (one sentence).
+2.  A brief description of the **DiD design** you just implemented (treated group, control group, pre/post periods).
+3.  The **key result** (the DiD coefficient from your preferred model) and its **interpretation**.
+4.  An assessment of the **most important assumption** (parallel trends). Did your event study plot support it? What are the limitations?
+5.  **One modern extension** (e.g., staggered DiD estimator) that you could use to improve the credibility of your findings.
+
+---
+
+### Revised Example Paragraph (for a different question)
+
+&gt; *Our group asks: Do state minimum wage increases reduce employment among teenagers? We use a staggered difference‑in‑differences design, comparing states that raised their minimum wage at various times between 2000 and 2019 to states that never raised their wage during this period. Our two‑way fixed effects model estimates that a $1 increase in the minimum wage is associated with a 1.2 percentage point decrease in the teen employment rate (p = 0.08), a result that is marginally significant. An event study plot centered on the year of the first wage hike shows that pre‑treatment employment trends are statistically indistinguishable across treated and control states, lending credibility to the parallel trends assumption. However, the estimates become noisier in later post‑treatment years due to sample attrition. A key limitation is that minimum wage changes are not randomly assigned; states that raise wages may differ in other labor‑market policies. To address concerns about staggered treatment timing and effect heterogeneity, we would re‑estimate our effects using the Callaway and Sant’Anna (2021) group‑time average treatment effect estimator.*
+
+---
+
+## Reminders
+
+*   One submission per student.
+
+---
+
+class: inverse, center, middle
+
+#  Wrap‑Up
+### Cheat Sheet for Difference‑in‑Differences
+
+---
+
+| Design | Identification Strategy | Data Requirements | Key Assumption |
+| :----- | :---------------------- | :---------------- | :------------- |
+| **Difference‑in‑Differences (DiD)** | Compares the change over time in a treated group to the change in an untreated group. | Panel data (treated &amp; control units, before &amp; after periods). | **Parallel Trends:** In the absence of treatment, the average outcome would have changed the same way for both groups. |
+| **Staggered DiD / Event Study** | Uses variation in treatment timing across units. | Panel data with units treated at different times. | Parallel trends, plus a correctly specified model that accounts for treatment effect heterogeneity. |
+
+
+&gt; **Single most important rule for DiD:** Always visually inspect pre‑treatment trends with an event study plot. If the lines aren't parallel before treatment, your results are likely biased.
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

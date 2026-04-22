@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Regression‑Discontinuity Designs</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Jaye Seawright" />
+    <meta name="date" content="2026-04-22" />
+    <script src="rddkickoff_files/header-attrs-2.30/header-attrs.js"></script>
+    <link href="rddkickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link href="rddkickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Regression‑Discontinuity Designs
+]
+.subtitle[
+## PS 312
+]
+.author[
+### Jaye Seawright
+]
+.date[
+### 2026-04-22
+]
+
+---
+
+
+
+## Today's Roadmap
+
+1. **Hook &amp; Activation:** The logic of regression‑discontinuity  
+2. **Concept Introduction:** Cutoffs, running variables, and local randomness  
+3. **Code Walk-Through** – Does winning a close election pull representatives toward the center or the extremes?  
+4. **Diagnostics &amp; Assumptions:** Manipulation checks and placebo tests  
+5. **Core Graded Activity:** Write your paragraph for the TA  
+6. **Wrap‑Up:** When to use RDD and its modern extensions  
+
+**Goal:** Move from "I've heard of RDD" to "I can design, run, and critically evaluate a regression‑discontinuity analysis in R."
+
+---
+
+class: inverse, center, middle
+
+# 1. Hook &amp; Activation  
+### The Logic of Regression‑Discontinuity
+
+---
+
+## Scenario: Merit Scholarships and College Completion
+
+Imagine a state program that awards a $5,000 college scholarship to any high school student who scores at least 1200 on the SAT.
+
+- You could compare college completion rates for scholarship recipients vs. non‑recipients.  
+- What's the problem with that? (Hint: Students with higher SAT scores are fundamentally different.)  
+- You could compare students who scored *just above* 1200 to students who scored *just below* 1200.  
+- Are these two groups of students likely to be similar in other ways?  
+
+The **regression‑discontinuity design (RDD)** exploits the fact that, near the cutoff, whether a student receives the scholarship is as good as random. This allows us to estimate the causal effect of the scholarship by comparing outcomes just on either side of the cutoff.
+
+---
+
+## The RDD Intuition
+
+1.  **Running variable (forcing variable):** A continuous variable that determines treatment assignment (e.g., SAT score).  
+2.  **Cutoff:** A threshold value of the running variable. Units above the cutoff receive the treatment; units below do not (or vice versa).  
+3.  **Local randomization:** For units *very close* to the cutoff, whether they fall just above or just below is essentially random. These units should be comparable on all other characteristics.  
+4.  **Estimation:** Compare the average outcome for units just above the cutoff to the average outcome for units just below the cutoff. The difference is the local average treatment effect (LATE).
+
+---
+
+class: inverse, center, middle
+
+# 2. Concept Introduction  
+### Cutoffs, Running Variables, and Local Randomness
+
+---
+
+## The Key Assumption: No Manipulation of the Running Variable
+
+&gt; Units cannot precisely control their value of the running variable to sort themselves onto one side of the cutoff.
+
+- In the scholarship example: Can students precisely manipulate their SAT score to land at 1201 instead of 1199?  
+- In an election context: Can candidates precisely manipulate the vote margin to win by 0.1% instead of losing by 0.1%?  
+
+If manipulation is possible, the "as‑if random" comparison breaks down. We can test for manipulation by examining the density of the running variable around the cutoff.
+
+---
+
+## The RDD Model
+
+A common way to estimate an RDD is with a local linear regression:
+
+`$$Y_i = \beta_0 + \beta_1 \text{Treat}_i + \beta_2 (X_i - c) + \beta_3 \text{Treat}_i \times (X_i - c) + \epsilon_i$$`
+
+Where:  
+- `\(Y_i\)` is the outcome for unit *i*.  
+- `\(X_i\)` is the running variable.  
+- `\(c\)` is the cutoff value.  
+- `\(\text{Treat}_i = 1\)` if `\(X_i \ge c\)`, and 0 otherwise.  
+- `\(\beta_1\)` is the **RDD estimate**—the jump in the outcome at the cutoff.
+
+We can also use more flexible local polynomial methods (via `rdrobust`) that automatically select the optimal bandwidth and provide robust inference.
+
+---
+
+class: inverse, center, middle
+
+# 3. Code Walk-Through  
+### Does Winning a Close Election Pull Representatives Toward the Center or the Extremes?
+
+---
+
+Similar to last time's code review, I'm going to show you the code I've used to solve an RDD problem. You as a class are my graders. Give me a grade on the A-F scale, using the rubric on the next slide.
+
+---
+
+| **Criterion** | **Excellent (A)** | **Good (B)** | **Fair (C)** | **Poor (D/F)** |
+| :------------ | :---------------- | :----------- | :----------- | :------------- |
+| **Correctness** | Code runs without errors; specification correct. | Runs but has minor warnings; RDD logic mostly sound. | Runs with significant warnings or fails; key RDD elements missing. | Does not run or completely incorrect. |
+| **Clarity &amp; Documentation** | Clear comments; meaningful variable names; easy to follow. | Some comments; variable names okay. | Few comments; cryptic names. | No comments; incomprehensible. |
+| **RDD Best Practices** | Checks manipulation; uses robust inference; sensitivity analysis. | Uses `rdrobust` but misses one diagnostic. | Uses simple OLS without robustness. | No understanding of RDD assumptions. |
+| **Efficiency** | No unnecessary steps; appropriate use of `tidyverse`. | Slight redundancy. | Noticeable inefficiency. | Extremely inefficient. |
+
+---
+
+## The Research Question
+
+A long‑standing debate in political science asks whether elected officials moderate their positions to appeal to the broader electorate or whether they cater to their party's base. If winning a close election causes a representative to become more ideologically extreme, we would expect to see a "jump" in their DW‑NOMINATE score at the 50% vote threshold.
+
+**Your task:** Use a regression‑discontinuity design to estimate the effect of *barely winning* a U.S. House election (as a Democrat vs. a Republican) on the ideological extremism of the winning candidate. In the example code below, we will look at raw ideology as the outcome variable; you will probably want a different outcome for your final application later on.
+
+---
+
+## Getting Set Up in R
+
+We'll use the `rdrobust` package for estimation and inference, which includes a built‑in dataset of close U.S. House elections merged with DW‑NOMINATE scores.
+
+
+``` r
+# Install required packages if you don't have them
+# install.packages("rdrobust")
+# install.packages("tidyverse")
+```
+
+
+``` r
+# Load packages
+library(rdrobust)
+library(tidyverse)
+```
+
+---
+
+## Loading and Preparing the Data
+
+We will use MIT Election Lab data contains U.S. House election returns from 1948–2024, along with the winning candidate's DW‑NOMINATE scores.
+
+
+``` r
+# ----------------------------------------------------------------------
+# Step 1: Install and load required packages
+# ----------------------------------------------------------------------
+# install.packages(c("tidyverse", "rdrobust", "readr"))
+
+library(tidyverse)
+library(rdrobust)
+
+# ----------------------------------------------------------------------
+# Step 2: Load U.S. House election results (MIT ElEction Lab data 1976-2024)
+# ----------------------------------------------------------------------
+# Data source: MIT Election Data and Science Lab
+elections_raw &lt;- read_csv("data/house1976-2024.csv")
+
+# ----------------------------------------------------------------------
+# Step 3: Download DW-NOMINATE scores (VoteView)
+# ----------------------------------------------------------------------
+url_voteview &lt;- "https://voteview.com/static/data/out/members/HSall_members.csv"
+nominate_raw &lt;- read_csv(url_voteview)
+```
+
+---
+
+
+``` r
+# ----------------------------------------------------------------------
+# Step 4: Clean and merge the datasets
+# ----------------------------------------------------------------------
+# Clean election data: keep only two-party contests (Democrat vs Republican)
+elections_clean &lt;- elections_raw %&gt;%
+  filter(party %in% c("DEMOCRAT", "REPUBLICAN")) %&gt;%
+  group_by(year, state, district) %&gt;%
+  # Keep only districts with exactly one Democrat and one Republican
+  filter(n_distinct(party) == 2) %&gt;%
+  # Calculate vote share and margin
+  mutate(
+    total_votes = sum(candidatevotes),
+    vote_share = candidatevotes / total_votes,
+    # Running variable: Democratic margin (positive = Dem win, negative = Rep win)
+    margin_dem = case_when(
+      party == "DEMOCRAT" &amp; vote_share &gt; 0.5 ~ (vote_share - 0.5) * 100,
+      party == "DEMOCRAT" &amp; vote_share &lt; 0.5 ~ -(0.5 - vote_share) * 100,
+      party == "REPUBLICAN" &amp; vote_share &gt; 0.5 ~ -(vote_share - 0.5) * 100,
+      party == "REPUBLICAN" &amp; vote_share &lt; 0.5 ~ (0.5 - vote_share) * 100
+    ),
+    winner = candidatevotes == max(candidatevotes)
+  ) %&gt;%
+  ungroup() %&gt;%
+  # Keep only the winning candidate
+  filter(winner == TRUE) %&gt;%
+  select(year, state, district, party, margin_dem, candidate_name = candidate)
+```
+
+---
+
+
+``` r
+# Clean DW-NOMINATE data: get first dimension score for each member
+nominate_clean &lt;- nominate_raw %&gt;%
+  filter(chamber == "House") %&gt;%
+  select(congress, state_abbrev, district_code, party_code, 
+         bioname, nominate_dim1) %&gt;%
+  # Approximate election year from congress number (congress * 2 + 1786)
+  mutate(year = 1786 + congress * 2)
+
+# Merge: match by state, district, and approximate election year
+# (We'll use fuzzy matching on year because election year and congress year differ slightly)
+close_elections &lt;- elections_clean %&gt;%
+  mutate(
+    state_abbrev = state.abb[match(str_to_title(state), state.name)],
+    district_num = as.numeric(district)
+  ) %&gt;%
+  left_join(
+    nominate_clean,
+    by = c("state_abbrev", "district_num" = "district_code"),
+    suffix = c("_elec", "_nom")
+  ) %&gt;%
+  filter(abs(year_elec - year_nom) &lt;= 2) %&gt;%  # Match congress within 2 years of election
+  # Keep only close elections (within 10 percentage points)
+  filter(abs(margin_dem) &lt;= 10) %&gt;%
+  mutate(
+    treat_dem = if_else(margin_dem &gt;= 0, 1, 0),
+    ideology = nominate_dim1
+  ) %&gt;%
+  distinct(year_elec, state_abbrev, district_num, .keep_all = TRUE)  # Remove duplicate matches
+```
+
+---
+
+
+``` r
+# ----------------------------------------------------------------------
+# Step 5: Run the RDD analysis
+# ----------------------------------------------------------------------
+# Visualize with rdplot
+rdplot(
+  y = close_elections$ideology,
+  x = close_elections$margin_dem,
+  c = 0,
+  p = 1,
+  x.label = "Democratic Vote Margin (%)",
+  y.label = "DW-NOMINATE Score",
+  title = "Ideology by Election Outcome"
+)
+```
+
+&lt;img src="rddkickoff_files/figure-html/run_main_rdd-1.png" width="40%" /&gt;
+
+``` r
+# Estimate with rdrobust
+rdd_results &lt;- rdrobust(
+  y = close_elections$ideology,
+  x = close_elections$margin_dem,
+  c = 0,
+  p = 1,
+  kernel = "triangular"
+)
+
+summary(rdd_results)
+```
+
+```
+## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 2976
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                 1478         1498
+## Eff. Number of Obs.             387          423
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   2.817        2.817
+## BW bias (b)                   4.863        4.863
+## rho (h/b)                     0.579        0.579
+## Unique Obs.                    1478         1498
+## 
+## =====================================================================
+##                    Point    Robust Inference
+##                 Estimate         z     P&gt;|z|      [ 95% C.I. ]       
+## ---------------------------------------------------------------------
+##      RD Effect    -0.071    -1.474     0.140    [-0.212 , 0.030]     
+## =====================================================================
+```
+
+---
+
+## Checkpoint: Does Our Design Make Sense?
+
+Having run the RDD, consider:
+
+- **Running variable:** `margin_dem` – the Democratic candidate's margin of victory. A value of 0 is the cutoff.  
+- **Cutoff:** 0. Districts where `margin_dem &gt; 0` elected a Democrat; districts where `margin_dem &lt; 0` elected a Republican.  
+- **Outcome:** `ideology` – the ideological position of the winning candidate, regardless of party.  
+- **Key assumption:** Candidates cannot precisely manipulate the vote margin to fall just above or just below 0. We'll test this.
+
+
+---
+
+## Interpreting the Results
+
+The `rdrobust` output provides several key quantities:
+
+- **Coefficient:** The estimated jump in `ideology` at the cutoff. A positive value would (counterintuitively) mean that *barely winning* a seat as a Democrat (instead of a Republican) leads to a *more conservative* representative.  
+- **Standard error and p‑value:** For hypothesis testing.  
+- **Bandwidth (`h`):** The window of data used for estimation (selected to minimize MSE).  
+- **Effective number of observations:** How many elections fell within the chosen bandwidth.
+
+**Questions to answer:**  
+- What is the sign and magnitude of the effect?  
+- Is the effect statistically significant?  
+- How would you interpret this substantively? For example: "Winning a close House election as a Democrat increases the winner's DW‑NOMINATE score by X points compared to winning as a Republican."
+
+---
+
+class: inverse, center, middle
+
+# 4. Diagnostics &amp; Assumptions  
+### Manipulation Checks and Placebo Tests
+
+---
+
+## Testing for Manipulation: Density of the Running Variable
+
+The most important assumption of RDD is that units cannot precisely manipulate the running variable. In close elections, if candidates could perfectly sort themselves into winning, we would see a "bunching" of observations just above the cutoff and a "gap" just below.
+
+We can test this visually by inspecting a histogram.
+
+
+``` r
+# Histogram of the running variable
+runninghist &lt;- ggplot(close_elections, aes(x = margin_dem)) +
+  geom_histogram(binwidth = 0.5, boundary = 0, fill = "steelblue", alpha = 0.7) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Density of Democratic Vote Margin",
+    x = "Democratic Vote Margin (%)",
+    y = "Number of Elections"
+  ) +
+  theme_minimal()
+```
+
+---
+
+![](rddkickoff_files/figure-html/show_running_var_hist-1.png)&lt;!-- --&gt;
+
+---
+
+**What to look for:**  
+- The histogram should be smooth around the cutoff. No sudden jumps or dips.  
+- If there is a discontinuity in the density, manipulation may be a concern.
+
+---
+
+## Placebo Test: Covariate Balance
+
+If the RDD is valid, predetermined covariates should be balanced around the cutoff. We can test this by running the RDD on a covariate that *should not* be affected by the treatment—for example, the district's number.
+
+
+``` r
+# Placebo test on district population
+rdd_placebo &lt;- rdrobust(
+  y = close_elections$district_num,      # Placebo outcome
+  x = close_elections$margin_dem,
+  c = 0
+)
+```
+
+---
+
+
+``` r
+summary(rdd_placebo)
+```
+
+```
+## Sharp RD estimates using local polynomial regression.
+## 
+## Number of Obs.                 2976
+## BW type                       mserd
+## Kernel                   Triangular
+## VCE method                       NN
+## 
+## Number of Obs.                 1478         1498
+## Eff. Number of Obs.             490          542
+## Order est. (p)                    1            1
+## Order bias  (q)                   2            2
+## BW est. (h)                   3.601        3.601
+## BW bias (b)                   5.412        5.412
+## rho (h/b)                     0.665        0.665
+## Unique Obs.                    1478         1498
+## 
+## =====================================================================
+##                    Point    Robust Inference
+##                 Estimate         z     P&gt;|z|      [ 95% C.I. ]       
+## ---------------------------------------------------------------------
+##      RD Effect    -0.946    -0.705     0.481    [-4.258 , 2.006]     
+## =====================================================================
+```
+
+---
+
+If the placebo test yields a statistically significant effect, it suggests that the discontinuity in our main outcome may be driven by pre‑existing differences rather than the treatment.
+
+---
+
+## Alternative Bandwidth Choices
+
+`rdrobust` selects the bandwidth that minimizes the mean squared error. You can examine how sensitive your results are to different bandwidth choices.
+
+
+``` r
+# Estimate with a half and double bandwidth
+rdd_half &lt;- rdrobust(
+  y = close_elections$ideology,
+  x = close_elections$margin_dem,
+  c = 0,
+  h = rdd_results$bws[1,1] / 2
+)
+
+rdd_double &lt;- rdrobust(
+  y = close_elections$ideology,
+  x = close_elections$margin_dem,
+  c = 0,
+  h = rdd_results$bws[1,1] * 2
+)
+```
+
+---
+
+
+``` r
+# Compare coefficients
+coef_half &lt;- rdd_half$coef[1]
+coef_optimal &lt;- rdd_results$coef[1]
+coef_double &lt;- rdd_double$coef[1]
+
+c(Half = coef_half, Optimal = coef_optimal, Double = coef_double)
+```
+
+```
+##        Half     Optimal      Double 
+## -0.19446454 -0.07105618 -0.02751491
+```
+
+If the estimate changes dramatically with the bandwidth, the result may be fragile. A stable estimate across reasonable bandwidths is reassuring.
+
+---
+
+So, what's my grade?
+
+---
+
+class: inverse, center, middle
+
+# 5. Core Graded Activity  
+### Write Your Paragraph for the TA
+
+---
+
+## Instructions
+
+**By the end of class today, email your TA a short paragraph that includes:**
+
+1. Your **research question** (one sentence).  
+2. A brief description of the **RDD design** (running variable, cutoff, treatment, outcome).  
+3. The **key result** (the RDD coefficient from `rdrobust`) and its **interpretation**.  
+4. An assessment of the **key assumption** (no manipulation of the running variable). Did the density plot look smooth around the cutoff?  
+5. **One robustness check** you performed (e.g., placebo test, alternative bandwidth) and what it suggested.
+
+---
+
+## Example Paragraph (for a different question)
+
+&gt; *Our group asks: Does winning a state lottery affect an individual's likelihood of filing for bankruptcy? We use a sharp regression‑discontinuity design with lottery ticket numbers as the running variable and a cutoff at the winning number. Our `rdrobust` estimate indicates that winning the lottery reduces the probability of bankruptcy within five years by 2.3 percentage points (p = 0.01). A density test of ticket numbers shows no evidence of manipulation around the winning threshold. As a placebo test, we checked whether lottery winners differed from losers in pre‑existing credit scores; the RDD estimate was near zero and insignificant, supporting the validity of the design. The results are robust to halving or doubling the bandwidth.*
+
+---
+
+## Reminders
+
+- One submission per student.
+
+---
+
+class: inverse, center, middle
+
+# 6. Wrap‑Up  
+
+&gt; **Single most important rule for RDD:** Always check for manipulation of the running variable. Plot the density and look for smoothness around the cutoff. If the density jumps, the design is suspect.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+  "highlightStyle": "github",
+  "highlightLines": true,
+  "countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
