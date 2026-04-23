@@ -74,6 +74,8 @@ design using historical data on countries' regimes and conflicts, and
 you get to do just that. Test as many of your assumptions as you can,
 and explain what you learn! If you need help, you can access the [class help sheet on R for difference-in-differences analysis](https://jnseawright.github.io/PS312/InClass/Difference-in-Differences.html). You may also consider looking at this [R tutorial about difference-in-differences for simultaneous treatments](https://rpubs.com/phle/r_tutorial_difference_in_differences) and potentially this [much more thorough if more advanced discussion of difference-in-differences in R](https://mike-data-analysis.share.connect.posit.cloud/sec-difference-in-differences.html).
 
+[DifinDif activities](didkickoff.html) 
+
 *Tuesday, April 28th: Synthetic Control*
 
 Before class, read [https://mixtape.scunning.com/10-synthetic_controls](https://mixtape.scunning.com/10-synthetic_controls).
