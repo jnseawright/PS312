@@ -89,6 +89,8 @@ Present graphs and other results to explain your analysis, showing the
 quality of the control before the treatment as well as the size of any
 effect afterwards. If you need resources to help with coding issues, you can access the [class help file on synthetic control analysis in R](https://jnseawright.github.io/PS312/InClass/Synthetic_Control.html). You may also reference [this more detailed and general discussion of of synthetic controls in R](https://www.r-bloggers.com/2023/07/when-numbers-meet-stories-an-introduction-to-the-synthetic-control-method-in-r/).
 
+[Synthetic control activities](syntheticcontrolkickoff.html) 
+
 *Thursday, April 30th: Regression-Discontinuity Designs*
 
 Before class, read [https://mixtape.scunning.com/06-regression_discontinuity](https://mixtape.scunning.com/06-regression_discontinuity)

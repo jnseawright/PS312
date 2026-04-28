@@ -4,7 +4,7 @@
     <title>Synthetic Control</title>
     <meta charset="utf-8" />
     <meta name="author" content="Jaye Seawright" />
-    <meta name="date" content="2026-04-22" />
+    <meta name="date" content="2026-04-28" />
     <script src="syntheticcontrolkickoff_files/header-attrs-2.30/header-attrs.js"></script>
     <link href="syntheticcontrolkickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="syntheticcontrolkickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -23,7 +23,7 @@ class: center, middle, inverse, title-slide
 ### Jaye Seawright
 ]
 .date[
-### 2026-04-22
+### 2026-04-28
 ]
 
 ---
@@ -453,7 +453,7 @@ A key inferential tool in synthetic control is the **placebo test** (or "in‑sp
 # Plot the UK effect against all placebos
 placeboplot &lt;- uk_synth %&gt;%
   plot_placebos(
-    time_window = 1990:2025,
+    time_window = 1990:2024,
     prune = TRUE  # Remove placebos with poor pre-treatment fit
   ) +
   geom_vline(xintercept = 2016, linetype = "dashed", color = "red") +
@@ -544,7 +544,7 @@ class: inverse, center, middle
 1. Your **research question** (one sentence).
 2. A brief description of the **synthetic control design** (treated unit, treatment year, donor pool, outcome).
 3. A description of the **pre‑treatment fit** (e.g., "The synthetic UK closely tracks the actual UK before 2016, with an MSPE of X.").
-4. The **key result** (the estimated effect of Brexit on the Liberal Democracy Index) and its **interpretation**.
+4. The **key result** (the estimated effect of Brexit on the Liberal Democracy Index) and its **interpretation**. You may find the effect is smaller than you expect. That's a legitimate finding, and your paragraph should describe what you actually see, not what you expected.
 5. An assessment of **inferential strength** (e.g., "The placebo test shows that the UK's post‑2016 gap is larger than Y% of placebo gaps, suggesting the effect is statistically meaningful.").
 
 ---
