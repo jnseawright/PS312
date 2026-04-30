@@ -99,6 +99,8 @@ For video discussion, watch this [introductory video on regression-discontinuity
 
 Class activity: Is ideological polarization in the US happening equally on both sides of the party system, or do the parties behave differently in terms of their distance from the ideological middle? Let's try to get an answer to this that cleans up some of the background noise by using a regression-discontinuity design. We'll compare close elections that Republicans just barely win to close elections that Democrats just barely win and look at the absolute value of the resulting ideological distance from the middle of the elected representatives. Working with your group, find numerical estimates of the effect of switching party within this design, significance tests, and a plot that visualizes the results, the underlying data, and the design. Send these, together with a brief description of your conclusions, to your TA. If you need resources to help with coding issues, you can access the [class help file on regression-discontinuity designs](https://jnseawright.github.io/PS312/InClass/Regression_Discontinuity_Designs.html), or you can follow these two [video](https://vimeo.com/400826628) [tutorials](https://vimeo.com/400826660).
 
+[RDD activities](rddkickoff.html) 
+
 *Tuesday, May 5th: Instrumental Variables Designs*
 
 Before class, read [https://mixtape.scunning.com/07-instrumental_variables](https://mixtape.scunning.com/07-instrumental_variables).

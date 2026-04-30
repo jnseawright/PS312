@@ -191,10 +191,8 @@ summary(first_stage)
 
 After hearing both sides, **raise your hand**:
 
-- ✋ **Valid:** The instruments are credible.
-- ✋ **Invalid:** The instruments fail the relevance or exclusion requirement.
-
-*(Instructor tallies and discusses the majority view.)*
+- **Valid:** The instruments are credible.
+- **Invalid:** The instruments fail the relevance or exclusion requirement.
 
 ---
 
