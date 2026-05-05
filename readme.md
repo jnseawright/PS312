@@ -109,6 +109,8 @@ I also recommend watching this [helpful video explanation of instrumental variab
 
 Class activity: Does higher turnout help Democrats, Republicans, both, or neither? Let's try to find out by using bad weather as an instrumental variable to predict turnout. Run a standard regression predicting Republican vote share based on turnout, and also an instrumental-variables analysis adding rain- and snow-fall as instruments. Are there differences between the two? Are there signs of trouble for the instruments, or do they seem reasonable? Examine Google Scholar to see how popular instruments like these are in the social sciences. What, if anything, can we conclude about the validity of these as instruments from the applications you have seen? Each student should write a brief description of the findings and an evaluation of the credibility of the analysis and send the results to their TA. If you need help with coding, you can access the [class help page on instrumental variables in R](https://jnseawright.github.io/PS312/InClass/Instrumental_Variables.html). You can also access this [somewhat more detailed R tutorial on instrumental variables](https://rpubs.com/wsundstrom/t_ivreg).
 
+[Instrumental variables activities](instrumentalvariableskickoff.html) 
+
 *Thursday, May 7th: Social Science Transparency Practices*
 
 Before class, read Christensen, Garret, Zenan Wang, Elizabeth Levy
