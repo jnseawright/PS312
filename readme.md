@@ -4,6 +4,8 @@
 
 [Syllabus](https://jnseawright.github.io/PS312/syllabus.html)
 
+[In-Class Conference Session Preferences](https://docs.google.com/forms/d/e/1FAIpQLSdDpbmjs1h7By68cRP0XwWLC8LTRX4nqo-daiHldooa34zKQQ/viewform?usp=dialog)
+
 ### Class Sessions
 
 *Thursday, April 2nd: Finding Good Questions in Statistical Social Science*
@@ -126,6 +128,8 @@ the transparency practices of those articles. Was there preregistration,
 are data and code available for replication, etc.? Search for at least
 one preregistration form related to the research question to see the
 format of such documents.
+
+[Transparency activities](transparencykickoff.html) 
 
 *Tuesday, May 12th: Missing Data*
 
