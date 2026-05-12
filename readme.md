@@ -141,6 +141,8 @@ You may also get value out of [this video explanation of categories of missingne
 
 Class activity: Let's look at whether missing data are a problem in the study of democracy and economic development. With your group, access the Quality of Governance (QoG) dataset, and assemble a regression model predicting countries' level of democracy based on per capita GDP and any control variables you see as relevant. Are there missing data? What are some possible solutions? Show how implementing a good solution would modify the results (if at all). Each student should send a table showing the original regression results and the results correcting for missing data to their TA, along with a paragraph discussing the extent to which missing data made a difference in the results. If you need coding help, you can access [the class help page on missing data analysis](https://jnseawright.github.io/PS312/InClass/Missing_Data.html). You may also take advantage of this [somewhat more thorough tutorial on missing data and imputation in R](https://libguides.princeton.edu/R-Missingdata).
 
+[Missing data activities](missingdatakickoff.html) 
+
 *Thursday, May 14th: Common Pitfalls*
 
 Before class, read [this inventory of common mistakes in quantitative research.](https://pmc.ncbi.nlm.nih.gov/articles/PMC9477699/)
