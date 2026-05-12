@@ -4,6 +4,8 @@
 
 [Syllabus](https://jnseawright.github.io/PS312/syllabus.html)
 
+[In-Class Conference Schedule](https://jnseawright.github.io/PS312/conference_schedule.xlsx)
+
 [In-Class Conference Session Preferences](https://docs.google.com/forms/d/e/1FAIpQLSdDpbmjs1h7By68cRP0XwWLC8LTRX4nqo-daiHldooa34zKQQ/viewform?usp=dialog)
 
 ### Class Sessions
