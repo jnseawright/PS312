@@ -151,6 +151,8 @@ You may also find [this related and partially overlapping video about statistica
 
 Class activity: What would it look like for your group project this quarter to make each of the mistakes we've highlighted this week? Describe the worst-case scenario where you would fall into each pitfall, and discuss how you can avoid that. As a group, create a table with three columns: the name of the pitfall, a sketch of the scenario where your project would really be subject to that criticism, and a set of precautions you can take to avoid that. Send this table to each TA together with the names of the group members.
 
+[Pitfalls activities activities](pitfallskickoff.html) 
+
 *Tuesday, May 19th: Writing Quantitative Social Science*
 
 Before class, read BOTH [Daniel M Butler, Elin Naurin, and Patrik
