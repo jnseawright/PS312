@@ -4,7 +4,7 @@
     <title>Common Pitfalls in Quantitative Research</title>
     <meta charset="utf-8" />
     <meta name="author" content="Jaye Seawright" />
-    <meta name="date" content="2026-04-22" />
+    <meta name="date" content="2026-05-14" />
     <script src="pitfallskickoff_files/header-attrs-2.30/header-attrs.js"></script>
     <link href="pitfallskickoff_files/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link href="pitfallskickoff_files/remark-css-0.0.1/default-fonts.css" rel="stylesheet" />
@@ -23,7 +23,7 @@ class: center, middle, inverse, title-slide
 ### Jaye Seawright
 ]
 .date[
-### 2026-04-22
+### 2026-05-14
 ]
 
 ---
@@ -52,13 +52,23 @@ class: inverse, center, middle
 
 ## Quick Quiz: What's Wrong Here?
 
-For each scenario, identify the statistical or logical error. Discuss with a neighbor.
+For each scenario, identify the statistical or logical error.
 
 | **Scenario** | **What's the Pitfall?** |
 | :----------- | :---------------------- |
 | 1. A study finds that countries with more Nobel laureates per capita have higher life expectancy. A newspaper headline reads: "Want to live longer? Win a Nobel Prize!" | |
 | 2. A researcher runs 50 different regression specifications and reports only the one where the coefficient on their preferred variable is statistically significant. | |
 | 3. Looking at data from 2000–2020, you find that Democratic presidents presided over higher average GDP growth. You conclude Democrats are better for the economy. But when you break it down by decade, the pattern reverses. | |
+
+
+---
+
+## Quick Quiz: What's Wrong Here?
+
+For each scenario, identify the statistical or logical error.
+
+| **Scenario** | **What's the Pitfall?** |
+| :----------- | :---------------------- |
 | 4. A survey of business leaders finds that 90% attribute their success to "waking up early." The study interviews only Fortune 500 CEOs. | |
 | 5. After an unusually cold winter, a pundit predicts next winter will be warmer "because things always regress to the average." | |
 | 6. A researcher converts age (measured in years) into a binary variable "young" (&lt;40) and "old" (≥40) because it simplifies the analysis, even though the original continuous variable was available. | |
@@ -94,12 +104,39 @@ Based on van Smeden (2022) and the statistical fallacies video, these 12 pitfall
 | **1. Correlation ≠ Causation** | Video | Assuming that because two variables move together, one causes the other. | "Democracies have higher GDP per capita, therefore democracy causes growth." |
 | **2. P‑Hacking / Data Dredging** | Both | Running many tests and reporting only those that are significant. | Trying 10 control variable sets and publishing the one that makes your coefficient significant. |
 | **3. Simpson's Paradox** | Video | A trend in aggregated data disappears or reverses when disaggregated. | State‑level data shows income correlates with Republican vote share, but within counties the relationship is negative. |
+
+---
+
+## A Combined List from the Reading and Video
+
+Based on van Smeden (2022) and the statistical fallacies video, these 12 pitfalls are especially pernicious in political science research.
+
+| **Pitfall** | **Source** | **Definition** | **Political Science Example** |
+| :---------- | :--------- | :------------- | :--------------------------- |
 | **4. Survivorship Bias** | Video | Drawing conclusions from a sample that excludes "failures." | Studying only successful social movements to identify factors that cause success. |
 | **5. Regression to the Mean** | Both | Misinterpreting natural variation as a causal effect, especially when selecting on extreme values. | A state with unusually high crime implements a policy; crime falls the next year. |
 | **6. Dichotomania** | Reading | Unnecessarily dichotomizing continuous or ordinal variables. | Converting "years of education" into "college degree (yes/no)" when the continuous measure is available. |
+
+---
+
+## A Combined List from the Reading and Video
+
+Based on van Smeden (2022) and the statistical fallacies video, these 12 pitfalls are especially pernicious in political science research.
+
+| **Pitfall** | **Source** | **Definition** | **Political Science Example** |
+| :---------- | :--------- | :------------- | :--------------------------- |
 | **7. Overfitting** | Reading | Creating a model that is too complex and fits noise rather than the underlying relationship. | Including dozens of interaction terms in a model with only 200 observations. |
 | **8. Noisy Data Fallacy** | Reading | Believing that measurement error always attenuates effects toward the null. | Using noisy democracy measures and assuming any detected effect must be even stronger in reality. |
 | **9. Table 2 Fallacy** | Reading | Interpreting coefficients of control variables as unbiased causal estimates. | In a study of foreign aid on growth (adjusting for corruption), interpreting the corruption coefficient causally. |
+
+---
+
+## A Combined List from the Reading and Video
+
+Based on van Smeden (2022) and the statistical fallacies video, these 12 pitfalls are especially pernicious in political science research.
+
+| **Pitfall** | **Source** | **Definition** | **Political Science Example** |
+| :---------- | :--------- | :------------- | :--------------------------- |
 | **10. Collider Bias** | Reading | Conditioning on a variable caused by both treatment and outcome, inducing spurious associations. | Studying education and income among *only* employed individuals. |
 | **11. Sampling Bias** | Video | Drawing conclusions from a sample that is not representative of the population. | Surveying political attitudes using only Twitter/X users. |
 | **12. Missing Data Ignorance** | Reading | Using complete‑case analysis without considering the missingness mechanism. | Dropping all countries with missing GDP data in a democracy‑growth study. |
@@ -114,6 +151,14 @@ Based on van Smeden (2022) and the statistical fallacies video, these 12 pitfall
 | **Sample Size** | Calculate required sample size *before* data collection. |
 | **Data Preparation** | Avoid dichotomania. Stick to a preregistered analysis plan. |
 | **Measurement Error** | Do not assume error only attenuates effects. |
+
+
+---
+
+## From the Reading: Key Takeaways (van Smeden 2022)
+
+| **Concept** | **What to Remember** |
+| :---------- | :------------------- |
 | **Missing Data** | Complete‑case analysis often makes stronger assumptions than multiple imputation. |
 | **Clustered Data** | Account for clustering using robust standard errors or multilevel models. |
 | **Statistical Significance** | A non‑significant result does not mean "no effect." |
@@ -146,7 +191,12 @@ Select **at least six** pitfalls from the combined list of 12. Choose the ones m
 - **P‑Hacking:** How many different model specifications will you test? Will you preregister your analysis plan?  
 - **Simpson's Paradox:** Could your aggregate results mask subgroup heterogeneity? Will you examine subgroups?  
 - **Survivorship Bias:** Are you only observing "survivors" (e.g., successful cases, countries that exist today)?  
-- **Regression to the Mean:** If you select cases based on extreme values, how will you account for natural reversion?  
+- **Regression to the Mean:** If you select cases based on extreme values, how will you account for natural reversion?
+
+---
+
+## Guiding Questions for Selected Pitfalls
+
 - **Dichotomania:** Are you tempted to dichotomize continuous variables? How can you keep them continuous?  
 - **Overfitting:** Is your model complexity appropriate for your sample size? Could you use cross‑validation?  
 - **Noisy Data Fallacy:** What are the likely measurement errors in your key variables?  
@@ -211,32 +261,7 @@ With your group, revisit the **12 pitfalls**. For **at least four** of them, ide
 1. **What the authors did** to avoid or mitigate the pitfall.
 2. **Any residual concerns** you might have (no study is perfect).
 
-Use the article excerpt provided and your knowledge of research design.
-
----
-
-## Guided Questions for Selected Pitfalls
-
-| **Pitfall** | **What to Look For in Trejo &amp; Skigin** |
-| :---------- | :------------------------------------- |
-| **Correlation ≠ Causation** | They use a DiD design with staggered treatment. What assumption must hold? How do they support it? (Hint: Figure 9, event study.) |
-| **P‑Hacking / Data Dredging** | Do they report multiple specifications? Is there evidence of transparency in model selection? (Check the appendix and data availability statement.) |
-| **Regression to the Mean** | Could the rise in journalist killings be a natural rebound from low pre‑2006 levels? How does the event study plot address this? |
-| **Sampling Bias** | Their dataset (AJM) compiles information from multiple sources. Could certain types of killings be systematically missing? How do they address this? |
-| **Missing Data Ignorance** | Do they mention how they handled missing data in their covariates? |
-| **Table 2 Fallacy** | When they include control variables (e.g., homicide rate, GDP), do they interpret those coefficients causally? |
-| **Overfitting** | They run many models (state‑level, municipal‑level, different operationalizations). Is this overfitting or robustness checking? |
-
----
-
-## Example Entry: How Trejo &amp; Skigin Avoided Pitfalls
-
-| **Pitfall** | **How the Authors Prevented It** | **Residual Concern (if any)** |
-| :---------- | :------------------------------- | :---------------------------- |
-| **Correlation ≠ Causation** | Used staggered DiD with event study (Figure 9) to show parallel pre‑treatment trends, supporting a causal interpretation. | The parallel trends assumption is untestable after treatment; they acknowledge this and use qualitative evidence to bolster the mechanism. |
-| **P‑Hacking** | They report multiple operationalizations of the treatment and show robustness across specifications. Data and code are publicly available. | We can't know if they tried other specifications that didn't work, but transparency mitigates this concern. |
-| **Missing Data Ignorance** | They mention using multiple sources to compile the journalist killings dataset; time‑varying covariates are included with appropriate methods (appendix). | If missingness in covariates is non‑random, estimates could still be biased. |
-| **Table 2 Fallacy** | They never interpret control variable coefficients causally; discussion focuses exclusively on the treatment variables. | None—this is textbook practice. |
+Use the article and your knowledge of research design.
 
 ---
 
@@ -275,77 +300,16 @@ class: inverse, center, middle
 
 **Send this table to your TA together with the names of the group members.**
 
----
-
-## Submission Format
-
-You may submit the table as:
-- A PDF or Word document  
-- A Google Doc link (ensure sharing permissions allow your TA to view)  
-- An R Markdown file rendered to HTML/PDF
-
-**Example table structure:**
-
-| Pitfall | Worst‑Case Scenario | Precautions |
-| :------ | :------------------ | :---------- |
-| Correlation ≠ Causation | ... | ... |
-| P‑Hacking | ... | ... |
-| Simpson's Paradox | ... | ... |
-| Survivorship Bias | ... | ... |
-| Regression to the Mean | ... | ... |
-| Dichotomania | ... | ... |
 
 ---
 
-## Grading Criteria
-
-| **Criterion** | **Excellent** | **Satisfactory** | **Needs Improvement** |
-| :------------ | :------------ | :--------------- | :-------------------- |
-| **Coverage** | Addresses at least six pitfalls, each with a thoughtful scenario and precaution. | Addresses 4–5 pitfalls; scenarios are somewhat generic. | Fewer than four pitfalls or very superficial. |
-| **Specificity** | Scenarios are tailored to the group's specific research question and data. | Scenarios are relevant but not deeply tied to the project. | Scenarios are vague or not connected to the project. |
-| **Feasibility** | Precautions are concrete and implementable within the project timeline. | Precautions are reasonable but may be difficult to execute. | Precautions are unrealistic or missing. |
-
----
 
 ## Reminders
 
 - One submission **per group**. Include all group members' names.  
 - Due by the end of class (or as specified by your TA).
 
----
 
-class: inverse, center, middle
-
-# 6. Wrap‑Up  
-### The Skeptic's Checklist
-
----
-
-## Before You Finalize Any Analysis, Ask Yourself:
-
-- **Causality:** Have I ruled out reverse causality and confounding?  
-- **Transparency:** Have I reported all specifications I tried, not just the ones that "worked"?  
-- **Subgroups:** Have I checked whether my aggregate results hold within meaningful subgroups?  
-- **Sample:** Is my sample representative? If not, have I clearly stated the limits of generalizability?  
-- **Regression to the Mean:** If I'm studying an extreme group, have I accounted for natural reversion?  
-- **Continuous Variables:** Have I avoided dichotomania and used the full information in my continuous measures?  
-- **Model Complexity:** Is my model appropriately complex for my sample size? Have I checked for overfitting?  
-- **Measurement Error:** Have I considered how measurement error might bias my estimates?  
-- **Missing Data:** Have I diagnosed the missingness mechanism and chosen an appropriate method?  
-- **Covariate Interpretation:** Am I interpreting control variable coefficients causally? (Avoid the Table 2 fallacy.)  
-- **Colliders:** Have I drawn a DAG to ensure I'm not conditioning on colliders?  
-- **Reporting:** Am I using a reporting guideline to ensure complete transparency?
-
----
-
-## Final Thought
-
-&gt; *"The first principle is that you must not fool yourself—and you are the easiest person to fool."*  
-&gt; — Richard Feynman
-
-These pitfalls are not signs of incompetence; they are **cognitive traps** that even experienced researchers fall into. The best defense is **systematic skepticism** applied to your own work.
-
-**Today you practiced exactly that—on your own projects and on a published study.**
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
