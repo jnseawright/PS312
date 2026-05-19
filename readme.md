@@ -6,6 +6,8 @@
 
 [In-Class Conference Schedule](https://jnseawright.github.io/PS312/conference_schedule.xlsx)
 
+[Discussant Guidance](https://jnseawright.github.io/PS312/discussantguide.pdf)
+
 [In-Class Conference Session Preferences](https://docs.google.com/forms/d/e/1FAIpQLSdDpbmjs1h7By68cRP0XwWLC8LTRX4nqo-daiHldooa34zKQQ/viewform?usp=dialog)
 
 ### Class Sessions
@@ -171,6 +173,8 @@ It will also be exceptionally helpful if you take the seven minutes to watch thi
 We will discuss together the features of well-written quantitative
 social science, and how to structure a successful paper/article in this
 genre.
+
+[Writing activities](writingkickoff.html) 
 
 *Thursday, May 21st: In-Class Presentations Day 1*
 
